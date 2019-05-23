@@ -8,13 +8,16 @@ Modifica principalmente el Tool Header del sculpt mode
 ---
 QUICK TEXTURE CREATION AND SELECTION
 ---
-1ST. BRUSH HASN'T A TEXTURE
-Click at '5'. Now an empty texture is available and It will change to (next image)
+1ST. BRUSH HASN'T A TEXTURE -
+Now an empty texture is available and It will change to (next image)
+- If you don't have textures imported, click at '5' and import one
+- Else -> Click at '4' and select one
 
 ![alt text](https://github.com/jfranmatheu/just_images/blob/master/NewSMUI_1.png?raw=true "Texture Section 1")
 
 2ND. SO THERE'S A TEXTURE AVAILABLE BUT IT HASN'T AN IMAGE!
-Click at '7' and select an image. It will change to (next image)
+- If you don't have images imported, click at '7' to import one
+- Else -> Click at '6' and select one
 
 ![alt text](https://github.com/jfranmatheu/just_images/blob/master/NewSMUI_2.png?raw=true "Texture Section 2")
 

@@ -8,20 +8,20 @@ Nueva UI para el modo Sculpt. Modifica principalmente el Tool Header del sculpt 
 ---
 QUICK TEXTURE CREATION AND SELECTION
 ---
-1ST. BRUSH HASN'T A TEXTURE -
+**1ST.** BRUSH HASN'T A TEXTURE -
 Now an empty texture is available and It will change to (next image)
 - If you don't have textures imported, click at '5' and import one
 - Else -> Click at '4' and select one
 
 ![alt text](https://github.com/jfranmatheu/just_images/blob/master/NewSMUI_1.png?raw=true "Texture Section 1")
 
-2ND. SO THERE'S A TEXTURE AVAILABLE BUT IT HASN'T AN IMAGE!
+**2ND.** SO THERE'S A TEXTURE AVAILABLE BUT IT HASN'T AN IMAGE!
 - If you don't have images imported, click at '7' to import one
 - Else -> Click at '6' and select one
 
 ![alt text](https://github.com/jfranmatheu/just_images/blob/master/NewSMUI_2.png?raw=true "Texture Section 2")
 
-3RD. NOW IT HAS BOTH IMAGE AND TEXTURE
+**3RD.** NOW IT HAS BOTH IMAGE AND TEXTURE
 - You can change their names at '8' and '9'
 - You can select another image for that texture at '6'
 - You can change quickly the texture of the actual brush at '4'

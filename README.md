@@ -32,9 +32,9 @@ Now an empty texture is available and It will change to (next image)
 2. Duplicate/New Texture (just works if a texture is created)
 3. Open image
 4. Texture Quick Selector (1 step)
-5. New texture button
+5. New texture button (conditional)
 6. Image Quick Selector
-7. Open Image
+7. Open Image (conditional)
 8. Texture Name
 9. Image Name
 

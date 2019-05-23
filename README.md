@@ -39,3 +39,36 @@ Now an empty texture is available and It will change to (next image)
 9. Image Name
 
 ---
+CUSTOM ICONS
+---
+![alt text](https://github.com/jfranmatheu/just_images/blob/master/NewSMUI_icons.png?raw=true "Icons")
+
+---
+DYNTOPO + QUICK 'DETAIL SIZE' SELECTOR
+---
+![alt text](https://github.com/jfranmatheu/just_images/blob/master/NewSMUI_dyntopo.png?raw=true "Dyntopo")
+
+---
+QUICK SYMMETRY
+---
+![alt text](https://github.com/jfranmatheu/just_images/blob/master/NewSMUI_symmetry.png?raw=true "Symmetry")
+
+---
+BRUSHES
+---
+![alt text](https://github.com/jfranmatheu/just_images/blob/master/NewSMUI_brush.png?raw=true "Brushes")
+
+---
+Brush Settings / Stroke Settings / Curves
+---
+![alt text](https://github.com/jfranmatheu/just_images/blob/master/NewSMUI_settings.png?raw=true "Settings")
+
+---
+MASKING
+---
+![alt text](https://github.com/jfranmatheu/just_images/blob/master/NewSMUI_mask.png?raw=true "Mask")
+
+---
+BRUSH PROPERTIES SLIDERS
+---
+![alt text](https://github.com/jfranmatheu/just_images/blob/master/NewSMUI_sliders.png?raw=true "Sliders")

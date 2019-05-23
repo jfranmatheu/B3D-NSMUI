@@ -1,7 +1,7 @@
 # Blender_NewSMUI
 New Sculpt Mode UI for Blender 2.80
 
-Modifica principalmente el Tool Header del sculpt mode
+Nueva UI para el modo Sculpt. Modifica principalmente el Tool Header del sculpt mode.
 
 
 # FEATURES

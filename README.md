@@ -98,6 +98,8 @@ FUTUROS CAMBIOS E IDEAS LOCAS
 - [ ] Cambio fácil de icono de una brocha y soporte con greasepencil para hacer los diseños de los iconos.
 - [ ] Añadir nuevas herramientas y más avanzadas para enmascarar.
 
+- [ ] Empezar a desarrollar la UI para el texture paint mode.
+
 # Soporte para las Sculpt Features (Pablo Dobarro)
 Disponibles de momento en otra 'branch' -> Sculpt-Features
 ## Para el Header

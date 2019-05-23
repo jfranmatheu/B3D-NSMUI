@@ -73,3 +73,35 @@ CUSTOM ICONS
 ![alt text](https://github.com/jfranmatheu/just_images/blob/master/NewSMUI_icons.png?raw=true "Icons")
 
 ---
+
+FUTUROS CAMBIOS E IDEAS LOCAS
+---
+# Para la zona de texturas:
+- [ ] Nuevo operador para si abres una imagen en una brocha sin textura asignada, que automáticamente cree una textura y asigne esa imagen a la textura (Sólo 1 paso!!!).
+- [ ] Poder seleccionar **varias imágenes**, importarlas de golpe y que automáticamente se creen texturas con esas imágenes.
+- [ ] Cuando importas una imagen para una textura, la textura cambiará el nombre al de la imagen de forma automática, esto (y en combinación con las 2 anteriores) ayudará a no perder el tiempo renombrando innecesariamente.
+
+# Para la zona de dyntopo:
+- [ ] Los valores predefinidos para el 'Detail Size' de Dyntopo, serán colapsables o se podrán ocultar con algún ajuste (aún por decidir)
+- [ ] Los valores predefinidos y el número de valores... serán personalizables!
+
+# OTROS
+- [ ] Filtros para las texturas.
+- [ ] Sets de brochas: 1, Recientemente usadas. 2, Por tipo según la brocha activa. 3, Favoritas.
+- [ ] Nuevos y mejores atajos de teclado.
+- [ ] Manager para brochas.
+- [ ] Nueva brocha personalizable con multitud de parámetros configurables.
+- [ ] Exportación/Importación (1 click) de brochas.
+- [ ] Preview grande del alpha o textura (en hover) en una esquina o lateral del 3d viewport.
+- [ ] Mejora en la previsualización de las texturas en el thumbnail.
+- [ ] Soporte para preview de los .psd
+- [ ] Cambio fácil de icono de una brocha y soporte con greasepencil para hacer los diseños de los iconos.
+- [ ] Añadir nuevas herramientas y más avanzadas para enmascarar.
+
+## Soporte para las Sculpt Features (Pablo Dobarro)
+Disponibles de momento en otra 'branch' -> Sculpt-Features
+# Para el Header
+- [x] [Color] Selector de color y check para el 'unified color' entre brochas
+- [ ] [Remesher] Slider para el voxel size y botón para el remesh, o el botón de remesh y un dropdown menu con los ajustes.
+
+

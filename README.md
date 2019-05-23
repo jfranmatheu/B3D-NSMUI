@@ -98,9 +98,9 @@ FUTUROS CAMBIOS E IDEAS LOCAS
 - [ ] Cambio fácil de icono de una brocha y soporte con greasepencil para hacer los diseños de los iconos.
 - [ ] Añadir nuevas herramientas y más avanzadas para enmascarar.
 
-## Soporte para las Sculpt Features (Pablo Dobarro)
+# Soporte para las Sculpt Features (Pablo Dobarro)
 Disponibles de momento en otra 'branch' -> Sculpt-Features
-# Para el Header
+## Para el Header
 - [x] [Color] Selector de color y check para el 'unified color' entre brochas
 - [ ] [Remesher] Slider para el voxel size y botón para el remesh, o el botón de remesh y un dropdown menu con los ajustes.
 

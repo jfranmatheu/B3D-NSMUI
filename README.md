@@ -9,7 +9,7 @@ Modifica principalmente el Tool Header del sculpt mode
 QUICK TEXTURE CREATION AND SELECTION
 ---
 1ST. BRUSH HASN'T A TEXTURE
-Click at '5'. Now a free texture is available and It will change to:
+Click at '5'. Now an empty texture is available and It will change to:
 
 ![alt text](https://github.com/jfranmatheu/just_images/blob/master/NewSMUI_1.png?raw=true "Texture Section 1")
 

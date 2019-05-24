@@ -84,6 +84,7 @@ FUTUROS CAMBIOS E IDEAS LOCAS
 # Para la zona de dyntopo:
 - [ ] Los valores predefinidos para el 'Detail Size' de Dyntopo, serán colapsables o se podrán ocultar con algún ajuste (aún por decidir)
 - [ ] Los valores predefinidos y el número de valores... serán personalizables!
+- [ ] Mantener dyntopo activado al cambiar de modo
 
 # OTROS
 - [ ] Filtros para las texturas.

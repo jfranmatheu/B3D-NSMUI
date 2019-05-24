@@ -13,20 +13,20 @@ Now an empty texture is available and It will change to (next image)
 - If you don't have textures imported, click at '5' and import one
 - Else -> Click at '4' and select one
 
-![alt text](https://github.com/jfranmatheu/just_images/blob/master/NewSMUI_1.png?raw=true "Texture Section 1")
+![alt text](https://github.com/jfranmatheu/just_images/blob/master/NewSMUI_1.png"Texture Section 1")
 
 **2ND.** SO THERE'S A TEXTURE AVAILABLE BUT IT HASN'T AN IMAGE!
 - If you don't have images imported, click at '7' to import one
 - Else -> Click at '6' and select one
 
-![alt text](https://github.com/jfranmatheu/just_images/blob/master/NewSMUI_2.png?raw=true "Texture Section 2")
+![alt text](https://github.com/jfranmatheu/just_images/blob/master/NewSMUI_2.png"Texture Section 2")
 
 **3RD.** NOW IT HAS BOTH IMAGE AND TEXTURE
 - You can change their names at '8' and '9'
 - You can select another image for that texture at '6'
 - You can change quickly the texture of the actual brush at '4'
 
-![alt text](https://github.com/jfranmatheu/just_images/blob/master/NewSMUI_3.png?raw=true "Texture Section 3")
+![alt text](https://github.com/jfranmatheu/just_images/blob/master/NewSMUI_3.png"Texture Section 3")
 
 1. Texture Settings
 2. Duplicate/New Texture (just works if a texture is created)
@@ -40,37 +40,37 @@ Now an empty texture is available and It will change to (next image)
 
 DYNTOPO + QUICK 'DETAIL SIZE' SELECTOR
 ---
-![alt text](https://github.com/jfranmatheu/just_images/blob/master/NewSMUI_dyntopo.png?raw=true "Dyntopo")
+![alt text](https://github.com/jfranmatheu/just_images/blob/master/NewSMUI_dyntopo.png"Dyntopo")
 
 ---
 QUICK SYMMETRY
 ---
-![alt text](https://github.com/jfranmatheu/just_images/blob/master/NewSMUI_symmetry.png?raw=true "Symmetry")
+![alt text](https://github.com/jfranmatheu/just_images/blob/master/NewSMUI_symmetry.png"Symmetry")
 
 ---
 BRUSHES
 ---
-![alt text](https://github.com/jfranmatheu/just_images/blob/master/NewSMUI_brush.png?raw=true "Brushes")
+![alt text](https://github.com/jfranmatheu/just_images/blob/master/NewSMUI_brush.png"Brushes")
 
 ---
 Brush Settings / Stroke Settings / Curves
 ---
-![alt text](https://github.com/jfranmatheu/just_images/blob/master/NewSMUI_settings.png?raw=true "Settings")
+![alt text](https://github.com/jfranmatheu/just_images/blob/master/NewSMUI_settings.png"Settings")
 
 ---
 MASKING
 ---
-![alt text](https://github.com/jfranmatheu/just_images/blob/master/NewSMUI_mask.png?raw=true "Mask")
+![alt text](https://github.com/jfranmatheu/just_images/blob/master/NewSMUI_mask.png"Mask")
 
 ---
 BRUSH PROPERTIES SLIDERS
 ---
-![alt text](https://github.com/jfranmatheu/just_images/blob/master/NewSMUI_sliders.png?raw=true "Sliders")
+![alt text](https://github.com/jfranmatheu/just_images/blob/master/NewSMUI_sliders"Sliders")
 
 ---
 CUSTOM ICONS
 ---
-![alt text](https://github.com/jfranmatheu/just_images/blob/master/NewSMUI_icons.png?raw=true "Icons")
+![alt text](https://github.com/jfranmatheu/just_images/blob/master/NewSMUI_icons.png"Icons")
 
 ---
 

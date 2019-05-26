@@ -12,7 +12,6 @@ Nueva UI para el modo Sculpt. Modifica principalmente el Tool Header del sculpt 
 QUICK TEXTURE CREATION AND SELECTION
 ---
 **1ST.** BRUSH HASN'T A TEXTURE -
-Now an empty texture is available and It will change to (next image)
 - If you don't have textures imported, click at '5' and import one
 - Else -> Click at '4' and select one
 
@@ -32,7 +31,7 @@ Now an empty texture is available and It will change to (next image)
 ![alt text](http://1.bp.blogspot.com/-69waiwHKDig/XOgZiwh_BVI/AAAAAAAAAfE/0ixHWNBt-vAd391Bs5JKgV1j2h_BTj6ywCK4BGAYYCw/s320/NewSMUI_3.png "Texture Section 3")
 
 1. Texture Settings
-2. Duplicate/New Texture (just works if a texture is created)
+2. New Texture (just works if a texture is created)
 3. Open image
 4. Texture Quick Selector (1 step)
 5. New texture button (conditional)
@@ -40,6 +39,12 @@ Now an empty texture is available and It will change to (next image)
 7. Open Image (conditional)
 8. Texture Name
 9. Image Name
+
+Differences between buttons 2/5 and 3/7:
+- While '2' creates an empty texture
+- '5' Create one and assign it to the active brush
+- While '3' imports an image
+- '7' Imports one and assigns it to the active or selected texture
 
 DYNTOPO + QUICK 'DETAIL SIZE' SELECTOR
 ---

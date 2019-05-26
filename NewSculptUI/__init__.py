@@ -242,8 +242,7 @@ class NSMUI_HT_toolHeader_sculpt(Header, UnifiedPaintPanel):
             split = layout.split()
             col = split.column()
             row = col.row(align=True)
-            row.ui_units_x = 6
-
+            #row.ui_units_x = 6
             if(toolsettings.unified_paint_settings.use_unified_strength): 
                 row.prop(ups, "strength", slider=True, text="Hardness") # ups -> tool_settings.unified_paint_settings.strength
             else:
@@ -550,6 +549,10 @@ class NSMUI_HT_header_paint(bpy.types.Header):
 #   FACTORY REGISTRATION OF CLASSES 
 #register, unregister = bpy.utils.register_classes_factory(classes)
 
+# store keymaps here to access after registration
+newsmui_keymaps = []
+
+
 #################################################
 #   AUTO-REGISTRATION !!!!                             #
 #################################################
@@ -570,8 +573,10 @@ def register():
     register_class(NSMUI_HT_header_sculpt)     # HEADER      - SCULPT MODE
     register_class(NSMUI_HT_toolHeader_paint)  # TOOL HEADER - PAINT MODE
     register_class(NSMUI_HT_header_paint)      # HEADER      - PAINT MODE
+
     # AutoLoad Exterior Classes
     auto_load.register()
+
     # Register Collections
     pcoll = bpy.utils.previews.new()
     for key, f in icons.items():
@@ -587,14 +592,17 @@ def register():
     print("Registered New Sculpt Mode UI")
 
 def unregister():
+
     # UnRegister Classes
     unregister_class(VIEW3D_HT_tool_head)      # OVERRITE CLASS
     unregister_class(NSMUI_HT_toolHeader_sculpt) # TOOL HEADER - SCULPT MODE
     unregister_class(NSMUI_HT_header_sculpt)     # HEADER      - SCULPT MODE
     unregister_class(NSMUI_HT_toolHeader_paint)  # TOOL HEADER - PAINT MODE
     unregister_class(NSMUI_HT_header_paint)      # HEADER      - PAINT MODE
+
     # AutoLoad Exterior Classes
     auto_load.unregister()
+
     # UnRegister Collections
     for pcoll in preview_collections.values():
         bpy.utils.previews.remove(pcoll)

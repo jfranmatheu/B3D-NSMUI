@@ -371,8 +371,12 @@ class NSMUI_HT_toolHeader_sculpt(Header, UnifiedPaintPanel):
             for modifier in mods:
                 if modifier.type == 'MULTIRES':
                     ibool = True
-                    row = self.layout.row()
-                    row.label(text="MULTIRES")
+                    row = self.layout.row(align=True)
+                    row.label(text="MULT")
+                    row.ui_units_x = 6
+                    row.prop(modifier, "sculpt_levels", text="Sculpt")
+                    row = self.layout.row(align=True)
+                    row.operator("object.multires_subdivide", text="Subdivide")
                     break
     # SCULPT --> DYNAMIC TOPOLOGY
             if ibool==False:

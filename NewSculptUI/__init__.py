@@ -372,8 +372,8 @@ class NSMUI_HT_toolHeader_sculpt(Header, UnifiedPaintPanel):
                 if modifier.type == 'MULTIRES':
                     ibool = True
                     row = self.layout.row(align=True)
-                    row.label(text="MULT")
-                    row.ui_units_x = 6
+                    row.label(text="", icon="MOD_MULTIRES")
+                    row.ui_units_x = 5
                     row.prop(modifier, "sculpt_levels", text="Sculpt")
                     row = self.layout.row(align=True)
                     row.operator("object.multires_subdivide", text="Subdivide")

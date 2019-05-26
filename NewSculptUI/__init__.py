@@ -17,7 +17,7 @@ bl_info = {
     "author" : "JFranMatheu",
     "description" : "New UI for Sculpt Mode",
     "blender" : (2, 80, 0),
-    "version" : (0, 0, 2),
+    "version" : (0, 0, 5),
     "location" : "View3D",
     "warning" : "This version is still in development.",
     "category" : "Generic"
@@ -43,7 +43,7 @@ from bl_ui.properties_paint_common import (
 from bl_ui.space_view3d import VIEW3D_HT_tool_header
 
 from bpy.utils import register_class, unregister_class
-unregister_class(VIEW3D_HT_tool_header)
+
 
 
 # ICONS // UI // COLLECTIONS
@@ -147,7 +147,20 @@ class NSMUI_HT_toolHeader_sculpt(Header, UnifiedPaintPanel):
             pass
         bpy.utils.register_class(NSMUI_HT_toolHeader_sculpt)
         bpy.utils.register_class(VIEW3D_HT_tool_header)
-        
+
+    def draw_sculpt():
+        try:
+            bpy.utils.unregister_class(VIEW3D_HT_tool_header)
+        except:
+            pass
+        bpy.utils.register_class(NSMUI_HT_toolHeader_sculpt)
+
+    def draw_default():  
+        try:
+            bpy.utils.unregister_class(NSMUI_HT_toolHeader_sculpt)
+        except:
+            pass
+        bpy.utils.register_class(VIEW3D_HT_tool_header)
 
     def draw(self, context):
         # scene = context.scene
@@ -351,32 +364,35 @@ class NSMUI_HT_toolHeader_sculpt(Header, UnifiedPaintPanel):
             col = split.column()
             icon = pcoll["separator_icon"]
             col.label(text="", icon_value=icon.icon_id)
-    
+
+            ibool = False
+            mods = context.active_object.modifiers
+    # SCULPT --> MULTIRES
+            for modifier in mods:
+                if modifier.type == 'MULTIRES':
+                    ibool = True
+                    row = self.layout.row()
+                    row.label(text="MULTIRES")
+                    break
     # SCULPT --> DYNAMIC TOPOLOGY
+            if ibool==False:
+                layout = self.layout
+                split = layout
+                col = split.column()
+                row = col.row(align=True)
+                sub = split
+                sub.popover(panel="VIEW3D_PT_sculpt_dyntopo", text="")
+            # DEFAULT VALUES FOR DETAIL SIZE
+            # NOTe: THIS WILL CHANGE IN A MORE DYNAMIC AND CUSTOM WAY
+                #row.label(nsmui.ht_toolheader_symmetry_all, text="", icon_value=icon.icon_id, toggle=True)
+                row.ui_units_x = 6
+                row.operator("nsmui.ht_toolheader_dyntopo_2", text="2")
+                row.operator("nsmui.ht_toolheader_dyntopo_4", text="4")
+                row.operator("nsmui.ht_toolheader_dyntopo_6", text="6")
+                row.operator("nsmui.ht_toolheader_dyntopo_8", text="8")
+                row.operator("nsmui.ht_toolheader_dyntopo_10", text="10")
+                row.operator("nsmui.ht_toolheader_dyntopo_12", text="12")
 
-            #icon = pcoll["dyntopo_icon"]
-            layout = self.layout
-            split = layout
-            col = split.column()
-            row = col.row(align=True)
-            
-            sub = split
-            sub.popover(
-                panel="VIEW3D_PT_sculpt_dyntopo",
-                #icon_value=icon.icon_id,
-                text="")
-
-        # DEFAULT VALUES FOR DETAIL SIZE
-        # NOTe: THIS WILL CHANGE IN A MORE DYNAMIC AND CUSTOM WAY
-            #row.label(nsmui.ht_toolheader_symmetry_all, text="", icon_value=icon.icon_id, toggle=True)
-            row.ui_units_x = 6
-            row.operator("nsmui.ht_toolheader_dyntopo_2", text="2")
-            row.operator("nsmui.ht_toolheader_dyntopo_4", text="4")
-            row.operator("nsmui.ht_toolheader_dyntopo_6", text="6")
-            row.operator("nsmui.ht_toolheader_dyntopo_8", text="8")
-            row.operator("nsmui.ht_toolheader_dyntopo_10", text="10")
-            row.operator("nsmui.ht_toolheader_dyntopo_12", text="12")
-        
         # SPACING // SEPARATOR
             layout = self.layout
             split = layout.split()
@@ -451,11 +467,7 @@ class NSMUI_HT_toolHeader_sculpt(Header, UnifiedPaintPanel):
         else:
             return None
 
-        try:
-            #bpy.utils.unregister_class(VIEW3D_HT_tool_header)
-            bpy.utils.register_class(VIEW3D_HT_tool_header)
-        except:
-            pass
+        
         
 
     # SCULPT --> 
@@ -541,6 +553,12 @@ from . import auto_load
 auto_load.init()
 
 def register():
+    # UNREGISTER ORIGINAL TOOL HEADER # changed - antes al inicio del script
+    try:
+        bpy.utils.unregister_class(VIEW3D_HT_tool_header)
+    except:
+        pass
+
     # Register Classes
     register_class(VIEW3D_HT_tool_head)      # OVERRITE CLASS
     register_class(NSMUI_HT_toolHeader_sculpt) # TOOL HEADER - SCULPT MODE
@@ -555,6 +573,11 @@ def register():
         pcoll.load(key, path.join(icon_dir, f), 'IMAGE')
     preview_collections["main"] = pcoll
     
+    # REGISTER ORIGINAL TOOL HEADER # changed - antes al final del código de la clase del tool header
+    try:
+        bpy.utils.register_class(VIEW3D_HT_tool_header)
+    except:
+        pass
 
     print("Registered New Sculpt Mode UI")
 

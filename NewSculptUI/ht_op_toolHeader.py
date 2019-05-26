@@ -39,6 +39,16 @@ class NSMUI_OT_toolHeader_newTexture(bpy.types.Operator):
 
         return {'FINISHED'}
 
+class NSMUI_OT_toolHeader_multires_subdivide(bpy.types.Operator):
+    bl_idname = "nsmui.ht_toolheader_multires_subdivide"
+    bl_label = "new_tool_header_tools_for_sculpt_mode"
+    bl_description = "New Level of Subdivision for Multires"
+    def execute(self, context):
+        #bpy.context.object.modifiers["Multires"].name = "Multires"
+        #bpy.context.object.modifiers["Multires"].subdivision_type = 'CATMULL_CLARK'
+        bpy.ops.object.multires_subdivide(modifier="Multires")
+        return {'FINISHED'}
+
 class NSMUI_OT_toolHeader_dyntopo_1(bpy.types.Operator):
     bl_idname = "nsmui.ht_toolheader_dyntopo_1"
     bl_label = "New Sculpt-Mode UI"

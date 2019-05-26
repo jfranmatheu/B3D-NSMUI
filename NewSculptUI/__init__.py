@@ -376,7 +376,8 @@ class NSMUI_HT_toolHeader_sculpt(Header, UnifiedPaintPanel):
                     row.ui_units_x = 5
                     row.prop(modifier, "sculpt_levels", text="Sculpt")
                     row = self.layout.row(align=True)
-                    row.operator("object.multires_subdivide", text="Subdivide")
+                    row.ui_units_x = 3.6
+                    row.operator("nsmui.ht_toolheader_multires_subdivide", text="Subdivide")
                     break
     # SCULPT --> DYNAMIC TOPOLOGY
             if ibool==False:

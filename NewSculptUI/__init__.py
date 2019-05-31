@@ -586,7 +586,6 @@ class NSMUI_PT_dyntopo_stages(Panel):
     bl_label = "DyntopoStages"
     bl_space_type = "VIEW_3D"
     bl_region_type = "UI"
-    #bl_options = {'DEFAULT_CLOSED'}
     bl_context = ".paint_common"
     def draw(self, context):
         pcoll = preview_collections["main"]
@@ -598,10 +597,7 @@ class NSMUI_PT_dyntopo_stages(Panel):
     # STAGES - SKETCH - DETAIL - POLISH
         layout = self.layout
         row = layout.row(align=True)
-        row.label(text="Stage:") # Stages - Para niveles de Detalle especificados abajo
-        pt = str(dynStage)
-        row.label(text=pt)
-        #row = layout.row(align=True)
+        row.label(text="Stage :   " + dynStage) # Stages - Para niveles de Detalle especificados abajo
         col = layout.column()
         row = col.row(align=True)
         row.operator("nsmui.ot_dyntopo_stages_change", text="SKETCH").valor = "LOW"
@@ -612,21 +608,18 @@ class NSMUI_PT_dyntopo_stages(Panel):
         props.valor = "HIGH"
 
     # VALUES FOR STAGES
-        self.layout.label(text="Values:") # Valores para el 'Stage' Activo
+        self.layout.label(text="Values :") # Valores para el 'Stage' Activo
 
     # DETAIL METHODS
         col = layout.column()
         row = col.row(align=True)
-        row.label(text="Detail Method:") # Stages - Para niveles de Detalle especificados abajo
         if detailMethod == 'CONSTANT':
             icon = icon2
         elif detailMethod == 'BRUSH':
             icon = icon3
         else: # RELATIVE OR MANUAL
             icon = icon1
-        row.label(text=detailMethod, icon_value=icon.icon_id)
-        #col = row.column().split()
-        #row = col.row(align=True)
+        row.label(icon_value=icon.icon_id, text="Detail Method :   " + detailMethod,) # Stages - Para niveles de Detalle especificados abajo
         col = layout.column()
         row = col.row(align=True)
         row.operator("nsmui.ht_toolheader_dyntopo_relative", text="Relative", icon_value=icon1.icon_id)

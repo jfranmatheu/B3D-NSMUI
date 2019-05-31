@@ -41,10 +41,14 @@ from bl_ui.properties_paint_common import (
         brush_basic_sculpt_settings
         )
 from bl_ui.space_view3d import VIEW3D_HT_tool_header
-
+from bpy.props import StringProperty, IntProperty, FloatProperty
 from bpy.utils import register_class, unregister_class
 
-
+# GLOBAL VARS
+dynStage = "NONE"
+dynLow = {1,2,3}
+dynMid = {4,6,8}
+dynHigh = {10,12,14}
 
 # ICONS // UI // COLLECTIONS
 from os import path
@@ -63,6 +67,12 @@ icons = {"mirror_icon" : "mirror_icon.png",
          "fallOff_icon" : "fallOff_icon.png",
          "frontFaces_icon"  : "frontFaces_icon.png",
          "dyntopo_icon"  : "dyntopo_icon.png",
+         "dyntopoLowDetail_icon"  : "dyntopoLowDetail_icon.png",
+         "dyntopoMidDetail_icon"  : "dyntopoMidDetail_icon.png",
+         "dyntopoHighDetail_icon"  : "dyntopoHighDetail_icon.png",
+         "dyntopoConstant_icon"  : "dyntopoConstant_icon.png",
+         "dyntopoRelative_icon"  : "dyntopoRelative_icon.png",
+         "dyntopoBrush_icon"  : "dyntopoBrush_icon.png",
          "separator_icon" : "separator_icon.png",
          "arrowUp_icon"  : "arrowUp_icon.png",
          "arrowDown_icon" : "arrowDown_icon.png",
@@ -120,6 +130,7 @@ class VIEW3D_HT_tool_head(Header): #OVERRIDE
     bl_region_type = "TOOL_HEADER"
 
     def draw(self, context):
+        
         if context.mode != "SCULPT":
             layout = self.layout
             layout.row(align=True).template_header()
@@ -367,35 +378,56 @@ class NSMUI_HT_toolHeader_sculpt(Header, UnifiedPaintPanel):
             ibool = False
             mods = context.active_object.modifiers
     # SCULPT --> MULTIRES
-            for modifier in mods:
-                if modifier.type == 'MULTIRES':
-                    ibool = True
-                    row = self.layout.row(align=True)
-                    row.label(text="", icon="MOD_MULTIRES")
-                    row.ui_units_x = 5
-                    row.prop(modifier, "sculpt_levels", text="Sculpt")
-                    row = self.layout.row(align=True)
-                    row.ui_units_x = 3.6
-                    row.operator("nsmui.ht_toolheader_multires_subdivide", text="Subdivide")
-                    break
+            if mods!=None:
+                for modifier in mods:
+                    if modifier.type == 'MULTIRES':
+                        ibool = True
+                        row = self.layout.row(align=True)
+                        row.label(text="", icon="MOD_MULTIRES")
+                        row.ui_units_x = 5
+                        row.prop(modifier, "sculpt_levels", text="Sculpt")
+                        row = self.layout.row(align=True)
+                        row.ui_units_x = 3.6
+                        row.operator("nsmui.ht_toolheader_multires_subdivide", text="Subdivide")
+                        break
     # SCULPT --> DYNAMIC TOPOLOGY
             if ibool==False:
-                layout = self.layout
-                split = layout
-                col = split.column()
-                row = col.row(align=True)
-                sub = split
+                sub = self.layout.row(align=True)
                 sub.popover(panel="VIEW3D_PT_sculpt_dyntopo", text="")
-            # DEFAULT VALUES FOR DETAIL SIZE
-            # NOTe: THIS WILL CHANGE IN A MORE DYNAMIC AND CUSTOM WAY
-                #row.label(nsmui.ht_toolheader_symmetry_all, text="", icon_value=icon.icon_id, toggle=True)
-                row.ui_units_x = 6
-                row.operator("nsmui.ht_toolheader_dyntopo_2", text="2")
-                row.operator("nsmui.ht_toolheader_dyntopo_4", text="4")
-                row.operator("nsmui.ht_toolheader_dyntopo_6", text="6")
-                row.operator("nsmui.ht_toolheader_dyntopo_8", text="8")
-                row.operator("nsmui.ht_toolheader_dyntopo_10", text="10")
-                row.operator("nsmui.ht_toolheader_dyntopo_12", text="12")
+                if dynStage == "NONE":
+                    sub.popover(panel="NSMUI_PT_dyntopo_stages", text="", icon='STYLUS_PRESSURE')
+                    layout = self.layout
+                    col = layout.column()
+                    row = col.row(align=True)
+                    row.ui_units_x = 6
+                    row.operator("nsmui.ht_toolheader_dyntopo_1", text="1")
+                    row.operator("nsmui.ht_toolheader_dyntopo_2", text="2")
+                    row.operator("nsmui.ht_toolheader_dyntopo_4", text="4")
+                    row.operator("nsmui.ht_toolheader_dyntopo_6", text="6")
+                    row.operator("nsmui.ht_toolheader_dyntopo_8", text="8")
+                    row.operator("nsmui.ht_toolheader_dyntopo_10", text="10")
+                    #row.operator("nsmui.ht_toolheader_dyntopo_12", text="12")
+                else:
+                    iconLow = pcoll["dyntopoLowDetail_icon"]
+                    iconMid = pcoll["dyntopoMidDetail_icon"]
+                    iconHigh = pcoll["dyntopoHighDetail_icon"]
+                    if (dynStage == "LOW"):
+                        icon = pcoll["dyntopoLowDetail_icon"]
+                        val = dynLow
+                    elif (dynStage == "MID"):
+                        icon = pcoll["dyntopoMidDetail_icon"]
+                        val = dynMid
+                    elif (dynStage == "HIGH"):
+                        icon = pcoll["dyntopoHighDetail_icon"]
+                        val = dynHigh
+                    sub.popover(panel="NSMUI_PT_dyntopo_stages", text="", icon_value=icon.icon_id)
+                    col = self.layout.column()
+                    row = col.row(align=True)
+                    #row.ui_units_x = 4
+                    row.operator("nsmui.ht_toolheader_dyntopo_any", text="", icon_value=iconLow.icon_id).value = val[0]
+                    row.operator("nsmui.ht_toolheader_dyntopo_any", text="", icon_value=iconMid.icon_id).value = val[1]
+                    row.operator("nsmui.ht_toolheader_dyntopo_any", text="", icon_value=iconHigh.icon_id).value = val[2]
+                    
 
         # SPACING // SEPARATOR
             layout = self.layout
@@ -526,7 +558,7 @@ class NSMUI_HT_toolHeader_paint(Header):
             row = layout.row() # define una fila            
             
 # PAINT MODE UI - NEW HEADER
-class NSMUI_HT_header_paint(bpy.types.Header):
+class NSMUI_HT_header_paint(Header):
     bl_idname = "NSMUI_HT_Header_Paint"
     bl_label = "Header Toolbar for Sculpt Mode"
     bl_space_type = "VIEW_3D"
@@ -544,6 +576,79 @@ class NSMUI_HT_header_paint(bpy.types.Header):
         # PAINT
             layout = self.layout
 
+# --------------------------------------------- #
+# --------------------------------------------- #
+# DYNTOPO STAGES UI / OPERATOR
+# --------------------------------------------- #
+# --------------------------------------------- #
+
+class NSMUI_PT_dyntopo_stages(Panel):
+    bl_label = "DyntopoStages"
+    bl_space_type = "VIEW_3D"
+    bl_region_type = "UI"
+    #bl_options = {'DEFAULT_CLOSED'}
+    bl_context = ".paint_common"
+    def draw(self, context):
+        pcoll = preview_collections["main"]
+        detailMethod = bpy.context.scene.tool_settings.sculpt.detail_type_method
+        icon1 = pcoll["dyntopoRelative_icon"]
+        icon2 = pcoll["dyntopoConstant_icon"]
+        icon3 = pcoll["dyntopoBrush_icon"]
+
+    # STAGES - SKETCH - DETAIL - POLISH
+        layout = self.layout
+        row = layout.row(align=True)
+        row.label(text="Stage:") # Stages - Para niveles de Detalle especificados abajo
+        pt = str(dynStage)
+        row.label(text=pt)
+        #row = layout.row(align=True)
+        col = layout.column()
+        row = col.row(align=True)
+        row.operator("nsmui.ot_dyntopo_stages_change", text="SKETCH").valor = "LOW"
+        #props.valor: "LOW"
+        row.operator("nsmui.ot_dyntopo_stages_change", text="DETAILS").valor = "MID"
+        #props.valor = "MID"
+        props = row.operator("nsmui.ot_dyntopo_stages_change", text="POLISH")
+        props.valor = "HIGH"
+
+    # VALUES FOR STAGES
+        self.layout.label(text="Values:") # Valores para el 'Stage' Activo
+
+    # DETAIL METHODS
+        col = layout.column()
+        row = col.row(align=True)
+        row.label(text="Detail Method:") # Stages - Para niveles de Detalle especificados abajo
+        if detailMethod == 'CONSTANT':
+            icon = icon2
+        elif detailMethod == 'BRUSH':
+            icon = icon3
+        else: # RELATIVE OR MANUAL
+            icon = icon1
+        row.label(text=detailMethod, icon_value=icon.icon_id)
+        #col = row.column().split()
+        #row = col.row(align=True)
+        col = layout.column()
+        row = col.row(align=True)
+        row.operator("nsmui.ht_toolheader_dyntopo_relative", text="Relative", icon_value=icon1.icon_id)
+        row.operator("nsmui.ht_toolheader_dyntopo_constant", text="Constant", icon_value=icon2.icon_id)
+        row.operator("nsmui.ht_toolheader_dyntopo_brush", text="Brush", icon_value=icon3.icon_id)
+
+    # AÑADE TEXTO INFORMATIVO JUNTO AL DROPDOWN (FUERA)
+    #def draw_header(self, context):
+    #    row = self.layout.column(align=True)
+    #    row.label(text="DYN")
+
+class NSMUI_OT_dyntopo_stages_change(Operator):
+    bl_idname = "nsmui.ot_dyntopo_stages_change"
+    bl_label = "CosasCosasCosas"
+    valor: bpy.props.StringProperty(name="Valor", default="NONE")
+    #valor = "NONE"
+    def execute(self, valor):
+        dynStage = valor
+        return {'FINISHED'}
+
+# --------------------------------------------- #
+# --------------------------------------------- #
 # --------------------------------------------- #
 
 #   FACTORY REGISTRATION OF CLASSES 
@@ -568,11 +673,15 @@ def register():
         pass
 
     # Register Classes
-    register_class(VIEW3D_HT_tool_head)      # OVERRITE CLASS
+    register_class(VIEW3D_HT_tool_head)      # OVERRITE CLASS 
     register_class(NSMUI_HT_toolHeader_sculpt) # TOOL HEADER - SCULPT MODE
     register_class(NSMUI_HT_header_sculpt)     # HEADER      - SCULPT MODE
     register_class(NSMUI_HT_toolHeader_paint)  # TOOL HEADER - PAINT MODE
     register_class(NSMUI_HT_header_paint)      # HEADER      - PAINT MODE
+    register_class(NSMUI_OT_dyntopo_stages_change)
+    #register_class(NSMUI_OT_dyntopo_stages_mid)
+    #register_class(NSMUI_OT_dyntopo_stages_high)
+    register_class(NSMUI_PT_dyntopo_stages)
 
     # AutoLoad Exterior Classes
     auto_load.register()
@@ -582,6 +691,9 @@ def register():
     for key, f in icons.items():
         pcoll.load(key, path.join(icon_dir, f), 'IMAGE')
     preview_collections["main"] = pcoll
+
+    # PROPERTIES
+
     
     # REGISTER ORIGINAL TOOL HEADER # changed - antes al final del código de la clase del tool header
     try:
@@ -599,6 +711,10 @@ def unregister():
     unregister_class(NSMUI_HT_header_sculpt)     # HEADER      - SCULPT MODE
     unregister_class(NSMUI_HT_toolHeader_paint)  # TOOL HEADER - PAINT MODE
     unregister_class(NSMUI_HT_header_paint)      # HEADER      - PAINT MODE
+    unregister_class(NSMUI_OT_dyntopo_stages_change)
+    #unregister_class(NSMUI_OT_dyntopo_stages_mid)
+    #unregister_class(NSMUI_OT_dyntopo_stages_high)
+    unregister_class(NSMUI_PT_dyntopo_stages)
 
     # AutoLoad Exterior Classes
     auto_load.unregister()
@@ -607,6 +723,9 @@ def unregister():
     for pcoll in preview_collections.values():
         bpy.utils.previews.remove(pcoll)
     preview_collections.clear()
+
+    # PROPERTIES
+    #bpy.props.RemoveProperty(NSMUI_OT_dyntopo_stages_change, "valor")
 
     print("Unregistered New Sculpt Mode UI")
 

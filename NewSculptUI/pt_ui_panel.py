@@ -8,6 +8,7 @@ class NSMUI_PT_panel(Panel):
     #bl_category = "Test Addon"
     bl_space_type = "VIEW_3D"
     bl_region_type = "UI"
+    #bl_context = "OBJECT"
 
     def draw(self, context):
 
@@ -17,11 +18,10 @@ class NSMUI_PT_panel(Panel):
             row.operator('nsmui.ot_panel_setup', text="Sculpt-Mode Setup") # id del operador, texto para el botón
 
         
-        row = self.layout.column(align=True)
+        #row = self.layout.column(align=True)
         #row = layout.row(align=True)
 
         # AÚN POR FIXEAR
         #row.operator('nsmui.ot_brush_remove', text="Activate Remove Brush Button")
         #row.operator('nsmui.ot_brush_reset', text="Activate Reset Brush Button")
 
-        

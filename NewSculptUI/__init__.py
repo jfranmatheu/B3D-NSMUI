@@ -607,9 +607,6 @@ class NSMUI_PT_dyntopo_stages(Panel):
         props = row.operator("nsmui.ot_dyntopo_stages_change", text="POLISH")
         props.valor = "HIGH"
 
-    # VALUES FOR STAGES
-        self.layout.label(text="Values :") # Valores para el 'Stage' Activo
-
     # DETAIL METHODS
         col = layout.column()
         row = col.row(align=True)
@@ -625,6 +622,18 @@ class NSMUI_PT_dyntopo_stages(Panel):
         row.operator("nsmui.ht_toolheader_dyntopo_relative", text="Relative", icon_value=icon1.icon_id)
         row.operator("nsmui.ht_toolheader_dyntopo_constant", text="Constant", icon_value=icon2.icon_id)
         row.operator("nsmui.ht_toolheader_dyntopo_brush", text="Brush", icon_value=icon3.icon_id)
+
+    # VALUES FOR STAGES
+        self.layout.label(text="Values :") # Valores para el 'Stage' Activo
+        row = self.layout.row(align=True)
+        if dynStage == "HIGH":
+            row.label(text="1 :  " + dynHigh[0] + "    2 :  " + dynHigh[1] + "    3 :  " + dynHigh[2])
+        elif dynStage == "MID":
+            row.label(text="1 :  " + dynMid[0] + "    2 :  " + dynMid[1] + "    3 :  " + dynMid[2])
+        elif dynStage == "LOW":
+            row.label(text="1 :  " + dynLow[0] + "    2 :  " + dynLow[1] + "    3 :  " + dynLow[2])
+        else:
+            row.label(text="NONE! Select a Stage!")
 
     # AÑADE TEXTO INFORMATIVO JUNTO AL DROPDOWN (FUERA)
     #def draw_header(self, context):

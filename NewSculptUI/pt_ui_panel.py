@@ -8,7 +8,7 @@ class NSMUI_PT_panel(Panel):
     #bl_category = "Test Addon"
     bl_space_type = "VIEW_3D"
     bl_region_type = "UI"
-    #bl_context = "OBJECT"
+    #bl_context = "SCULPT"
 
     def draw(self, context):
 

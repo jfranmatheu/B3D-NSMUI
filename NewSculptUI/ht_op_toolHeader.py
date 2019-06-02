@@ -50,129 +50,90 @@ class NSMUI_OT_toolHeader_multires_subdivide(bpy.types.Operator):
         bpy.ops.object.multires_subdivide(modifier="Multires")
         return {'FINISHED'}
 
-class NSMUI_OT_toolHeader_dyntopo_1(bpy.types.Operator):
-    bl_idname = "nsmui.ht_toolheader_dyntopo_1"
+class NSMUI_OT_toolHeader_dyntopo_lvl_1(bpy.types.Operator):
+    bl_idname = "nsmui.ht_toolheader_dyntopo_lvl_1"
     bl_label = "New Sculpt-Mode UI"
-    bl_description = "1 : Detail Size for Dynamic Topology"
+    bl_description = "Lvl 1 : Detail Size for Dynamic Topology"
     def execute(self, context):
         if bpy.context.scene.tool_settings.sculpt.detail_type_method == 'CONSTANT':
-            bpy.context.scene.tool_settings.sculpt.constant_detail_resolution = 1
+            bpy.context.scene.tool_settings.sculpt.constant_detail_resolution = 125
         elif bpy.context.scene.tool_settings.sculpt.detail_type_method == 'BRUSH':
-            bpy.context.scene.tool_settings.sculpt.detail_percent = 1
+            bpy.context.scene.tool_settings.sculpt.detail_percent = 5
         else: # bpy.context.scene.tool_settings.sculpt.detail_type_method = 'MANUAL' // 'RELATIVE'
             bpy.context.scene.tool_settings.sculpt.detail_size = 1
         return {'FINISHED'}
 
-class NSMUI_OT_toolHeader_dyntopo_2(bpy.types.Operator):
-    bl_idname = "nsmui.ht_toolheader_dyntopo_2"
+class NSMUI_OT_toolHeader_dyntopo_lvl_2(bpy.types.Operator):
+    bl_idname = "nsmui.ht_toolheader_dyntopo_lvl_2"
     bl_label = "New Sculpt-Mode UI"
-    bl_description = "2 : Detail Size for Dynamic Topology"
+    bl_description = "Lvl 2 : Detail Size for Dynamic Topology"
     def execute(self, context):
         if(bpy.context.scene.tool_settings.sculpt.detail_type_method == 'CONSTANT'):
-            bpy.context.scene.tool_settings.sculpt.constant_detail_resolution = 2
+            bpy.context.scene.tool_settings.sculpt.constant_detail_resolution = 100
         elif(bpy.context.scene.tool_settings.sculpt.detail_type_method == 'BRUSH'):
-            bpy.context.scene.tool_settings.sculpt.detail_percent = 2
+            bpy.context.scene.tool_settings.sculpt.detail_percent = 10
         else: # bpy.context.scene.tool_settings.sculpt.detail_type_method = 'MANUAL' // 'RELATIVE'
             bpy.context.scene.tool_settings.sculpt.detail_size = 2
         return {'FINISHED'}
 
-class NSMUI_OT_toolHeader_dyntopo_4(bpy.types.Operator):
-    bl_idname = "nsmui.ht_toolheader_dyntopo_4"
+class NSMUI_OT_toolHeader_dyntopo_lvl_3(bpy.types.Operator):
+    bl_idname = "nsmui.ht_toolheader_dyntopo_lvl_3"
     bl_label = "New Sculpt-Mode UI"
-    bl_description = "4 : Detail Size for Dynamic Topology"
+    bl_description = "Lvl 3 : Detail Size for Dynamic Topology"
     def execute(self, context):
         if(bpy.context.scene.tool_settings.sculpt.detail_type_method == 'CONSTANT'):
-            bpy.context.scene.tool_settings.sculpt.constant_detail_resolution = 4
+            bpy.context.scene.tool_settings.sculpt.constant_detail_resolution = 80
         elif(bpy.context.scene.tool_settings.sculpt.detail_type_method == 'BRUSH'):
-            bpy.context.scene.tool_settings.sculpt.detail_percent = 4
+            bpy.context.scene.tool_settings.sculpt.detail_percent = 16
         else: # bpy.context.scene.tool_settings.sculpt.detail_type_method = 'MANUAL' // 'RELATIVE'
             bpy.context.scene.tool_settings.sculpt.detail_size = 4
         return {'FINISHED'}
 
-class NSMUI_OT_toolHeader_dyntopo_6(bpy.types.Operator):
-    bl_idname = "nsmui.ht_toolheader_dyntopo_6"
+class NSMUI_OT_toolHeader_dyntopo_lvl_4(bpy.types.Operator):
+    bl_idname = "nsmui.ht_toolheader_dyntopo_lvl_4"
     bl_label = "New Sculpt-Mode UI"
-    bl_description = "6 : Detail Size for Dynamic Topology"
+    bl_description = "Lvl 4 : Detail Size for Dynamic Topology"
     def execute(self, context):
         if(bpy.context.scene.tool_settings.sculpt.detail_type_method == 'CONSTANT'):
-            bpy.context.scene.tool_settings.sculpt.constant_detail_resolution = 6
+            bpy.context.scene.tool_settings.sculpt.constant_detail_resolution = 65
         elif(bpy.context.scene.tool_settings.sculpt.detail_type_method == 'BRUSH'):
-            bpy.context.scene.tool_settings.sculpt.detail_percent = 6
+            bpy.context.scene.tool_settings.sculpt.detail_percent = 24
         else: # bpy.context.scene.tool_settings.sculpt.detail_type_method = 'MANUAL' // 'RELATIVE'
             bpy.context.scene.tool_settings.sculpt.detail_size = 6
         return {'FINISHED'}
 
-class NSMUI_OT_toolHeader_dyntopo_8(bpy.types.Operator):
-    bl_idname = "nsmui.ht_toolheader_dyntopo_8"
+class NSMUI_OT_toolHeader_dyntopo_lvl_5(bpy.types.Operator):
+    bl_idname = "nsmui.ht_toolheader_dyntopo_lvl_5"
     bl_label = "New Sculpt-Mode UI"
-    bl_description = "8 : Detail Size for Dynamic Topology"
+    bl_description = "Lvl 5 : Detail Size for Dynamic Topology"
     def execute(self, context):
         if(bpy.context.scene.tool_settings.sculpt.detail_type_method == 'CONSTANT'):
-            bpy.context.scene.tool_settings.sculpt.constant_detail_resolution = 8
+            bpy.context.scene.tool_settings.sculpt.constant_detail_resolution = 50
         elif(bpy.context.scene.tool_settings.sculpt.detail_type_method == 'BRUSH'):
-            bpy.context.scene.tool_settings.sculpt.detail_percent = 8
+            bpy.context.scene.tool_settings.sculpt.detail_percent = 32
         else: # bpy.context.scene.tool_settings.sculpt.detail_type_method = 'MANUAL' // 'RELATIVE'
-            bpy.context.scene.tool_settings.sculpt.detail_size = 8
+            bpy.context.scene.tool_settings.sculpt.detail_size = 9
         return {'FINISHED'}
 
-class NSMUI_OT_toolHeader_dyntopo_10(bpy.types.Operator):
-    bl_idname = "nsmui.ht_toolheader_dyntopo_10"
+class NSMUI_OT_toolHeader_dyntopo_lvl_6(bpy.types.Operator):
+    bl_idname = "nsmui.ht_toolheader_dyntopo_lvl_6"
     bl_label = "New Sculpt-Mode UI"
-    bl_description = "10 : Detail Size for Dynamic Topology"
+    bl_description = "Lvl 6 : Detail Size for Dynamic Topology"
     def execute(self, context):
         if(bpy.context.scene.tool_settings.sculpt.detail_type_method == 'CONSTANT'):
-            bpy.context.scene.tool_settings.sculpt.constant_detail_resolution = 10
+            bpy.context.scene.tool_settings.sculpt.constant_detail_resolution = 35
         elif(bpy.context.scene.tool_settings.sculpt.detail_type_method == 'BRUSH'):
-            bpy.context.scene.tool_settings.sculpt.detail_percent = 10
-        else: # bpy.context.scene.tool_settings.sculpt.detail_type_method = 'MANUAL' // 'RELATIVE'
-            bpy.context.scene.tool_settings.sculpt.detail_size = 10
-        return {'FINISHED'}
-
-class NSMUI_OT_toolHeader_dyntopo_12(bpy.types.Operator):
-    bl_idname = "nsmui.ht_toolheader_dyntopo_12"
-    bl_label = "New Sculpt-Mode UI"
-    bl_description = "12 : Detail Size for Dynamic Topology"
-    def execute(self, context):
-        if(bpy.context.scene.tool_settings.sculpt.detail_type_method == 'CONSTANT'):
-            bpy.context.scene.tool_settings.sculpt.constant_detail_resolution = 12
-        elif(bpy.context.scene.tool_settings.sculpt.detail_type_method == 'BRUSH'):
-            bpy.context.scene.tool_settings.sculpt.detail_percent = 12
+            bpy.context.scene.tool_settings.sculpt.detail_percent = 48
         else: # bpy.context.scene.tool_settings.sculpt.detail_type_method = 'MANUAL' // 'RELATIVE'
             bpy.context.scene.tool_settings.sculpt.detail_size = 12
-        return {'FINISHED'}
-
-class NSMUI_OT_toolHeader_dyntopo_16(bpy.types.Operator):
-    bl_idname = "nsmui.ht_toolheader_dyntopo_16"
-    bl_label = "New Sculpt-Mode UI"
-    bl_description = "16 : Detail Size for Dynamic Topology"
-    def execute(self, context):
-        if(bpy.context.scene.tool_settings.sculpt.detail_type_method == 'CONSTANT'):
-            bpy.context.scene.tool_settings.sculpt.constant_detail_resolution = 16
-        elif(bpy.context.scene.tool_settings.sculpt.detail_type_method == 'BRUSH'):
-            bpy.context.scene.tool_settings.sculpt.detail_percent = 16
-        else: # bpy.context.scene.tool_settings.sculpt.detail_type_method = 'MANUAL' // 'RELATIVE'
-            bpy.context.scene.tool_settings.sculpt.detail_size = 16
-        return {'FINISHED'}
-
-class NSMUI_OT_toolHeader_dyntopo_20(bpy.types.Operator):
-    bl_idname = "nsmui.ht_toolheader_dyntopo_20"
-    bl_label = "New Sculpt-Mode UI"
-    bl_description = "20 : Detail Size for Dynamic Topology"
-    def execute(self, context):
-        if(bpy.context.scene.tool_settings.sculpt.detail_type_method == 'CONSTANT'):
-            bpy.context.scene.tool_settings.sculpt.constant_detail_resolution = 20
-        elif(bpy.context.scene.tool_settings.sculpt.detail_type_method == 'BRUSH'):
-            bpy.context.scene.tool_settings.sculpt.detail_percent = 20
-        else: # bpy.context.scene.tool_settings.sculpt.detail_type_method = 'MANUAL' // 'RELATIVE'
-            bpy.context.scene.tool_settings.sculpt.detail_size = 20
         return {'FINISHED'}
 
 class NSMUI_OT_toolHeader_dyntopo_any(bpy.types.Operator):
     bl_idname = "nsmui.ht_toolheader_dyntopo_any"
     bl_label = "New Sculpt-Mode UI"
     bl_description = "Selected Detail Size for Dynamic Topology"
-    value: bpy.props.FloatProperty(name="value", default=5)
-    def execute(self, context):
+    value: bpy.props.IntProperty(name="value", default=5)
+    def execute(self, value):
         #mode = "MID"
         n = self.value
         if(n!=0):
@@ -182,33 +143,6 @@ class NSMUI_OT_toolHeader_dyntopo_any(bpy.types.Operator):
                 bpy.context.scene.tool_settings.sculpt.detail_percent = n
             else: # bpy.context.scene.tool_settings.sculpt.detail_type_method = 'MANUAL' // 'RELATIVE'
                 bpy.context.scene.tool_settings.sculpt.detail_size = n
-        return {'FINISHED'}
-
-class NSMUI_OT_toolHeader_dyntopo_low_detail(bpy.types.Operator):
-    bl_idname = "nsmui.ht_toolheader_dyntopo_low_detail"
-    bl_label = "New Sculpt-Mode UI"
-    bl_description = "LOW Detail Size for Dynamic Topology"
-    def execute(self, context):
-        from . import dyntopoStage
-        dyntopoStage = "LOW"
-        return {'FINISHED'}
-
-class NSMUI_OT_toolHeader_dyntopo_mid_detail(bpy.types.Operator):
-    bl_idname = "nsmui.ht_toolheader_dyntopo_mid_detail"
-    bl_label = "New Sculpt-Mode UI"
-    bl_description = "MID Detail Size for Dynamic Topology"
-    def execute(self, context):
-        from . import dyntopoStage
-        dyntopoStage = "MID"
-        return {'FINISHED'}
-
-class NSMUI_OT_toolHeader_dyntopo_high_detail(bpy.types.Operator):
-    bl_idname = "nsmui.ht_toolheader_dyntopo_high_detail"
-    bl_label = "New Sculpt-Mode UI"
-    bl_description = "HIGH Detail Size for Dynamic Topology"
-    def execute(self, context):
-        from . import dyntopoStage
-        dyntopoStage = "HIGH"
         return {'FINISHED'}
 
 class NSMUI_OT_toolHeader_dyntopo_relative(bpy.types.Operator):

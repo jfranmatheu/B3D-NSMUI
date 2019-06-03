@@ -49,6 +49,11 @@ Differences between buttons 2/5 and 3/7:
 DYNTOPO + QUICK 'DETAIL SIZE' SELECTOR
 ---
 ![alt text](http://3.bp.blogspot.com/-raL4J5PDAkA/XOga2Jow-JI/AAAAAAAAAfs/YwU5BPtXqUYUWxD-xDA0Nnz9_GRXuVrNACK4BGAYYCw/s320/NewSMUI_dyntopo.png "Dyntopo")
+---
+
+DYNTOPO NEW "STAGE" CONCEPT + NEW MENU
+---
+![alt text](http://4.bp.blogspot.com/-mQMJIIRN2kk/XPVNZYkHfuI/AAAAAAAAAgo/XkdWWAI_m7IL4uU2rLf3_ioZKbGKsDx_wCK4BGAYYCw/s400/dyntopo_newPanel.png "Dyntopo Stages")
 
 ---
 QUICK SYMMETRY
@@ -90,8 +95,8 @@ FUTUROS CAMBIOS E IDEAS LOCAS
 - [ ] Cuando importas una imagen para una textura, la textura cambiará el nombre al de la imagen de forma automática, esto (y en combinación con las 2 anteriores) ayudará a no perder el tiempo renombrando innecesariamente.
 
 # Para la zona de dyntopo:
-- [ ] Los valores predefinidos para el 'Detail Size' de Dyntopo, serán colapsables o se podrán ocultar con algún ajuste (aún por decidir)
-- [ ] Los valores predefinidos y el número de valores... serán personalizables!
+- [x] Nuevo concepto de 'Stages' donde poder dividir el proceso de esculpido según su workflow adecuado, Nuevo panel/menú dropdown para Dyntopo con esta nueva característica y valores predefinidos para cada 'stage' y para cada modo de detalle usado (relative, constant, brush), además del modo por defecto, es decir, sin usar stages, en el cual contaremos con 6 niveles de detalle predefinidos.
+- [ ] Los valores predefinidos y el número de valores... serán personalizables! (modo edición para la edición de los valores)
 - [ ] Mantener dyntopo activado al cambiar de modo
 
 # OTROS

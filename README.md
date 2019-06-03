@@ -48,7 +48,12 @@ Differences between buttons 2/5 and 3/7:
 
 DYNTOPO + QUICK 'DETAIL SIZE' SELECTOR
 ---
-![alt text](http://3.bp.blogspot.com/-raL4J5PDAkA/XOga2Jow-JI/AAAAAAAAAfs/YwU5BPtXqUYUWxD-xDA0Nnz9_GRXuVrNACK4BGAYYCw/s320/NewSMUI_dyntopo.png "Dyntopo")
+![alt text](http://2.bp.blogspot.com/-r4btsP6QOfo/XPVOYB5afkI/AAAAAAAAAg0/gny6nxJN81khNhLsV3Ro8F_xavx3e1ykACK4BGAYYCw/s400/dyntopo.png "Dyntopo")
+---
+
+DYNTOPO NEW "STAGE" CONCEPT + NEW MENU
+---
+![alt text](http://4.bp.blogspot.com/-mQMJIIRN2kk/XPVNZYkHfuI/AAAAAAAAAgo/XkdWWAI_m7IL4uU2rLf3_ioZKbGKsDx_wCK4BGAYYCw/s400/dyntopo_newPanel.png "Dyntopo Stages")
 
 ---
 QUICK SYMMETRY
@@ -78,21 +83,23 @@ BRUSH PROPERTIES SLIDERS
 ---
 CUSTOM ICONS
 ---
-![alt text](http://2.bp.blogspot.com/-rqZMYyR7aIs/XOgbHvAx8gI/AAAAAAAAAgE/2drTDY7g7KwouO5zFhbrM6-ArXOuBJ74ACK4BGAYYCw/s400/NewSMUI_icons.png "Icons")
+![alt text](http://4.bp.blogspot.com/-QOTH4wgMenI/XPVO9HooF-I/AAAAAAAAAg8/GNsISB9Rlpkz61XbmH-p3lKqIdm4EVaugCK4BGAYYCw/s640/icons.png "Icons")
 
 ---
 
 FUTUROS CAMBIOS E IDEAS LOCAS
 ---
-# Para la zona de texturas:
+# Texturas etc:
+- [x] Carga, creación y selección rápida de imágenes y texturas para el esculpido y para aplicar directamente sobre el pincel activo.
 - [ ] Nuevo operador para si abres una imagen en una brocha sin textura asignada, que automáticamente cree una textura y asigne esa imagen a la textura (Sólo 1 paso!!!).
 - [ ] Poder seleccionar **varias imágenes**, importarlas de golpe y que automáticamente se creen texturas con esas imágenes.
 - [ ] Cuando importas una imagen para una textura, la textura cambiará el nombre al de la imagen de forma automática, esto (y en combinación con las 2 anteriores) ayudará a no perder el tiempo renombrando innecesariamente.
 
-# Para la zona de dyntopo:
-- [ ] Los valores predefinidos para el 'Detail Size' de Dyntopo, serán colapsables o se podrán ocultar con algún ajuste (aún por decidir)
-- [ ] Los valores predefinidos y el número de valores... serán personalizables!
-- [ ] Mantener dyntopo activado al cambiar de modo
+# Dyntopo etc:
+- [x] Soporte para multires si se detecta un modificador 'Multiresolution'.
+- [x] Nuevo concepto de 'Stages' donde poder dividir el proceso de esculpido según su workflow adecuado, Nuevo panel/menú dropdown para Dyntopo con esta nueva característica y valores predefinidos para cada 'stage' y para cada modo de detalle usado (relative, constant, brush), además del modo por defecto, es decir, sin usar stages, en el cual contaremos con 6 niveles de detalle predefinidos.
+- [ ] Los valores predefinidos y el número de valores... serán personalizables! (modo edición para la edición de los valores).
+- [ ] Mantener dyntopo activado al cambiar de modo.
 
 # OTROS
 - [ ] Filtros para las texturas.

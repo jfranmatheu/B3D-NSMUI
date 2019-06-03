@@ -48,7 +48,7 @@ Differences between buttons 2/5 and 3/7:
 
 DYNTOPO + QUICK 'DETAIL SIZE' SELECTOR
 ---
-![alt text](http://3.bp.blogspot.com/-raL4J5PDAkA/XOga2Jow-JI/AAAAAAAAAfs/YwU5BPtXqUYUWxD-xDA0Nnz9_GRXuVrNACK4BGAYYCw/s320/NewSMUI_dyntopo.png "Dyntopo")
+![alt text](http://2.bp.blogspot.com/-r4btsP6QOfo/XPVOYB5afkI/AAAAAAAAAg0/gny6nxJN81khNhLsV3Ro8F_xavx3e1ykACK4BGAYYCw/s400/dyntopo.png "Dyntopo")
 ---
 
 DYNTOPO NEW "STAGE" CONCEPT + NEW MENU

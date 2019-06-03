@@ -83,7 +83,7 @@ BRUSH PROPERTIES SLIDERS
 ---
 CUSTOM ICONS
 ---
-![alt text](http://2.bp.blogspot.com/-rqZMYyR7aIs/XOgbHvAx8gI/AAAAAAAAAgE/2drTDY7g7KwouO5zFhbrM6-ArXOuBJ74ACK4BGAYYCw/s400/NewSMUI_icons.png "Icons")
+![alt text](http://4.bp.blogspot.com/-QOTH4wgMenI/XPVO9HooF-I/AAAAAAAAAg8/GNsISB9Rlpkz61XbmH-p3lKqIdm4EVaugCK4BGAYYCw/s640/icons.png "Icons")
 
 ---
 

@@ -89,15 +89,17 @@ CUSTOM ICONS
 
 FUTUROS CAMBIOS E IDEAS LOCAS
 ---
-# Para la zona de texturas:
+# Texturas etc:
+- [x] Carga, creación y selección rápida de imágenes y texturas para el esculpido y para aplicar directamente sobre el pincel activo.
 - [ ] Nuevo operador para si abres una imagen en una brocha sin textura asignada, que automáticamente cree una textura y asigne esa imagen a la textura (Sólo 1 paso!!!).
 - [ ] Poder seleccionar **varias imágenes**, importarlas de golpe y que automáticamente se creen texturas con esas imágenes.
 - [ ] Cuando importas una imagen para una textura, la textura cambiará el nombre al de la imagen de forma automática, esto (y en combinación con las 2 anteriores) ayudará a no perder el tiempo renombrando innecesariamente.
 
-# Para la zona de dyntopo:
+# Dyntopo etc:
+- [x] Soporte para multires si se detecta un modificador 'Multiresolution'.
 - [x] Nuevo concepto de 'Stages' donde poder dividir el proceso de esculpido según su workflow adecuado, Nuevo panel/menú dropdown para Dyntopo con esta nueva característica y valores predefinidos para cada 'stage' y para cada modo de detalle usado (relative, constant, brush), además del modo por defecto, es decir, sin usar stages, en el cual contaremos con 6 niveles de detalle predefinidos.
-- [ ] Los valores predefinidos y el número de valores... serán personalizables! (modo edición para la edición de los valores)
-- [ ] Mantener dyntopo activado al cambiar de modo
+- [ ] Los valores predefinidos y el número de valores... serán personalizables! (modo edición para la edición de los valores).
+- [ ] Mantener dyntopo activado al cambiar de modo.
 
 # OTROS
 - [ ] Filtros para las texturas.

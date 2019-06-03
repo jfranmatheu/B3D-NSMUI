@@ -17,7 +17,7 @@ bl_info = {
     "author" : "JFranMatheu",
     "description" : "New UI for Sculpt Mode",
     "blender" : (2, 80, 0),
-    "version" : (0, 1, 0),
+    "version" : (0, 1, 1),
     "location" : "View3D",
     "warning" : "This version is still in development.",
     "category" : "Generic"

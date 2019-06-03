@@ -129,6 +129,7 @@ icons = {"mirror_icon" : "mirror_icon.png",
          "dyntopoConstant_icon"  : "dyntopoConstant_icon.png",
          "dyntopoRelative_icon"  : "dyntopoRelative_icon.png",
          "dyntopoBrush_icon"  : "dyntopoBrush_icon.png",
+         "dyntopoManual_icon"  : "dyntopoManual_icon.png",
          "separator_icon" : "separator_icon.png",
          "arrowUp_icon"  : "arrowUp_icon.png",
          "arrowDown_icon" : "arrowDown_icon.png",
@@ -136,27 +137,6 @@ icons = {"mirror_icon" : "mirror_icon.png",
          "maskInvert_icon"  : "maskInvert_icon.png",
          "maskClear_icon"  : "maskClear_icon.png",
             }
-
-# Panel
-#from . ht_ui_header import NSMUI_HT_header # Now ON __init__.py
-from . ht_ot_header import NSMUI_OT_header_tool_toggle, NSMUI_OT_header_tool_2
-# Tool Header
-# from . ht_ui_toolHeader import NSMUI_HT_toolHeader # Now ON __init__.py
-from . ht_op_toolHeader import NSMUI_OT_toolHeader_symmetry_all
-# Header
-from . pt_ui_panel import NSMUI_PT_panel
-from . pt_ot_panel import NSMUI_OT_panel_setup
-
-# CLASSES (IMPORTED)
-classes = (
-
-    NSMUI_OT_header_tool_toggle, 
-    NSMUI_OT_header_tool_2,
-
-    NSMUI_OT_toolHeader_symmetry_all, 
-    
-    NSMUI_PT_panel,
-    NSMUI_OT_panel_setup)
 
 # PATHS
 currentDirectory = dirname(abspath(__file__))
@@ -478,7 +458,7 @@ class NSMUI_HT_toolHeader_sculpt(Header, UnifiedPaintPanel):
                     row.operator("nsmui.ht_toolheader_dyntopo_lvl_2", text="5")
                     row.operator("nsmui.ht_toolheader_dyntopo_lvl_1", text="6")
                     #row.operator("nsmui.ht_toolheader_dyntopo_12", text="12")
-                else:
+                elif(context.sculpt_object.use_dynamic_topology_sculpting == True):
                     n = 0 # CHIAVATO PARA EL STAGE
                     dynMethod_Active = bpy.context.scene.tool_settings.sculpt.detail_type_method # CARGAR VALOR DEL METODO ACTIVO
                     iconLow = pcoll["dyntopoLowDetail_icon"]
@@ -502,6 +482,9 @@ class NSMUI_HT_toolHeader_sculpt(Header, UnifiedPaintPanel):
                     elif(dynMethod_Active == "BRUSH"):
                         dynValues_ui = dyntopoStages[n].brush_Values
                         icon = pcoll["dyntopoBrush_icon"]
+                    elif(dynMethod_Active == "MANUAL"):
+                        dynValues_ui = dyntopoStages[n].relative_Values
+                        icon = pcoll["dyntopoManual_icon"]
                 # PANEL DESPLEGABLE
                     sub.popover(panel="NSMUI_PT_dyntopo_stages", text="", icon_value=icon.icon_id)
                     col = self.layout.column()
@@ -667,77 +650,84 @@ class NSMUI_PT_dyntopo_stages(Panel):
     bl_space_type = "VIEW_3D"
     bl_region_type = "UI"
     bl_context = ".paint_common"
+    bl_category = 'Sculpt'
+    bl_label = "Dyntopo Stages"
+    bl_options = {'DEFAULT_CLOSED'}
     def draw(self, context):
         dynStage_Active = bpy.types.Scene.dynStage_Active
-        pcoll = preview_collections["main"]
-        method = bpy.context.scene.tool_settings.sculpt.detail_type_method
-        icon1 = pcoll["dyntopoRelative_icon"]
-        icon2 = pcoll["dyntopoConstant_icon"]
-        icon3 = pcoll["dyntopoBrush_icon"]
-        icon_H = pcoll["dyntopoHighDetail_icon"]
-        icon_M = pcoll["dyntopoMidDetail_icon"]
-        icon_L = pcoll["dyntopoLowDetail_icon"]
+        if(context.sculpt_object.use_dynamic_topology_sculpting == True):
+            pcoll = preview_collections["main"]
+            method = bpy.context.scene.tool_settings.sculpt.detail_type_method
+            icon1 = pcoll["dyntopoRelative_icon"]
+            icon2 = pcoll["dyntopoConstant_icon"]
+            icon3 = pcoll["dyntopoBrush_icon"]
+            icon4 = pcoll["dyntopoManual_icon"]
+            icon_H = pcoll["dyntopoHighDetail_icon"]
+            icon_M = pcoll["dyntopoMidDetail_icon"]
+            icon_L = pcoll["dyntopoLowDetail_icon"]
 
-    # STAGES - SKETCH - DETAIL - POLISH
-        layout = self.layout
-        row = layout.row(align=True)
-        #s_dynStage = dynStage_toString(dynStage_Active)
-        if dynStage_Active != 0:
-            row.label(text="Stage :   " + dynStage_toString(dynStage_Active)) # Stages - Para niveles de Detalle especificados abajo
-            row.operator("nsmui.ot_dyntopo_stages_change", text="", icon='LOOP_BACK').valor = 0 # EXIT STAGE, MAIN MODE
-        else:
-            row.label(text="Stage :   NONE")
-        col = layout.column()
-        row = col.row(align=True)
-        row.operator("nsmui.ot_dyntopo_stages_change", text="SKETCH").valor = 1
-        #props.valor: "LOW"
-        row.operator("nsmui.ot_dyntopo_stages_change", text="DETAILS").valor = 2
-        #props.valor = "MID"
-        props = row.operator("nsmui.ot_dyntopo_stages_change", text="POLISH")
-        props.valor = 3
-
-    # DETAIL METHODS
-        col = layout.column()
-        row = col.row(align=True)
-        if method == 'CONSTANT':
-            icon = icon2
-        elif method == 'BRUSH':
-            icon = icon3
-        else: # RELATIVE OR MANUAL
-            icon = icon1
-        row.label(icon_value=icon.icon_id, text="Detail Method :   " + method) # Stages - Para niveles de Detalle especificados abajo
-        col = layout.column()
-        row = col.row(align=True)
-        row.operator("nsmui.ht_toolheader_dyntopo_relative", text="Relative", icon_value=icon1.icon_id)
-        row.operator("nsmui.ht_toolheader_dyntopo_constant", text="Constant", icon_value=icon2.icon_id)
-        row.operator("nsmui.ht_toolheader_dyntopo_brush", text="Brush", icon_value=icon3.icon_id)
-
-        if dynStage_Active != 0:
-        # LOOK FOR ACTIVE STAGE
-            n = 0
-            if(dynStage_Active == 1):
-                n = 2
-            elif(dynStage_Active == 2):
-                n = 1
-            elif(dynStage_Active == 3):
-                n = 0
-        # VALUES FOR STAGES
-            self.layout.label(text="Values :") # Valores para el 'Stage' Activo
-            row = self.layout.row(align=True)
-            if method == 'CONSTANT':
-                row.label(icon_value=icon_L.icon_id, text=str(dyntopoStages[n].constant_Values[0]))
-                row.label(icon_value=icon_M.icon_id, text=str(dyntopoStages[n].constant_Values[1]))
-                row.label(icon_value=icon_H.icon_id, text=str(dyntopoStages[n].constant_Values[2]))
-            elif method == 'BRUSH':
-                row.label(icon_value=icon_L.icon_id, text=str(dyntopoStages[n].brush_Values[0]))
-                row.label(icon_value=icon_M.icon_id, text=str(dyntopoStages[n].brush_Values[1]))
-                row.label(icon_value=icon_H.icon_id, text=str(dyntopoStages[n].brush_Values[2]))
-            elif method == 'RELATIVE':
-                row.label(icon_value=icon_L.icon_id, text=str(dyntopoStages[n].relative_Values[0]))
-                row.label(icon_value=icon_M.icon_id, text=str(dyntopoStages[n].relative_Values[1]))
-                row.label(icon_value=icon_H.icon_id, text=str(dyntopoStages[n].relative_Values[2]))
+        # STAGES - SKETCH - DETAIL - POLISH
+            layout = self.layout
+            row = layout.row(align=True)
+            #s_dynStage = dynStage_toString(dynStage_Active)
+            if dynStage_Active != 0:
+                row.label(text="Stage :   " + dynStage_toString(dynStage_Active)) # Stages - Para niveles de Detalle especificados abajo
+                row.operator("nsmui.ot_dyntopo_stages_change", text="", icon='LOOP_BACK').valor = 0 # EXIT STAGE, MAIN MODE
             else:
-                row.label(text="NONE! Select a Stage!")
+                row.label(text="Stage :   NONE")
+            col = layout.column()
+            row = col.row(align=True)
+            row.operator("nsmui.ot_dyntopo_stages_change", text="SKETCH").valor = 1
+            #props.valor: "LOW"
+            row.operator("nsmui.ot_dyntopo_stages_change", text="DETAILS").valor = 2
+            #props.valor = "MID"
+            props = row.operator("nsmui.ot_dyntopo_stages_change", text="POLISH")
+            props.valor = 3
+
+        # DETAIL METHODS
+            col = layout.column()
+            row = col.row(align=True)
+            if method == 'CONSTANT':
+                icon = icon2
+            elif method == 'BRUSH':
+                icon = icon3
+            elif method == 'RELATIVE': # RELATIVE OR MANUAL
+                icon = icon1
+            elif method == 'MANUAL':
+                icon = icon4
+            row.label(icon_value=icon.icon_id, text="Detailing Method :   " + method) # Stages - Para niveles de Detalle especificados abajo
+            col = layout.column()
+            row = col.row(align=True)
+            row.operator("nsmui.ht_toolheader_dyntopo_relative", text="Relative", icon_value=icon1.icon_id)
+            row.operator("nsmui.ht_toolheader_dyntopo_constant", text="Constant", icon_value=icon2.icon_id)
+            row.operator("nsmui.ht_toolheader_dyntopo_brush", text="Brush", icon_value=icon3.icon_id)
+
+            if dynStage_Active != 0:
+            # LOOK FOR ACTIVE STAGE
+                n = 0
+                if(dynStage_Active == 1):
+                    n = 2
+                elif(dynStage_Active == 2):
+                    n = 1
+                elif(dynStage_Active == 3):
+                    n = 0
+            # VALUES FOR STAGES
+                self.layout.label(text="Values :") # Valores para el 'Stage' Activo
+                row = self.layout.row(align=True)
+                if method == 'CONSTANT':
+                    row.label(icon_value=icon_L.icon_id, text=str(dyntopoStages[n].constant_Values[0]))
+                    row.label(icon_value=icon_M.icon_id, text=str(dyntopoStages[n].constant_Values[1]))
+                    row.label(icon_value=icon_H.icon_id, text=str(dyntopoStages[n].constant_Values[2]))
+                elif method == 'BRUSH':
+                    row.label(icon_value=icon_L.icon_id, text=str(dyntopoStages[n].brush_Values[0]))
+                    row.label(icon_value=icon_M.icon_id, text=str(dyntopoStages[n].brush_Values[1]))
+                    row.label(icon_value=icon_H.icon_id, text=str(dyntopoStages[n].brush_Values[2]))
+                elif method == 'RELATIVE' or 'MANUAL':
+                    row.label(icon_value=icon_L.icon_id, text=str(dyntopoStages[n].relative_Values[0]))
+                    row.label(icon_value=icon_M.icon_id, text=str(dyntopoStages[n].relative_Values[1]))
+                    row.label(icon_value=icon_H.icon_id, text=str(dyntopoStages[n].relative_Values[2]))
+                else:
+                    row.label(text="NONE! Select a Stage!")
 
     # AÑADE TEXTO INFORMATIVO JUNTO AL DROPDOWN (FUERA)
     #def draw_header(self, context):
@@ -761,6 +751,7 @@ class NSMUI_OT_dyntopo_stages_change(Operator):
             dynValues_ui = dyntopoStages[valor].constant_Values
         elif(dynMethod_Active == "BRUSH"):
             dynValues_ui = dyntopoStages[valor].brush_Values
+
         NSMUI_HT_toolHeader_sculpt.redraw()
         return {'FINISHED'}
 

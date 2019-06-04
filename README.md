@@ -105,7 +105,9 @@ FUTUROS CAMBIOS E IDEAS LOCAS
 # OTROS
 - [ ] Filtros para las texturas.
 - [ ] Sets de brochas: 1, Recientemente usadas. 2, Por tipo según la brocha activa. 3, Favoritas.
-- [ ] Nuevos y mejores atajos de teclado.
+- [x] Nuevos y mejores atajos de teclado. Gracias al addon de Jean Ayer que he integrado podemos usar click derecho y arrastrar en uno de los axis (horizontal y vertical) para cambiar el tamaño o la fuerza de la brocha de forma fácil.
+- [x] Reestructuración en el código para hacerlo más limpio y además MODULAR.
+- [x] Poder desactivar y activar diferentes elementos de la UI para un mayor nivel de personalización. Esto se hace desde el panel de la 'N' llamado "Sculpt".
 - [ ] Manager para brochas.
 - [ ] Nueva brocha personalizable con multitud de parámetros configurables.
 - [ ] Exportación/Importación (1 click) de brochas.

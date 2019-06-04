@@ -4,7 +4,7 @@ from bpy.types import Panel
 
 class NSMUI_PT_th_settings(Panel):
     bl_idname = "NSMUI_PT_Panel_TH_Settings"
-    bl_label = "Tool Header Settings"
+    bl_label = "Toggle UI Elements"
     bl_category = 'Sculpt'
     bl_space_type = "VIEW_3D"
     bl_region_type = "UI"
@@ -12,13 +12,14 @@ class NSMUI_PT_th_settings(Panel):
 
     def draw(self, context):
         if(context.mode != "SCULPT"):
-            layout = self.layout
-            row = layout.row() # define una fila
+            row = self.layout.row() # define una fila
             row.operator('nsmui.ot_panel_setup', text="Sculpt-Mode Setup") # id del operador, texto para el botón
-
-        # AÚN POR FIXEAR
-        #row.operator('nsmui.ot_brush_remove', text="Activate Remove Brush Button")
-        #row.operator('nsmui.ot_brush_reset', text="Activate Reset Brush Button")
+        else:
+            row = self.layout.row(align=True)
+            row.operator('nsmui.ot_setting_brush_remove', text="Remove Brush") # id del operador, texto para el botón
+            row.operator('nsmui.ot_setting_brush_reset', text="Reset Brush") # id del operador, texto para el botón
+            row = self.layout.row(align=True)
+            row.operator('nsmui.ot_setting_sliders', text="Sliders")
 
 # CLASS FROM ADDON "Orbit" by LiquidBleu
 # https://github.com/LiquideBleu/Orbit

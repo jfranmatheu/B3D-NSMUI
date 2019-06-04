@@ -11,18 +11,16 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-
 bl_info = {
     "name" : "NewSculptUI",
     "author" : "JFranMatheu",
-    "description" : "New UI for Sculpt Mode",
+    "description" : "New UI for Sculpt Mode! :D",
     "blender" : (2, 80, 0),
-    "version" : (0, 1, 1),
-    "location" : "View3D",
-    "warning" : "This version is still in development.",
+    "version" : (0, 2, 0),
+    "location" : "View3D > Tool Header // View3D > 'N' Panel: Sculpt)",
+    "warning" : "This version is still in development. ;)",
     "category" : "Generic"
 }
-
 
 # IMPORTS # NECESITA LIMPIEZA!!!
 import os
@@ -44,21 +42,16 @@ from bl_ui.space_view3d import VIEW3D_HT_tool_header
 from bpy.props import StringProperty, IntProperty, FloatProperty
 from bpy.utils import register_class, unregister_class
 
-
 # ----------------------------------------------------------------- #
 #   DYNTOPO SETUP                                                   #
 # ----------------------------------------------------------------- #
-dynLow = [1,2,3]
-dynMid = [4,6,8]
-dynHigh = [10,12,14]
-
 # Values for Detail Size depending of the METHOD used
 # LEFT (LOW) - CENTER (MID) - RIGHT (HIGH)  
 # RELATIVE & MANUAL --> a menor valor, mayor detalle. Valor en px.
 relative_Low = [14,12,10]
 relative_Mid = [8,6,4]
 relative_High = [3,2,1]
-# CONSTANT --> a mayor valor, mayor detalle. Valor fixed.
+# CONSTANT --> a mayor valor, mayor detalle. Valor fixed. (Aquí los valores están invertidos)
 constant_Low = [95, 110, 125]
 constant_Mid = [55, 65, 75]
 constant_High = [20, 30, 40]
@@ -70,7 +63,7 @@ brush_High = [15, 10, 5]
 # sketch_Values = [relative_Low, constant_Low, brush_Low]
 # detail_Values = [relative_Mid, constant_Mid, brush_Mid]
 # polish_Values = [relative_High, constant_High, brush_High]
-# CLASSES STRUCTS
+# STRUCT CLASS
 class DyntopoStage:
     def __init__(self, stage_Name, relative_Values = [], constant_Values =[], brush_Values = []):
         self.stage_Name = stage_Name
@@ -80,33 +73,34 @@ class DyntopoStage:
 
     def __repr__(self):
         return "DyntopoStage[%s, %i[], %i[], %i[]]" % (self.stage_Name, self.relative_Values, self.constant_Values, self.brush_Values)
-# Dyntopo Stages
-dynStage_Low = DyntopoStage("SKETCH", relative_High, constant_Low, brush_High) # (por un fallo están al revés todos los HIGH/LOW)
+# Dyntopo Stages - Construct vars
+dynStage_Low = DyntopoStage("SKETCH", relative_High, constant_Low, brush_High) # (por un fallo están al revés los HIGH/LOW)
 dynStage_Mid = DyntopoStage("DETAILS", relative_Mid, constant_Mid, brush_Mid)
 dynStage_High = DyntopoStage("POLISH", relative_Low, constant_High, brush_Low)
 dyntopoStages = [dynStage_Low, dynStage_Mid, dynStage_High]
 # GLOBAL VARS
 dynStage_Active = 0 # 1 = SKETCH; 2 = DETAIL; 3 = POLISH; 0 = "NONE" # Por defecto ningún 'stage' está activado
 dynMethod_Active = "NONE"
-dynValues_ui = [3,6,9]
-#bpy.types.Scene.dynStage = bpy.props.StringProperty(get=get_dynStage, set=set_dynStage, name="dynStage", default="NONE")
+dynValues_ui = [3,6,9] # valores mostrados en la UI # DEFECTO # Cambiarán al cambiar de stage o detailing (method aquí)
 
-'''
-Ejemplo de como añadir elemento a la lista
-    dynHigh[len(dynHigh):] = [16]
-    dynHigh.append(20)
-Ejemplos de pasar un array list y argumentos variables en una func
-    someFunc(myList = [], *args) --> para pasar una arraylist tal cual
-    someFunc(*args) --> si esperas un número variable de argumentos (que luego pueden meter en una lista)
-    someFunc(arg1, arg2, arg3, *args, **kwargs) --> Necesitas definir al menos 3 argumentos (como un límite o mínimo) 
-        y luego puedes agregar la cantidad que quieras de variables, soporta variable arguments y keyword arguments
-for i in range(0, len(dynHigh)):
-    print(dynHigh[i])
-'''
 # ----------------------------------------------------------------- #
+#   SETTINGS FOR TOOL HEADER UI                                     #
 # ----------------------------------------------------------------- #
+class ToolHeader_Settings:
+    def __init__(self, dyntopo=True, sliders = [], brush_Reset=True, brush_Remove=True):
+        self.dyntopo = dyntopo
+        self.sliders = sliders
+        self.brush_Reset = brush_Reset
+        self.brush_Remove = brush_Remove
+    
+    def __repr__(self):
+        return "ToolHeader_Settings[%b, %b[], %b, %b]" % (self.dyntopo, self.sliders, self.brush_Reset, self.brush_Remove)
+th_settings_sliders_default = [True, True, True]
+th_settings_default = ToolHeader_Settings(True, th_settings_sliders_default, True, True)
 
-# ICONS // UI // COLLECTIONS
+# ----------------------------------------------------------------- #
+# ICONS // PREVIEW COLLECTION
+# ----------------------------------------------------------------- #
 from os import path
 icon_dir = path.join(path.dirname(__file__), "icons")
 preview_collections = {}
@@ -138,12 +132,14 @@ icons = {"mirror_icon" : "mirror_icon.png",
          "maskClear_icon"  : "maskClear_icon.png",
             }
 
+# ----------------------------------------------------------------- #
+# PATHS // CHECKER ADDON PATH
+# ----------------------------------------------------------------- #
 # PATHS
 currentDirectory = dirname(abspath(__file__))
 addonsDirectory = dirname(currentDirectory)
 compilationInfoPath = join(currentDirectory, "compilation_info.json")
 addonName = basename(currentDirectory)
-
 # CHEKER OF ADDON'S PATH
 if addonName != "NewSculptUI": # CHANGE THIS
     message = ("\n\n"
@@ -152,39 +148,8 @@ if addonName != "NewSculptUI": # CHANGE THIS
     raise Exception(message)
 
 # --------------------------------------------- #
-#   CLASSES -- UI --                            #
+# TOOL HEADER - UI - SCULPT MODE
 # --------------------------------------------- #
-
-# VARIABLES GLOBALES PARA MENU DE AJUSTES #
-
-
-# TOOL HEADER OVERRIDE # YA NO ES OVERRIDE, SE CAMBIO Y AHORA FUNCIONA MEJOR AUNQUE NO SE EVITA QUE LA UI ORIGINAL SE DIBUJE
-# LOS ELEMENTOS SE SITÚAN EN POSICIÓN ANTERIOR A LOS DE LA CLASE NSMUI_HT_toolHeader DEL ADDON
-# AQUÍ SE INCLUYEN TMB VERSIONES DEL TOOL HEADER PARA LOS DEMÁS MODOS
-class VIEW3D_HT_tool_head(Header): #OVERRIDE
-    bl_space_type = 'VIEW_3D'
-    bl_region_type = "TOOL_HEADER"
-
-    def draw(self, context):
-        
-        if context.mode != "SCULPT":
-            layout = self.layout
-            layout.row(align=True).template_header()
-
-            if context.mode == "OBJECT": # SOME TEST
-                layout = self.layout
-                layout.operator("object.select_all", text="Select/Deselect All").action = 'TOGGLE'
-                layout.operator("object.select_all", text="Inverse").action = 'INVERT'
-                layout.operator("object.select_random", text="Random")
-        else:
-            V3DTH.remove("draw")
-            V3DTH.remove("draw_mode_settings") #draw_mode_settings
-            V3DTH.remove("draw")
-
-b_Brush_Reset = False # default
-b_Brush_Remove = False # default
-# SCULPT MODE UI - NEW TOOL HEADER
-from bl_ui.space_view3d import VIEW3D_HT_tool_header as V3DTH
 class NSMUI_HT_toolHeader_sculpt(Header, UnifiedPaintPanel):
     bl_idname = "NSMUI_HT_ToolHeader_Sculpt"
     bl_label = "Header Toolbar"
@@ -200,39 +165,12 @@ class NSMUI_HT_toolHeader_sculpt(Header, UnifiedPaintPanel):
         bpy.utils.register_class(NSMUI_HT_toolHeader_sculpt)
         bpy.utils.register_class(VIEW3D_HT_tool_header)
 
-    def draw_sculpt(self, context):
-        try:
-            bpy.utils.unregister_class(VIEW3D_HT_tool_header)
-        except:
-            pass
-        try:
-            bpy.utils.register_class(NSMUI_HT_toolHeader_sculpt)
-        except:
-            pass
-
-    def draw_default():  
-        try:
-            bpy.utils.unregister_class(NSMUI_HT_toolHeader_sculpt)
-        except:
-            pass
-        try:
-            bpy.utils.register_class(VIEW3D_HT_tool_header)
-        except:
-            pass
-
     def draw(self, context):
-        # scene = context.scene
-        # tool_mode = context.mode
-
         if(context.mode == "SCULPT"):
-            #self.draw_sculpt(context)
-            layout = self.layout
-            row = layout.row() # define una fila
-            
-        # COLLECTION OF ICONS
+            # LOAD COLLECTION OF ICONS
             pcoll = preview_collections["main"]
-
-        # VARS
+            # VARIABLES
+            toolHeader = NSMUI_HT_toolHeader_sculpt_tools
             brush = bpy.context.tool_settings.sculpt.brush
             sculpt = context.tool_settings.sculpt
             capabilities = brush.sculpt_capabilities
@@ -241,225 +179,221 @@ class NSMUI_HT_toolHeader_sculpt(Header, UnifiedPaintPanel):
             brush = settings.brush
             ups = toolsettings.unified_paint_settings
 
-        # BUTTON - CHANGE SPACE TYPE OF THE WINDOW 
-            #layout = self.layout
-            #layout.row(align=True).template_header()
-
-    # SCULPT --> BRUSH SELECTOR / CREATE BRUSH / RENAME BRUSH
-        # IF THERE'S NO BRUSH, JUST STOP DRAWING
+            # IF THERE'S NO BRUSH, JUST STOP DRAWING
             if brush is None:
                 return
-        # DEFAULT AND BASIC SCULPT SETTINGS -> RADIUS SLIDER + STRENGTH SLIDER + ADD/SUBSTRACT
-            # brush_basic_sculpt_settings(layout, context, sculpt.brush, compact=True)
-        # DEFAULT DROP_MENUS OF TOOL HEADER // Brush // Texture // Stroke // Falloff // Display //
-            # layout.popover_group(space_type='VIEW_3D', region_type='UI', context=".paint_common", category="Tool")
+            
+            toolHeader.draw_brushManager(self, sculpt, pcoll["brushAdd_icon"],
+                pcoll["brushReset_icon"], bpy.types.Scene.resetBrush_Active,
+                pcoll["brushRemove_icon"], bpy.types.Scene.removeBrush_Active)
+            
+            toolHeader.draw_separator(self, pcoll)
 
-            layout = self.layout
-            row = layout.row(align=True)
-            row.ui_units_x = 9
-            # col.template_ID_preview(sculpt, "brush", new="brush.add", rows=7, cols=3, hide_buttons=True) # OLD ONE
+            if (bpy.types.Scene.sliders_Active == True):
+                toolHeader.draw_slider_brushSize(self, toolsettings, brush, ups)
+                toolHeader.draw_slider_brushStrength(self, toolsettings, brush, ups)       
+                toolHeader.draw_slider_brushSmooth(self, brush, capabilities)
+                toolHeader.draw_separator(self, pcoll)
+
+            toolHeader.draw_brushSettings(self, pcoll["brush_icon"])
+            toolHeader.draw_strokeSettings(self, pcoll["stroke_icon"])
+            toolHeader.draw_fallOff(self, pcoll["fallOff_icon"])
+            toolHeader.draw_frontFaces(self, brush, pcoll["frontFaces_icon"])
+
+            toolHeader.draw_separator(self, pcoll)
+
+            toolHeader.draw_maskSettings(self, pcoll["mask_icon"], pcoll["maskInvert_icon"], pcoll["maskClear_icon"])
+            toolHeader.draw_symmetry(self, sculpt, pcoll["mirror_icon"])
+
+            toolHeader.draw_separator(self, pcoll)
+
+            toolHeader.draw_topologySettings(self, context, pcoll)
+                    
+            toolHeader.draw_separator(self, pcoll)
+
+            toolHeader.draw_textureSettings(self, pcoll["texture_icon"], pcoll["textureNew_icon"], pcoll["textureOpen_icon"])
+            toolHeader.draw_textureManager(self, brush, pcoll["texture_icon"])
+
+            toolHeader.draw_separator(self, pcoll)
+            self.layout.separator(factor=300.0)
+            
+        else:
+            return None
+
+# --------------------------------------------- #
+#   UI TOOLS FOR SCULPT MODE's HEADER TOOL
+# --------------------------------------------- #
+class NSMUI_HT_toolHeader_sculpt_tools(NSMUI_HT_toolHeader_sculpt):
+
+#   SPACING // SEPARATOR
+    def draw_separator(self, pcoll):
+        layout = self.layout
+        split = layout.split()
+        col = split.column()
+        icon = pcoll["separator_icon"]
+        col.label(text="", icon_value=icon.icon_id)
+
+#   BRUSH SELECTOR // ADD / RESET // REMOVE
+    def draw_brushManager(self, sculpt, icon_brushAdd, icon_brushReset, canReset, icon_brushRemove, canRemove):
+        layout = self.layout
+        row = layout.row(align=True)
+        row.ui_units_x = 9
         # BRUSH LIST
-            row.template_ID_preview(sculpt, "brush", new="brush.add", rows=3, cols=8, hide_buttons=True)
+        row.template_ID_preview(sculpt, "brush", new="brush.add", rows=3, cols=8, hide_buttons=True)
         # NEW BRUSH BUTTON (DUPLICATE)
-            icon = pcoll["brushAdd_icon"]
-            row.operator("brush.add", text="", icon_value=icon.icon_id)     
-            #icon = pcoll["brushReset_icon"]
+        row.operator("brush.add", text="", icon_value=icon_brushAdd.icon_id)     
         # RESET BRUSH BUTTON
-            if(b_Brush_Reset == False):
-                icon = pcoll["brushReset_icon"]
-                row.operator("brush.reset", text="", icon_value=icon.icon_id) # RESET BRUSH
+        if(canReset == True):
+            row.ui_units_x = row.ui_units_x + 1
+            row.operator("brush.reset", text="", icon_value=icon_brushReset.icon_id) # RESET BRUSH
         # DELETE BRUSH BUTTON
-            if (b_Brush_Remove == True):
-                icon = pcoll["brushRemove_icon"]
-                row.operator("brush.reset", text="", icon_value=icon.icon_id) # RESET BRUSH
+        if (canRemove == True):
+            row.ui_units_x = row.ui_units_x + 1
+            row.operator("brush.reset", text="", icon_value=icon_brushRemove.icon_id) # DELETE BRUSH
 
-            # row.prop(brush, "texture", toggle=True, text="") # dropdown lista de texturas en una fila
+#   BRUSH SIZE    
+    def draw_slider_brushSize(self, toolsettings, brush, ups):
+        layout = self.layout
+        split = layout.split()
+        col = split.column()
+        row = col.row(align=True)
+        row.ui_units_x = 8
+        # row.prop(ups, "use_unified_size", text="Size") # CHECKBOX PARA MARCAR EL UNIFIED SIZE
+        if(toolsettings.unified_paint_settings.use_unified_size):
+            row.prop(ups, "size", slider=True, text="Size") # ups -> tool_settings.unified_paint_settings.size
+        else:
+            row.prop(brush, "size", slider=True, text="Size")
+        row.prop(brush, "use_pressure_size", toggle=True, text="")
 
-    # SPACING // SEPARATOR
-            layout = self.layout
-            split = layout.split()
-            col = split.column()
-            icon = pcoll["separator_icon"]
-            col.label(text="", icon_value=icon.icon_id)
+#   BRUSH STRENTH
+    def draw_slider_brushStrength(self, toolsettings, brush, ups):
+        layout = self.layout
+        split = layout.split()
+        col = split.column()
+        row = col.row(align=True)
+        #row.ui_units_x = 6
+        if(toolsettings.unified_paint_settings.use_unified_strength): 
+            row.prop(ups, "strength", slider=True, text="Hardness") # ups -> tool_settings.unified_paint_settings.strength
+        else:
+            row.prop(brush, "strength", slider=True, text="Hardness")
+        row.prop(brush, "use_pressure_strength", toggle=True, text="")
 
-    # SCULPT --> SIZE
-            layout = self.layout
-            split = layout.split()
-            col = split.column()
-            row = col.row(align=True)
-            row.ui_units_x = 8
-            # row.prop(ups, "use_unified_size", text="Size") # CHECKBOX PARA MARCAR EL UNIFIED SIZE
-            
-            if(toolsettings.unified_paint_settings.use_unified_size):
-                row.prop(ups, "size", slider=True, text="Size") # ups -> tool_settings.unified_paint_settings.size
-            else:
-                row.prop(brush, "size", slider=True, text="Size")
-            row.prop(brush, "use_pressure_size", toggle=True, text="")
+#   BRUSH AUTOSMOOTH SLIDER
+    def draw_slider_brushSmooth(self, brush, capabilities):
+        split = self.layout.split()
+        col = split.column()
+        row = col.row(align=True)
+        # auto_smooth_factor and use_inverse_smooth_pressure
+        row.ui_units_x = 6
+        if (capabilities.has_auto_smooth):
+            row.prop(brush, "auto_smooth_factor", slider=True, text="Smooth")
+            row.prop(brush, "use_inverse_smooth_pressure", toggle=True, text="")
 
-    # SCULPT STRENTH
-            layout = self.layout
-            split = layout.split()
-            col = split.column()
-            row = col.row(align=True)
-            #row.ui_units_x = 6
-            if(toolsettings.unified_paint_settings.use_unified_strength): 
-                row.prop(ups, "strength", slider=True, text="Hardness") # ups -> tool_settings.unified_paint_settings.strength
-            else:
-                row.prop(brush, "strength", slider=True, text="Hardness")
-            row.prop(brush, "use_pressure_strength", toggle=True, text="")
+#   BRUSH SETTINGS (DROPDOWN)
+    def draw_brushSettings(self, icon):
+        layout = self.layout
+        split = layout.split()
+        col = split.column()
+        sub = col.column(align=True)
+        sub.popover(panel="VIEW3D_PT_tools_brush",icon_value=icon.icon_id,text="")
+        #VIEW3D_PT_sculpt_options_unified
 
-    # SCULPT --> AUTOSMOOTH        
+#   BRUSH STROKE SETTINGS (DROPDOWN)
+    def draw_strokeSettings(self, icon):
+        layout = self.layout
+        split = layout.split()
+        col = split.column()
+        sub = col.column(align=True)
+        sub.popover(
+            panel="VIEW3D_PT_tools_brush_stroke",
+            icon_value=icon.icon_id,
+            text="")
 
-            layout = self.layout
-            split = layout.split()
-            col = split.column()
-            row = col.row(align=True)
+#   BRUSH FALLOFF SETTINGS/CURVES (DROPDOWN)
+    def draw_fallOff(self, icon):
+        layout = self.layout
+        split = layout.split()
+        col = split.column()
+        sub = col.column(align=True)
+        sub.popover(
+            panel="VIEW3D_PT_tools_brush_falloff",
+            icon_value=icon.icon_id,
+            text="")
 
-            # auto_smooth_factor and use_inverse_smooth_pressure
-            row.ui_units_x = 6
-            if (capabilities.has_auto_smooth):
-                row.prop(brush, "auto_smooth_factor", slider=True, text="Smooth")
-                row.prop(brush, "use_inverse_smooth_pressure", toggle=True, text="")
+#   FRONT FACES ONLY (TOGGLE)
+    def draw_frontFaces(self, brush, icon):
+        split = self.layout.split()
+        col = split.column()
+        col = col.row(align=True)
+        col.prop(brush, "use_frontface", text="", icon_value=icon.icon_id)
 
-        # SPACING // SEPARATOR
-            layout = self.layout
-            split = layout.split()
-            col = split.column()
-            icon = pcoll["separator_icon"]
-            col.label(text="", icon_value=icon.icon_id)
-
-    # SCULPT --> BRUSH OPTIONS
-
-            icon = pcoll["brush_icon"]
-            layout = self.layout
-            split = layout.split()
-            col = split.column()
-            col.alignment = 'CENTER'
-
-            sub = col.column(align=True)
-            sub.popover(
-            panel="VIEW3D_PT_tools_brush",icon_value=icon.icon_id,text="")
-            #VIEW3D_PT_sculpt_options_unified
-
-    # SCULPT --> BRUSH - STROKE
-
-            icon = pcoll["stroke_icon"]
-            layout = self.layout
-            split = layout.split()
-            col = split.column()
-
-            sub = col.column(align=True)
-            sub.popover(
-                panel="VIEW3D_PT_tools_brush_stroke",
-                icon_value=icon.icon_id,
-                text="")
-
-    # SCULPT --> BRUSH - FALLOFF
-
-            icon = pcoll["fallOff_icon"]
-            layout = self.layout
-            split = layout.split()
-            col = split.column()
-      
-            sub = col.column(align=True)
-            sub.popover(
-                panel="VIEW3D_PT_tools_brush_falloff",
-                icon_value=icon.icon_id,
-                text="")
-
-    # SCULPT --> FRONT FACES        
-
-            icon = pcoll["frontFaces_icon"]
-            layout = self.layout
-            split = layout.split()
-            col = split.column()
-            col = col.row(align=True)
-            col.prop(brush, "use_frontface", text="", icon_value=icon.icon_id)
-                
-        # SPACING // SEPARATOR
-            layout = self.layout
-            split = layout.split()
-            col = split.column()
-            icon = pcoll["separator_icon"]
-            col.label(text="", icon_value=icon.icon_id)
-
-    # MASK TOOLS
+#   MASK SETTINGS / INVERT / CLEAR
+    def draw_maskSettings(self, icon_mask, icon_maskInvert, icon_maskClear):
         # MASK MENU
-            row = self.layout.row(align=True)
-            icon = pcoll["mask_icon"]
-            row.menu("VIEW3D_MT_hide_mask", text=" Mask ", icon_value=icon.icon_id)
+        row = self.layout.row(align=True)
+        row.menu("VIEW3D_MT_hide_mask", text=" Mask ", icon_value=icon_mask.icon_id)
         # MASK -> INVERT
-            icon = pcoll["maskInvert_icon"]
-            props = row.operator("paint.mask_flood_fill", text="", icon_value=icon.icon_id)
-            props.mode = 'INVERT'
+        props = row.operator("paint.mask_flood_fill", text="", icon_value=icon_maskInvert.icon_id)
+        props.mode = 'INVERT'
         # MASK -> CLEAR
-            icon = pcoll["maskClear_icon"]
-            props = row.operator("paint.mask_flood_fill", text="", icon_value=icon.icon_id)
-            props.mode = 'VALUE'
-            props.value = 0
-            
+        props = row.operator("paint.mask_flood_fill", text="", icon_value=icon_maskClear.icon_id)
+        props.mode = 'VALUE'
+        props.value = 0
 
-    # SCULPT --> SYMMETRY TOOLS
-            icon = pcoll["mirror_icon"]
-            split = layout#.split()
-        # MIRROR ICON
-            col = split.column()
-            #col.label(nsmui.ht_toolheader_symmetry_all, text="Mirror:", icon_value=icon.icon_id)
-
+#   SYMMETRY TOGGLES
+    def draw_symmetry(self, sculpt, icon):
         # MIRRORS X, Y, Z
-            col = split.column()
-            row = col.row(align=True)
-            row.ui_units_x = 5
-            #row.label(nsmui.ht_toolheader_symmetry_all, text="", icon_value=icon.icon_id, toggle=True)
-            row.operator("nsmui.ht_toolheader_symmetry_all", icon_value=icon.icon_id, text=" ")
-            row.prop(sculpt, "use_symmetry_x", text="X", toggle=True)
-            row.prop(sculpt, "use_symmetry_y", text="Y", toggle=True)
-            row.prop(sculpt, "use_symmetry_z", text="Z", toggle=True)
+        col = self.layout.column()
+        row = col.row(align=True)
+        row.ui_units_x = 5
+        row.operator("nsmui.ht_toolheader_symmetry_all", icon_value=icon.icon_id, text=" ")
+        row.prop(sculpt, "use_symmetry_x", text="X", toggle=True)
+        row.prop(sculpt, "use_symmetry_y", text="Y", toggle=True)
+        row.prop(sculpt, "use_symmetry_z", text="Z", toggle=True)
 
-        # SPACING // SEPARATOR
-            layout = self.layout
-            split = layout.split()
-            col = split.column()
-            icon = pcoll["separator_icon"]
-            col.label(text="", icon_value=icon.icon_id)
-
-            ibool = False
-            mods = context.active_object.modifiers
-    # SCULPT --> MULTIRES
-            if mods!=None:
-                for modifier in mods:
-                    if modifier.type == 'MULTIRES':
-                        ibool = True
-                        row = self.layout.row(align=True)
-                        row.label(text="", icon="MOD_MULTIRES")
-                        row.ui_units_x = 5
-                        row.prop(modifier, "sculpt_levels", text="Sculpt")
-                        row = self.layout.row(align=True)
-                        row.ui_units_x = 3.6
-                        row.operator("nsmui.ht_toolheader_multires_subdivide", text="Subdivide")
-                        break
-    # SCULPT --> DYNAMIC TOPOLOGY
-            if ibool==False:
-                dynStage_Active = bpy.types.Scene.dynStage_Active
-                sub = self.layout.row(align=True)
-                sub.popover(panel="VIEW3D_PT_sculpt_dyntopo", text="")
-                #print(dynStage_Active)
+#   TOPOLOGY SETTINGS / DYNTOPO / MULTIRES
+    def draw_topologySettings(self, context, pcoll):
+        mods = context.active_object.modifiers # Carga los modificadores del objeto activo
+        ibool = False # Para comprobar si el objeto activo tiene el modificador multires
+        # SCULPT --> MULTIRES
+        # Si hay modificadores en el objeto activo
+        if mods!=None:
+            for modifier in mods:
+            # Si el modificador 'modifier' es de tipo Multires
+                if modifier.type == 'MULTIRES':
+                    ibool = True
+                    row = self.layout.row(align=True)
+                    row.label(text="", icon="MOD_MULTIRES")
+                    row.ui_units_x = 5
+                    row.prop(modifier, "sculpt_levels", text="Sculpt")
+                    row = self.layout.row(align=True)
+                    row.ui_units_x = 3.6
+                    row.operator("nsmui.ht_toolheader_multires_subdivide", text="Subdivide")
+                    break
+        # SCULPT --> DYNAMIC TOPOLOGY
+        # Si no hay multires y dyntopo está activado
+        if ibool==False:
+            dynStage_Active = bpy.types.Scene.dynStage_Active
+            sub = self.layout.row(align=True)
+            sub.popover(panel="VIEW3D_PT_sculpt_dyntopo", text="")
+            if(context.sculpt_object.use_dynamic_topology_sculpting==True):
+            # Si no hay ningún 'Stage' activado
                 if dynStage_Active == 0:
-                    sub.popover(panel="NSMUI_PT_dyntopo_stages", text="", icon='STYLUS_PRESSURE')
+                    sub.popover(panel="NSMUI_PT_dyntopo_stages", text="", icon='STYLUS_PRESSURE') # NUEVO PANEL PARA LOS 'STAGES'
                     layout = self.layout
                     col = layout.column()
                     row = col.row(align=True)
                     row.ui_units_x = 6
                     # A menor nivel, mayor detalle, es decir para detalles más pequeños
-                    row.operator("nsmui.ht_toolheader_dyntopo_lvl_6", text="1")
+                    row.operator("nsmui.ht_toolheader_dyntopo_lvl_6", text="1") # Botón 1, primer nivel, nivel más alto de detalle
                     row.operator("nsmui.ht_toolheader_dyntopo_lvl_5", text="2")
                     row.operator("nsmui.ht_toolheader_dyntopo_lvl_4", text="3")
                     row.operator("nsmui.ht_toolheader_dyntopo_lvl_3", text="4")
                     row.operator("nsmui.ht_toolheader_dyntopo_lvl_2", text="5")
-                    row.operator("nsmui.ht_toolheader_dyntopo_lvl_1", text="6")
-                    #row.operator("nsmui.ht_toolheader_dyntopo_12", text="12")
-                elif(context.sculpt_object.use_dynamic_topology_sculpting == True):
-                    n = 0 # CHIAVATO PARA EL STAGE
+                    row.operator("nsmui.ht_toolheader_dyntopo_lvl_1", text="6") # Botón 6, último nivel, nivel más bajo de detalle
+            # Si hay stage
+                else:
+                    n = 0 # CHIVATO PARA EL STAGE
                     dynMethod_Active = bpy.context.scene.tool_settings.sculpt.detail_type_method # CARGAR VALOR DEL METODO ACTIVO
                     iconLow = pcoll["dyntopoLowDetail_icon"]
                     iconMid = pcoll["dyntopoMidDetail_icon"]
@@ -471,7 +405,7 @@ class NSMUI_HT_toolHeader_sculpt(Header, UnifiedPaintPanel):
                         n = 1
                     elif (dynStage_Active == 3): # POLISH
                         n = 0
-                
+                    
                 # LOOK FOR ACTUAL DYN METHOD
                     if(dynMethod_Active == "RELATIVE"):
                         dynValues_ui = dyntopoStages[n].relative_Values
@@ -494,84 +428,41 @@ class NSMUI_HT_toolHeader_sculpt(Header, UnifiedPaintPanel):
                     row.operator("nsmui.ht_toolheader_dyntopo_any", text="", icon_value=iconLow.icon_id).value = dynValues_ui[0] # LOW DETAIL
                     row.operator("nsmui.ht_toolheader_dyntopo_any", text="", icon_value=iconMid.icon_id).value = dynValues_ui[1] # MID DETAIL
                     row.operator("nsmui.ht_toolheader_dyntopo_any", text="", icon_value=iconHigh.icon_id).value = dynValues_ui[2] # HIGH DETAIL
-                    
-        # SPACING // SEPARATOR
-            layout = self.layout
-            split = layout.split()
-            col = split.column()
-            icon = pcoll["separator_icon"]
-            col.label(text="", icon_value=icon.icon_id)
 
-        # SCULPT --> BRUSH TEXTURE TOOLS
-           
-            icon = pcoll["texture_icon"]
-            layout = self.layout
-            split = layout
-            col = split.column()
-            sub = col.column(align=True)
-            sub.popover(panel="VIEW3D_PT_tools_brush_texture", icon_value=icon.icon_id, text="")
+#   TEXTURE SETTINGS (DROPDOWN) / NEW TEXTURE / OPEN IMAGE
+    def draw_textureSettings(self, icon_texture, icon_textureNew, icon_textureOpen):
+        layout = self.layout
+        split = layout
+        col = split.column()
+        sub = col.column(align=True)
+        sub.popover(panel="VIEW3D_PT_tools_brush_texture", icon_value=icon_texture.icon_id, text="")
+        layout = self.layout
+        split = layout.split()
+        col = split.column()
+        row = col.row(align=True)
+        row = self.layout.row(align=True)
+        row.operator("nsmui.ht_toolheader_new_texture", text="", icon_value=icon_textureNew.icon_id) # NEW TEXTURE
+        row.operator("image.open", text="", icon_value=icon_textureOpen.icon_id) # OPEN IMAGE TEXTURE
 
-            icon = pcoll["textureNew_icon"]
-            layout = self.layout
-            split = layout.split()
-            col = split.column()
-            row = col.row(align=True)
-            row = self.layout.row(align=True)
-            row.operator("nsmui.ht_toolheader_new_texture", text="", icon_value=icon.icon_id) # NEW TEXTURE
-            icon = pcoll["textureOpen_icon"]
-            row.operator("image.open", text="", icon_value=icon.icon_id) # OPEN IMAGE TEXTURE
-            
-    # TEXTURES - QUICK SELECTOR
-            texture = brush.texture
-            icon = pcoll["texture_icon"]
-            layout = self.layout
-            col = layout
-            row = self.layout.row(align=True)
+#   TEXTURE QUICK SELECTOR
+    def draw_textureManager(self, brush, icon):
+        texture = brush.texture
+        row = self.layout.row(align=True)
         ## TEXTURES AND IMAGES
-            if texture != None: # HAY TEXTURA
-                if texture.image != None: # image_user -> image # LA TEXTURA TIENE IMAGEN
-                    row.template_ID_preview(brush, "texture", rows=3, cols=8, hide_buttons=True)
-                    row.template_ID_preview(texture, "image", rows=3, cols=8, hide_buttons=True) # open="image.open"
-                else: # LA TEXTURA NOO TIENE IMAGEN
-                    row.ui_units_x = 5
-                    row.template_ID_preview(texture, "image", rows=3, cols=8, open="image.open", hide_buttons=False) # open="image.open"
-            else: # NO HAY TEXTURA
+        if texture != None: # HAY TEXTURA
+            if texture.image != None: # image_user -> image # LA TEXTURA TIENE IMAGEN
+                row.template_ID_preview(brush, "texture", rows=3, cols=8, hide_buttons=True)
+                row.template_ID_preview(texture, "image", rows=3, cols=8, hide_buttons=True) # open="image.open"
+            else: # LA TEXTURA NOO TIENE IMAGEN
                 row.ui_units_x = 5
-                row.template_ID_preview(brush, "texture", rows=3, cols=8, new="texture.new", hide_buttons=False)
-        ##
-        
-            # row.operator("image.reload", text="Reload")
+                row.template_ID_preview(texture, "image", rows=3, cols=8, open="image.open", hide_buttons=False) # open="image.open"
+        else: # NO HAY TEXTURA
+            row.ui_units_x = 5
+            row.template_ID_preview(brush, "texture", rows=3, cols=8, new="texture.new", hide_buttons=False)
 
-            ####### NEXT ###########################
-            ## tex = context.texture
-            # layout.template_image(tex, "image", tex.image_user) # PARA VER Y SELECCIONAR LAS IMAGENES IMPORTADAS
-            # self.layout.prop(tex, "use_color_ramp", text="") # COLOR RAMP PARA LA TEXTURA
-            # self.layout.prop(tex, "use_alpha", text="") # BROCHA COMO ALPHA O NO
-            # PREVIEW DE LA TEXTURA // SE USARA PARA PREVIEW DE LA TEXTURA EN EL 3DVIEWPORT AL HACER HOVER
-
-            ## slot = getattr(context, "texture_slot", None)
-            ## idblock = context_tex_datablock(context)
-            # if idblock:
-            #    layout.template_preview(tex, parent=idblock, slot=slot)
-            # else:
-            #    layout.template_preview(tex, slot=slot)
-
-        # SPACING // SEPARATOR
-            layout = self.layout
-            split = layout.split()
-            col = split.column()
-            icon = pcoll["separator_icon"]
-            col.label(text="", icon_value=icon.icon_id)
-            layout = self.layout
-            layout.separator(factor=60.0)
-            
-        else:
-            #V3DTH.append('draw')
-            #self.draw_default(context)
-            return None
-
-
-# SCULPT MODE UI - NEW HEADER
+# --------------------------------------------- #
+# HEADER UI
+# --------------------------------------------- #
 class NSMUI_HT_header_sculpt(bpy.types.Header):
     bl_idname = "NSMUI_HT_Header_Sculpt"
     bl_label = "Header Toolbar for Sculpt Mode"
@@ -579,12 +470,9 @@ class NSMUI_HT_header_sculpt(bpy.types.Header):
     bl_region_type = "HEADER"
 
     def draw(self, context):
-
         layout = self.layout
         tool_mode = context.mode
-
         if(tool_mode == "SCULPT"):
-            # COLLECTION OF ICONS
             pcoll = preview_collections["main"]
             row = layout
             temp = False
@@ -600,51 +488,11 @@ class NSMUI_HT_header_sculpt(bpy.types.Header):
                     icon = pcoll["arrowUp_icon"]
                 else:
                     icon = pcoll["arrowDown_icon"]
-                row.operator('nsmui.ot_header_tool_toggle', text="", icon_value=icon.icon_id)
-            
-
-# PAINT MODE UI - NEW TOOL HEADER
-class NSMUI_HT_toolHeader_paint(Header):
-    bl_idname = "NSMUI_HT_ToolHeader_Paint"
-    bl_label = "Header Toolbar for Paint Mode"
-    bl_space_type = "VIEW_3D"
-    bl_region_type = "TOOL_HEADER"
-
-    def draw(self, context):
-
-        if(context.mode == "PAINT_TEXTURE"):
-            # COLLECTION OF ICONS
-            pcoll = preview_collections["main"]
-
-        # PAINT
-            layout = self.layout
-            row = layout.row() # define una fila            
-            
-# PAINT MODE UI - NEW HEADER
-class NSMUI_HT_header_paint(Header):
-    bl_idname = "NSMUI_HT_Header_Paint"
-    bl_label = "Header Toolbar for Sculpt Mode"
-    bl_space_type = "VIEW_3D"
-    bl_region_type = "HEADER"
-
-    def draw(self, context):
-
-        layout = self.layout
-        tool_mode = context.mode
-
-        if(tool_mode == "PAINT_TEXTURE"):
-            # COLLECTION OF ICONS
-            pcoll = preview_collections["main"]
-
-        # PAINT
-            layout = self.layout
+                row.operator('nsmui.ot_header_tool_toggle', text="", icon_value=icon.icon_id)            
 
 # --------------------------------------------- #
+# DYNTOPO STAGES UI PANEL / OPERATOR
 # --------------------------------------------- #
-# DYNTOPO STAGES UI / OPERATOR
-# --------------------------------------------- #
-# --------------------------------------------- #
-
 class NSMUI_PT_dyntopo_stages(Panel):
     bl_label = "DyntopoStages"
     bl_space_type = "VIEW_3D"
@@ -755,23 +603,17 @@ class NSMUI_OT_dyntopo_stages_change(Operator):
         NSMUI_HT_toolHeader_sculpt.redraw()
         return {'FINISHED'}
 
-
 # --------------------------------------------- #
-# --------------------------------------------- #
-# --------------------------------------------- #
-
 # PROPERTIES                                    #
 # --------------------------------------------- #
-
-# DYNTOPO STAGE - ACTIVED
+#   DYNTOPO STAGE - ACTIVE
 def get_dynStage(self):
     return self["dynStage_Active"]
 def set_dynStage(self, value):
-    print(dynStage_Active)
-    print(self)
-    print(value)
+    #print(dynStage_Active)
+    #print(self)
+    #print(value)
     self["dynStage_Active"] = value
-
 bpy.types.Scene.dynStage_Active = bpy.props.IntProperty(
         name="Dyn Stage",
         description = "Actual Stage for Dyntopo",
@@ -781,11 +623,24 @@ bpy.types.Scene.dynStage_Active = bpy.props.IntProperty(
         get = get_dynStage,
         set = set_dynStage,
     )
+# --------------------------------------------- #
+#   SCULPTMODE > BRUSH > REMOVE BUTTON - TOOL HEADER SETTINGS
+bpy.types.Scene.removeBrush_Active = bpy.props.BoolProperty(
+        name="Dyn Stage",
+        description = "Actual Stage for Dyntopo",
+        default = False, 
+    )
+bpy.types.Scene.removeBrush_Active = False # Inicializar valor por defecto
+#   SCULPTMODE > BRUSH > REMOVE BUTTON - TOOL HEADER SETTINGS
+bpy.types.Scene.resetBrush_Active = bpy.props.BoolProperty()
+bpy.types.Scene.resetBrush_Active = True # Inicializar valor por defecto
+#   SCULPTMODE > SLIDERS - TOOL HEADER SETTINGS
+bpy.types.Scene.sliders_Active = bpy.props.BoolProperty()
+bpy.types.Scene.resetBrush_Active = True # Inicializar valor por defecto
 
 # ------------------------------------------- #
-# FUNCIONES SUELTAS 
+#   FUNCIONES SUELTAS 
 # ------------------------------------------- #
-
 def dynStage_toString(_dynStage):
     s_dynStage =""
     if _dynStage == 1:
@@ -796,15 +651,8 @@ def dynStage_toString(_dynStage):
         s_dynStage = "POLISH"
     return s_dynStage
 
-#   FACTORY REGISTRATION OF CLASSES 
-#register, unregister = bpy.utils.register_classes_factory(classes)
-
-# store keymaps here to access after registration
-newsmui_keymaps = []
-
-
 #################################################
-#   AUTO-REGISTRATION !!!!                             #
+#   REGISTRATION !!!!                      #
 #################################################
 
 from . import auto_load
@@ -818,14 +666,9 @@ def register():
         pass
 
     # Register Classes
-    register_class(VIEW3D_HT_tool_head)      # OVERRITE CLASS 
     register_class(NSMUI_HT_toolHeader_sculpt) # TOOL HEADER - SCULPT MODE
     register_class(NSMUI_HT_header_sculpt)     # HEADER      - SCULPT MODE
-    register_class(NSMUI_HT_toolHeader_paint)  # TOOL HEADER - PAINT MODE
-    register_class(NSMUI_HT_header_paint)      # HEADER      - PAINT MODE
     register_class(NSMUI_OT_dyntopo_stages_change)
-    #register_class(NSMUI_OT_dyntopo_stages_mid)
-    #register_class(NSMUI_OT_dyntopo_stages_high)
     register_class(NSMUI_PT_dyntopo_stages)
 
     # AutoLoad Exterior Classes
@@ -837,9 +680,6 @@ def register():
         pcoll.load(key, path.join(icon_dir, f), 'IMAGE')
     preview_collections["main"] = pcoll
 
-    # PROPERTIES
-
-    
     # REGISTER ORIGINAL TOOL HEADER # changed - antes al final del código de la clase del tool header
     try:
         bpy.utils.register_class(VIEW3D_HT_tool_header)
@@ -849,16 +689,10 @@ def register():
     print("Registered New Sculpt Mode UI")
 
 def unregister():
-
     # UnRegister Classes
-    unregister_class(VIEW3D_HT_tool_head)      # OVERRITE CLASS
     unregister_class(NSMUI_HT_toolHeader_sculpt) # TOOL HEADER - SCULPT MODE
     unregister_class(NSMUI_HT_header_sculpt)     # HEADER      - SCULPT MODE
-    unregister_class(NSMUI_HT_toolHeader_paint)  # TOOL HEADER - PAINT MODE
-    unregister_class(NSMUI_HT_header_paint)      # HEADER      - PAINT MODE
     unregister_class(NSMUI_OT_dyntopo_stages_change)
-    #unregister_class(NSMUI_OT_dyntopo_stages_mid)
-    #unregister_class(NSMUI_OT_dyntopo_stages_high)
     unregister_class(NSMUI_PT_dyntopo_stages)
 
     # AutoLoad Exterior Classes
@@ -869,8 +703,4 @@ def unregister():
         bpy.utils.previews.remove(pcoll)
     preview_collections.clear()
 
-    # PROPERTIES
-    #bpy.props.RemoveProperty(NSMUI_OT_dyntopo_stages_change, "valor")
-
     print("Unregistered New Sculpt Mode UI")
-

@@ -131,4 +131,4 @@ https://blenderartists.org/t/sculpt-paint-edit-workflow-suite-new-grow-sel-to-cu
 "Orbit" addon by Liquide Bleu
 https://github.com/LiquideBleu/Orbit
 
-Icons for detailing (Relative, Brush and Constant) made by g3n.es
+Icons for dyntopo detailing (Relative, Brush and Constant + high, mid and low) made by g3n.es

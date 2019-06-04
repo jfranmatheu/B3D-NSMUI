@@ -8,7 +8,6 @@ New Sculpt Mode UI for Blender 2.80
 
 Nueva UI para el modo Sculpt. Modifica principalmente el Tool Header del sculpt mode.
 
-
 # FEATURES
 ---
 QUICK TEXTURE CREATION AND SELECTION
@@ -124,4 +123,11 @@ Disponibles de momento en otra 'branch' -> Sculpt-Features
 - [x] [Color] Selector de color y check para el 'unified color' entre brochas
 - [ ] [Remesher] Slider para el voxel size y botón para el remesh, o el botón de remesh y un dropdown menu con los ajustes.
 
+# CREDITS
+---
+"brush quickset" addon by Jean Ayer aka Vrav
+https://blenderartists.org/t/sculpt-paint-edit-workflow-suite-new-grow-sel-to-cursor/553819
+
+"Orbit" addon by Liquide Bleu
+https://github.com/LiquideBleu/Orbit
 

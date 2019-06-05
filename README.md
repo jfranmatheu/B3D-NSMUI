@@ -82,6 +82,11 @@ BRUSH PROPERTIES SLIDERS
 ![alt text](http://1.bp.blogspot.com/-g5QFeNxN_RA/XOga3bJZxNI/AAAAAAAAAf0/JxUM67mqqqMwavQHcQvRWKIQ-rta5yCtACK4BGAYYCw/s320/NewSMUI_sliders.png "Sliders")
 
 ---
+CUSTOMIZE THE UI! :D
+---
+Toggle UI Elements!
+![alt text](http://1.bp.blogspot.com/-WAsXaNIvCuE/XPg0hA3-pAI/AAAAAAAAAhM/UfMkAU1-LA4rmaGbxpsa2MBtKOCEXHTswCK4BGAYYCw/s400/toggleVisibilities.png "Toggle UI Elements")
+
 CUSTOM ICONS
 ---
 ![alt text](http://4.bp.blogspot.com/-QOTH4wgMenI/XPVO9HooF-I/AAAAAAAAAg8/GNsISB9Rlpkz61XbmH-p3lKqIdm4EVaugCK4BGAYYCw/s640/icons.png "Icons")

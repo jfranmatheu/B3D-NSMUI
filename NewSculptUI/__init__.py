@@ -16,7 +16,7 @@ bl_info = {
     "author" : "JFranMatheu",
     "description" : "New UI for Sculpt Mode! :D",
     "blender" : (2, 80, 0),
-    "version" : (0, 2, 1),
+    "version" : (0, 2, 2),
     "location" : "View3D > Tool Header // View3D > 'N' Panel: Sculpt)",
     "warning" : "This version is still in development. ;)",
     "category" : "Generic"
@@ -393,7 +393,8 @@ class NSMUI_HT_toolHeader_sculpt_tools(NSMUI_HT_toolHeader_sculpt):
             # Si hay stage
                 else:
                     n = 0 # CHIVATO PARA EL STAGE
-                    dynMethod_Active = bpy.context.scene.tool_settings.sculpt.detail_type_method # CARGAR VALOR DEL METODO ACTIVO
+                    #dynMethod_Active = bpy.context.scene.tool_settings.sculpt.detail_type_method # CARGAR VALOR DEL METODO ACTIVO
+                    dynMethod_Active = context.window_manager.toggle_dyntopo_detailing
                     iconLow = pcoll["dyntopoLowDetail_icon"]
                     iconMid = pcoll["dyntopoMidDetail_icon"]
                     iconHigh = pcoll["dyntopoHighDetail_icon"]
@@ -511,7 +512,8 @@ class NSMUI_PT_dyntopo_stages(Panel):
         dynStage_Active = bpy.types.Scene.dynStage_Active
         if(context.sculpt_object.use_dynamic_topology_sculpting == True):
             pcoll = preview_collections["main"]
-            method = bpy.context.scene.tool_settings.sculpt.detail_type_method
+            #method = bpy.context.scene.tool_settings.sculpt.detail_type_method
+            method = context.window_manager.toggle_dyntopo_detailing
             icon1 = pcoll["dyntopoRelative_icon"]
             icon2 = pcoll["dyntopoConstant_icon"]
             icon3 = pcoll["dyntopoBrush_icon"]
@@ -519,7 +521,7 @@ class NSMUI_PT_dyntopo_stages(Panel):
             icon_H = pcoll["dyntopoHighDetail_icon"]
             icon_M = pcoll["dyntopoMidDetail_icon"]
             icon_L = pcoll["dyntopoLowDetail_icon"]
-
+            wm = context.window_manager
         # STAGES - SKETCH - DETAIL - POLISH
             layout = self.layout
             row = layout.row(align=True)
@@ -541,7 +543,7 @@ class NSMUI_PT_dyntopo_stages(Panel):
         # DETAIL METHODS
             col = layout.column()
             row = col.row(align=True)
-            if method == 'CONSTANT':
+            if context.window_manager.toggle_dyntopo_detailing == 'CONSTANT':
                 icon = icon2
             elif method == 'BRUSH':
                 icon = icon3
@@ -552,9 +554,9 @@ class NSMUI_PT_dyntopo_stages(Panel):
             row.label(icon_value=icon.icon_id, text="Detailing Method :   " + method) # Stages - Para niveles de Detalle especificados abajo
             col = layout.column()
             row = col.row(align=True)
-            row.operator("nsmui.ht_toolheader_dyntopo_relative", text="Relative", icon_value=icon1.icon_id)
-            row.operator("nsmui.ht_toolheader_dyntopo_constant", text="Constant", icon_value=icon2.icon_id)
-            row.operator("nsmui.ht_toolheader_dyntopo_brush", text="Brush", icon_value=icon3.icon_id)
+            row.prop(wm, 'toggle_dyntopo_detailing', text="Relative", toggle=True, expand=True) #icon_value=icon1.icon_id
+            #row.prop(wm, 'toggle_dyntopo_relative', text="Constant", icon_value=icon2.icon_id)
+            #row.prop(wm, 'toggle_dyntopo_detailing', text="Brush", icon_value=icon3.icon_id, expand=False)
 
             if dynStage_Active != 0:
             # LOOK FOR ACTIVE STAGE
@@ -648,6 +650,15 @@ def update_property(self, context):
     if self==True:
         self = not self   
 
+def update_dyntopo_relative(self, context):
+    bpy.ops.nsmui.ht_toolheader_dyntopo_relative()
+def update_dyntopo_constant(self, context):
+    bpy.ops.nsmui.ht_toolheader_dyntopo_constant()
+def update_dyntopo_brush(self, context):
+    bpy.ops.nsmui.ht_toolheader_dyntopo_brush()
+def update_dyntopo_detailing(self, context):
+    context.window_manager.toggle_dyntopo_detailing = context.window_manager.toggle_dyntopo_detailing.self
+
 #################################################
 #   REGISTRATION !!!!                      #
 #################################################
@@ -691,7 +702,18 @@ def register():
     wm.toggle_symmetry = bpy.props.BoolProperty(default=True, update=update_property)
     wm.toggle_texture_new = bpy.props.BoolProperty(default=True, update=update_property)
     wm.toggle_texture_open = bpy.props.BoolProperty(default=True, update=update_property)
-
+    wm.toggle_dyntopo_relative = bpy.props.BoolProperty(default=False, update=update_dyntopo_relative)
+    wm.toggle_dyntopo_constant = bpy.props.BoolProperty(default=False, update=update_dyntopo_constant)
+    wm.toggle_dyntopo_brush = bpy.props.BoolProperty(default=False, update=update_dyntopo_brush)
+    wm.toggle_dyntopo_detailing = bpy.props.EnumProperty(
+        items=(
+            ('RELATIVE', "Relative", ""),
+            ('CONSTANT', "Constant", ""),
+            ('BRUSH', "Brush", "")
+        ),
+        default='RELATIVE',
+        #update=update_dyntopo_detailing
+    )
     # REGISTER ORIGINAL TOOL HEADER # changed - antes al final del código de la clase del tool header
     try:
         bpy.utils.register_class(VIEW3D_HT_tool_header)
@@ -729,5 +751,9 @@ def unregister():
     del wm.toggle_symmetry
     del wm.toggle_texture_new
     del wm.toggle_texture_open
+    del wm.toggle_dyntopo_relative
+    del wm.toggle_dyntopo_constant
+    del wm.toggle_dyntopo_brush
+    del wm.toggle_dyntopo_detailing
 
     print("Unregistered New Sculpt Mode UI")

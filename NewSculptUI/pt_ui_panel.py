@@ -15,7 +15,6 @@ class NSMUI_PT_th_settings(Panel):
             row = self.layout.row() # define una fila
             row.operator('nsmui.ot_panel_setup', text="Sculpt-Mode Setup") # id del operador, texto para el botón
         else:
-            self.layout.label(text="TOGGLE UI ELEMENTS !")
             wm = context.window_manager
             row = self.layout.row(align=True)
             row.label(text="Brush :")

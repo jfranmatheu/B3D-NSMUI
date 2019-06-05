@@ -8,7 +8,6 @@ New Sculpt Mode UI for Blender 2.80
 
 Nueva UI para el modo Sculpt. Modifica principalmente el Tool Header del sculpt mode.
 
-
 # FEATURES
 ---
 QUICK TEXTURE CREATION AND SELECTION
@@ -106,7 +105,9 @@ FUTUROS CAMBIOS E IDEAS LOCAS
 # OTROS
 - [ ] Filtros para las texturas.
 - [ ] Sets de brochas: 1, Recientemente usadas. 2, Por tipo según la brocha activa. 3, Favoritas.
-- [ ] Nuevos y mejores atajos de teclado.
+- [x] Nuevos y mejores atajos de teclado. Gracias al addon de Jean Ayer que he integrado podemos usar click derecho y arrastrar en uno de los axis (horizontal y vertical) para cambiar el tamaño o la fuerza de la brocha de forma fácil.
+- [x] Reestructuración en el código para hacerlo más limpio y además MODULAR.
+- [x] Poder desactivar y activar diferentes elementos de la UI para un mayor nivel de personalización. Esto se hace desde el panel de la 'N' llamado "Sculpt".
 - [ ] Manager para brochas.
 - [ ] Nueva brocha personalizable con multitud de parámetros configurables.
 - [ ] Exportación/Importación (1 click) de brochas.
@@ -124,4 +125,12 @@ Disponibles de momento en otra 'branch' -> Sculpt-Features
 - [x] [Color] Selector de color y check para el 'unified color' entre brochas
 - [ ] [Remesher] Slider para el voxel size y botón para el remesh, o el botón de remesh y un dropdown menu con los ajustes.
 
+# CREDITS
+---
+"brush quickset" addon by Jean Ayer aka Vrav
+https://blenderartists.org/t/sculpt-paint-edit-workflow-suite-new-grow-sel-to-cursor/553819
 
+"Orbit" addon by Liquide Bleu
+https://github.com/LiquideBleu/Orbit
+
+Icons for dyntopo detailing (Relative, Brush and Constant + high, mid and low) made by g3n.es

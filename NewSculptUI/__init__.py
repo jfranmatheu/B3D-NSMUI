@@ -16,7 +16,7 @@ bl_info = {
     "author" : "JFranMatheu",
     "description" : "New UI for Sculpt Mode! :D",
     "blender" : (2, 80, 0),
-    "version" : (0, 2, 0),
+    "version" : (0, 2, 1),
     "location" : "View3D > Tool Header // View3D > 'N' Panel: Sculpt)",
     "warning" : "This version is still in development. ;)",
     "category" : "Generic"
@@ -26,7 +26,7 @@ bl_info = {
 import os
 import bpy 
 import traceback
-from bpy.types import Operator, AddonPreferences, Header, Panel, Brush, UIList, Menu, Texture, Scene
+from bpy.types import Operator, AddonPreferences, Header, Panel, Brush, UIList, Menu, Texture, Scene, WindowManager
 from bl_ui.utils import PresetPanel
 import bpy.utils.previews
 from os.path import dirname, join, abspath, basename
@@ -86,17 +86,7 @@ dynValues_ui = [3,6,9] # valores mostrados en la UI # DEFECTO # Cambiarán al ca
 # ----------------------------------------------------------------- #
 #   SETTINGS FOR TOOL HEADER UI                                     #
 # ----------------------------------------------------------------- #
-class ToolHeader_Settings:
-    def __init__(self, dyntopo=True, sliders = [], brush_Reset=True, brush_Remove=True):
-        self.dyntopo = dyntopo
-        self.sliders = sliders
-        self.brush_Reset = brush_Reset
-        self.brush_Remove = brush_Remove
-    
-    def __repr__(self):
-        return "ToolHeader_Settings[%b, %b[], %b, %b]" % (self.dyntopo, self.sliders, self.brush_Reset, self.brush_Remove)
-th_settings_sliders_default = [True, True, True]
-th_settings_default = ToolHeader_Settings(True, th_settings_sliders_default, True, True)
+
 
 # ----------------------------------------------------------------- #
 # ICONS // PREVIEW COLLECTION
@@ -178,21 +168,23 @@ class NSMUI_HT_toolHeader_sculpt(Header, UnifiedPaintPanel):
             settings = self.paint_settings(context)
             brush = settings.brush
             ups = toolsettings.unified_paint_settings
+            wm = context.window_manager
 
             # IF THERE'S NO BRUSH, JUST STOP DRAWING
             if brush is None:
                 return
             
-            toolHeader.draw_brushManager(self, sculpt, pcoll["brushAdd_icon"],
-                pcoll["brushReset_icon"], bpy.types.Scene.resetBrush_Active,
-                pcoll["brushRemove_icon"], bpy.types.Scene.removeBrush_Active)
+            toolHeader.draw_brushManager(self, sculpt, wm, 
+                pcoll["brushAdd_icon"], wm.toggle_brushAdd,
+                pcoll["brushReset_icon"], wm.toggle_brushReset, # bpy.types.Scene.resetBrush_Active
+                pcoll["brushRemove_icon"], wm.toggle_brushRemove) #bpy.types.Scene.removeBrush_Active
             
             toolHeader.draw_separator(self, pcoll)
 
-            if (bpy.types.Scene.sliders_Active == True):
-                toolHeader.draw_slider_brushSize(self, toolsettings, brush, ups)
-                toolHeader.draw_slider_brushStrength(self, toolsettings, brush, ups)       
-                toolHeader.draw_slider_brushSmooth(self, brush, capabilities)
+            if wm.toggle_sliders: # bpy.types.Scene.sliders_Active [OLD]
+                if wm.toggle_slider_brushSize: toolHeader.draw_slider_brushSize(self, toolsettings, brush, ups)
+                if wm.toggle_slider_brushStrength: toolHeader.draw_slider_brushStrength(self, toolsettings, brush, ups)       
+                if wm.toggle_slider_brushSmooth: toolHeader.draw_slider_brushSmooth(self, brush, capabilities)
                 toolHeader.draw_separator(self, pcoll)
 
             toolHeader.draw_brushSettings(self, pcoll["brush_icon"])
@@ -202,16 +194,18 @@ class NSMUI_HT_toolHeader_sculpt(Header, UnifiedPaintPanel):
 
             toolHeader.draw_separator(self, pcoll)
 
-            toolHeader.draw_maskSettings(self, pcoll["mask_icon"], pcoll["maskInvert_icon"], pcoll["maskClear_icon"])
-            toolHeader.draw_symmetry(self, sculpt, pcoll["mirror_icon"])
+            if wm.toggle_mask: toolHeader.draw_maskSettings(self, pcoll["mask_icon"], pcoll["maskInvert_icon"], pcoll["maskClear_icon"])
+            if wm.toggle_symmetry: toolHeader.draw_symmetry(self, sculpt, pcoll["mirror_icon"])
 
             toolHeader.draw_separator(self, pcoll)
 
-            toolHeader.draw_topologySettings(self, context, pcoll)
-                    
-            toolHeader.draw_separator(self, pcoll)
+            if wm.toggle_dyntopo: 
+                toolHeader.draw_topologySettings(self, context, pcoll)
+                toolHeader.draw_separator(self, pcoll)
 
-            toolHeader.draw_textureSettings(self, pcoll["texture_icon"], pcoll["textureNew_icon"], pcoll["textureOpen_icon"])
+            toolHeader.draw_textureSettings(self,
+                pcoll["texture_icon"], pcoll["textureNew_icon"], pcoll["textureOpen_icon"], 
+                wm.toggle_texture_new, wm.toggle_texture_open)
             toolHeader.draw_textureManager(self, brush, pcoll["texture_icon"])
 
             toolHeader.draw_separator(self, pcoll)
@@ -234,20 +228,21 @@ class NSMUI_HT_toolHeader_sculpt_tools(NSMUI_HT_toolHeader_sculpt):
         col.label(text="", icon_value=icon.icon_id)
 
 #   BRUSH SELECTOR // ADD / RESET // REMOVE
-    def draw_brushManager(self, sculpt, icon_brushAdd, icon_brushReset, canReset, icon_brushRemove, canRemove):
+    def draw_brushManager(self, sculpt, wm, icon_brushAdd, canAdd, icon_brushReset, canReset, icon_brushRemove, canRemove):
         layout = self.layout
         row = layout.row(align=True)
         row.ui_units_x = 9
         # BRUSH LIST
         row.template_ID_preview(sculpt, "brush", new="brush.add", rows=3, cols=8, hide_buttons=True)
         # NEW BRUSH BUTTON (DUPLICATE)
-        row.operator("brush.add", text="", icon_value=icon_brushAdd.icon_id)     
+        if canAdd:
+            row.operator("brush.add", text="", icon_value=icon_brushAdd.icon_id)     
         # RESET BRUSH BUTTON
-        if(canReset == True):
+        if canReset:
             row.ui_units_x = row.ui_units_x + 1
             row.operator("brush.reset", text="", icon_value=icon_brushReset.icon_id) # RESET BRUSH
         # DELETE BRUSH BUTTON
-        if (canRemove == True):
+        if canRemove:
             row.ui_units_x = row.ui_units_x + 1
             row.operator("brush.reset", text="", icon_value=icon_brushRemove.icon_id) # DELETE BRUSH
 
@@ -377,6 +372,10 @@ class NSMUI_HT_toolHeader_sculpt_tools(NSMUI_HT_toolHeader_sculpt):
             sub = self.layout.row(align=True)
             sub.popover(panel="VIEW3D_PT_sculpt_dyntopo", text="")
             if(context.sculpt_object.use_dynamic_topology_sculpting==True):
+                try:
+                    bpy.utils.register_class(NSMUI_PT_dyntopo_stages)
+                except:
+                    pass
             # Si no hay ningún 'Stage' activado
                 if dynStage_Active == 0:
                     sub.popover(panel="NSMUI_PT_dyntopo_stages", text="", icon='STYLUS_PRESSURE') # NUEVO PANEL PARA LOS 'STAGES'
@@ -428,9 +427,14 @@ class NSMUI_HT_toolHeader_sculpt_tools(NSMUI_HT_toolHeader_sculpt):
                     row.operator("nsmui.ht_toolheader_dyntopo_any", text="", icon_value=iconLow.icon_id).value = dynValues_ui[0] # LOW DETAIL
                     row.operator("nsmui.ht_toolheader_dyntopo_any", text="", icon_value=iconMid.icon_id).value = dynValues_ui[1] # MID DETAIL
                     row.operator("nsmui.ht_toolheader_dyntopo_any", text="", icon_value=iconHigh.icon_id).value = dynValues_ui[2] # HIGH DETAIL
+            else:
+                try:
+                    bpy.utils.unregister_class(NSMUI_PT_dyntopo_stages)
+                except:
+                    pass
 
 #   TEXTURE SETTINGS (DROPDOWN) / NEW TEXTURE / OPEN IMAGE
-    def draw_textureSettings(self, icon_texture, icon_textureNew, icon_textureOpen):
+    def draw_textureSettings(self, icon_texture, icon_textureNew, icon_textureOpen, toggle_newTexture, toggle_openImage):
         layout = self.layout
         split = layout
         col = split.column()
@@ -441,8 +445,10 @@ class NSMUI_HT_toolHeader_sculpt_tools(NSMUI_HT_toolHeader_sculpt):
         col = split.column()
         row = col.row(align=True)
         row = self.layout.row(align=True)
-        row.operator("nsmui.ht_toolheader_new_texture", text="", icon_value=icon_textureNew.icon_id) # NEW TEXTURE
-        row.operator("image.open", text="", icon_value=icon_textureOpen.icon_id) # OPEN IMAGE TEXTURE
+        if toggle_newTexture:
+            row.operator("nsmui.ht_toolheader_new_texture", text="", icon_value=icon_textureNew.icon_id) # NEW TEXTURE
+        if toggle_openImage:
+            row.operator("image.open", text="", icon_value=icon_textureOpen.icon_id) # OPEN IMAGE TEXTURE
 
 #   TEXTURE QUICK SELECTOR
     def draw_textureManager(self, brush, icon):
@@ -624,20 +630,6 @@ bpy.types.Scene.dynStage_Active = bpy.props.IntProperty(
         set = set_dynStage,
     )
 # --------------------------------------------- #
-#   SCULPTMODE > BRUSH > REMOVE BUTTON - TOOL HEADER SETTINGS
-bpy.types.Scene.removeBrush_Active = bpy.props.BoolProperty(
-        name="Dyn Stage",
-        description = "Actual Stage for Dyntopo",
-        default = False, 
-    )
-bpy.types.Scene.removeBrush_Active = False # Inicializar valor por defecto
-#   SCULPTMODE > BRUSH > REMOVE BUTTON - TOOL HEADER SETTINGS
-bpy.types.Scene.resetBrush_Active = bpy.props.BoolProperty()
-bpy.types.Scene.resetBrush_Active = True # Inicializar valor por defecto
-#   SCULPTMODE > SLIDERS - TOOL HEADER SETTINGS
-bpy.types.Scene.sliders_Active = bpy.props.BoolProperty()
-bpy.types.Scene.resetBrush_Active = True # Inicializar valor por defecto
-
 # ------------------------------------------- #
 #   FUNCIONES SUELTAS 
 # ------------------------------------------- #
@@ -650,6 +642,11 @@ def dynStage_toString(_dynStage):
     elif _dynStage == 3:
         s_dynStage = "POLISH"
     return s_dynStage
+
+# Update Properties [Toggle] for all props
+def update_property(self, context):
+    if self==True:
+        self = not self   
 
 #################################################
 #   REGISTRATION !!!!                      #
@@ -674,11 +671,26 @@ def register():
     # AutoLoad Exterior Classes
     auto_load.register()
 
-    # Register Collections
+    # Register Collections (ICONS)
     pcoll = bpy.utils.previews.new()
     for key, f in icons.items():
         pcoll.load(key, path.join(icon_dir, f), 'IMAGE')
     preview_collections["main"] = pcoll
+
+    # WM PROPERTIES
+    wm = bpy.types.WindowManager
+    wm.toggle_brushAdd = bpy.props.BoolProperty(default=True, update=update_property)
+    wm.toggle_brushRemove = bpy.props.BoolProperty(default=True, update=update_property)
+    wm.toggle_brushReset = bpy.props.BoolProperty(default=True, update=update_property)
+    wm.toggle_sliders = bpy.props.BoolProperty(default=True, update=update_property)
+    wm.toggle_slider_brushSize = bpy.props.BoolProperty(default=True, update=update_property)
+    wm.toggle_slider_brushStrength = bpy.props.BoolProperty(default=True, update=update_property)
+    wm.toggle_slider_brushSmooth = bpy.props.BoolProperty(default=True, update=update_property)
+    wm.toggle_dyntopo = bpy.props.BoolProperty(default=True, update=update_property)
+    wm.toggle_mask = bpy.props.BoolProperty(default=True, update=update_property)
+    wm.toggle_symmetry = bpy.props.BoolProperty(default=True, update=update_property)
+    wm.toggle_texture_new = bpy.props.BoolProperty(default=True, update=update_property)
+    wm.toggle_texture_open = bpy.props.BoolProperty(default=True, update=update_property)
 
     # REGISTER ORIGINAL TOOL HEADER # changed - antes al final del código de la clase del tool header
     try:
@@ -702,5 +714,20 @@ def unregister():
     for pcoll in preview_collections.values():
         bpy.utils.previews.remove(pcoll)
     preview_collections.clear()
+
+    # PROPERTIES
+    wm = bpy.types.WindowManager
+    del wm.toggle_sliders
+    del wm.toggle_slider_brushSize
+    del wm.toggle_slider_brushStrength
+    del wm.toggle_slider_brushSmooth
+    del wm.toggle_brushAdd
+    del wm.toggle_brushRemove
+    del wm.toggle_brushReset
+    del wm.toggle_dyntopo
+    del wm.toggle_mask
+    del wm.toggle_symmetry
+    del wm.toggle_texture_new
+    del wm.toggle_texture_open
 
     print("Unregistered New Sculpt Mode UI")

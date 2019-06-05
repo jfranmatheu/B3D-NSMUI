@@ -15,11 +15,33 @@ class NSMUI_PT_th_settings(Panel):
             row = self.layout.row() # define una fila
             row.operator('nsmui.ot_panel_setup', text="Sculpt-Mode Setup") # id del operador, texto para el botón
         else:
+            self.layout.label(text="TOGGLE UI ELEMENTS !")
+            wm = context.window_manager
             row = self.layout.row(align=True)
-            row.operator('nsmui.ot_setting_brush_remove', text="Remove Brush") # id del operador, texto para el botón
-            row.operator('nsmui.ot_setting_brush_reset', text="Reset Brush") # id del operador, texto para el botón
+            row.label(text="Brush :")
+            row.prop(wm, 'toggle_brushAdd', text="Add", toggle=True)
+            row.prop(wm, 'toggle_brushRemove', text="Remove", toggle=True)
+            row.prop(wm, 'toggle_brushReset', text="Reset", toggle=True)
+
             row = self.layout.row(align=True)
-            row.operator('nsmui.ot_setting_sliders', text="Sliders")
+            row.label(text="Sliders :")
+            row.prop(wm, 'toggle_sliders', text="All Sliders", toggle=False) # si es false, el toggle es un checkbox
+            row = self.layout.row(align=True)
+            row.prop(wm, 'toggle_slider_brushSize', text="Size", toggle=True)
+            row.prop(wm, 'toggle_slider_brushStrength', text="Strength", toggle=True)
+            row.prop(wm, 'toggle_slider_brushSmooth', text="Smooth", toggle=True)
+
+            row = self.layout.row()
+            row.prop(wm, 'toggle_mask', text="Mask", toggle=False)
+            row.prop(wm, 'toggle_symmetry', text="Symmetry", toggle=False)
+            row = self.layout.row()
+            row.prop(wm, 'toggle_dyntopo', text="Dyntopo", toggle=False)
+
+            row = self.layout.row()
+            row.label(text="Texture Settings :")
+            row = self.layout.row(align=True)
+            row.prop(wm, 'toggle_texture_new', text="New Texture", toggle=True)
+            row.prop(wm, 'toggle_texture_open', text="Open Image", toggle=True)
 
 # CLASS FROM ADDON "Orbit" by LiquidBleu
 # https://github.com/LiquideBleu/Orbit

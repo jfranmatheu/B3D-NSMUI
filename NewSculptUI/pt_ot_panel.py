@@ -5,10 +5,7 @@ class NSMUI_OT_panel_setting_brush_remove(bpy.types.Operator):
     bl_label = "Remove Brush Checkbox"
     bl_description = "De/Activate Remove UI button in the Tool Header"
     def execute(self, context):
-        if (bpy.types.Scene.removeBrush_Active == True):
-            bpy.types.Scene.removeBrush_Active = False
-        else:
-            bpy.types.Scene.removeBrush_Active = True
+        bpy.types.Scene.removeBrush_Active = not bpy.types.Scene.removeBrush_Active
         from . import NSMUI_HT_toolHeader_sculpt as TH
         TH.redraw()
         return {'FINISHED'}
@@ -18,23 +15,18 @@ class NSMUI_OT_panel_setting_brush_reset(bpy.types.Operator):
     bl_label = "Reset Brush Checkbox"
     bl_description = "De/Activate Reset UI button in the Tool Header"
     def execute(self, context):
-        if (bpy.types.Scene.resetBrush_Active == True):
-            bpy.types.Scene.resetBrush_Active = False
-        else:
-            bpy.types.Scene.resetBrush_Active = True
+        bpy.types.Scene.resetBrush_Active = not bpy.types.Scene.resetBrush_Active
         from . import NSMUI_HT_toolHeader_sculpt as TH
         TH.redraw()
         return {'FINISHED'}
 
 class NSMUI_OT_panel_setting_sliders(bpy.types.Operator):
     bl_idname = "nsmui.ot_setting_sliders"
-    bl_label = "Sliders Checkbox"
+    bl_label = "Sliders"
     bl_description = "De/Activate Sliders of the Tool Header"
+    bl_options = {'REGISTER', 'UNDO'}
     def execute(self, context):
-        if (bpy.types.Scene.sliders_Active == True):
-            bpy.types.Scene.sliders_Active = False
-        else:
-            bpy.types.Scene.sliders_Active = True
+        bpy.types.Scene.sliders_Active = not bpy.types.Scene.sliders_Active
         from . import NSMUI_HT_toolHeader_sculpt as TH
         TH.redraw()
         return {'FINISHED'}

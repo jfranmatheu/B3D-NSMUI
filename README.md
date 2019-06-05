@@ -84,7 +84,7 @@ BRUSH PROPERTIES SLIDERS
 ---
 CUSTOMIZE THE UI! :D
 ---
-Toggle UI Elements!
+- Toggle UI Elements!
 ![alt text](http://1.bp.blogspot.com/-WAsXaNIvCuE/XPg0hA3-pAI/AAAAAAAAAhM/UfMkAU1-LA4rmaGbxpsa2MBtKOCEXHTswCK4BGAYYCw/s400/toggleVisibilities.png "Toggle UI Elements")
 
 CUSTOM ICONS

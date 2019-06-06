@@ -41,12 +41,13 @@ class NSMUI_PT_th_settings(Panel):
             row = self.layout.row(align=True)
             row.prop(wm, 'toggle_texture_new', text="New Texture", toggle=True)
             row.prop(wm, 'toggle_texture_open', text="Open Image", toggle=True)
+            
 
 # CLASS FROM ADDON "Orbit" by LiquidBleu
 # https://github.com/LiquideBleu/Orbit
-class NSMUI_PT_Orbit_Prefs(bpy.types.Panel):
-        bl_idname = "NSMUI_PT_Panel_Orbit_Prefs"
-        bl_label = "Orbit Preferences"
+class NSMUI_PT_Prefs(bpy.types.Panel):
+        bl_idname = "NSMUI_PT_Panel_Prefs"
+        bl_label = "Preferences"
         bl_space_type = 'VIEW_3D'
         bl_region_type = 'UI'
         bl_category = 'Sculpt'
@@ -69,3 +70,4 @@ class NSMUI_PT_Orbit_Prefs(bpy.types.Panel):
             flow.prop(inputs, "use_mouse_depth_navigate")
             flow.prop(inputs, "use_zoom_to_mouse")
             flow.prop(inputs, "use_auto_perspective")
+            flow.prop(inputs, "drag_threshold_tablet")

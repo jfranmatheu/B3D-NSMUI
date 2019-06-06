@@ -144,27 +144,3 @@ class NSMUI_OT_toolHeader_dyntopo_any(bpy.types.Operator):
             else: # bpy.context.scene.tool_settings.sculpt.detail_type_method = 'MANUAL' // 'RELATIVE'
                 bpy.context.scene.tool_settings.sculpt.detail_size = n
         return {'FINISHED'}
-
-class NSMUI_OT_toolHeader_dyntopo_relative(bpy.types.Operator):
-    bl_idname = "nsmui.ht_toolheader_dyntopo_relative"
-    bl_label = "New Sculpt-Mode UI"
-    bl_description = "Relative Detail for Dynamic Topology"
-    def execute(self, context):
-        bpy.context.scene.tool_settings.sculpt.detail_type_method = 'RELATIVE'
-        return {'FINISHED'}
-
-class NSMUI_OT_toolHeader_dyntopo_constant(bpy.types.Operator):
-    bl_idname = "nsmui.ht_toolheader_dyntopo_constant"
-    bl_label = "New Sculpt-Mode UI"
-    bl_description = "Constant Detail for Dynamic Topology"
-    def execute(self, context):
-        bpy.context.scene.tool_settings.sculpt.detail_type_method = 'CONSTANT'
-        return {'FINISHED'}
-
-class NSMUI_OT_toolHeader_dyntopo_brush(bpy.types.Operator):
-    bl_idname = "nsmui.ht_toolheader_dyntopo_brush"
-    bl_label = "New Sculpt-Mode UI"
-    bl_description = "Brush Detail for Dynamic Topology"
-    def execute(self, context):
-        bpy.context.scene.tool_settings.sculpt.detail_type_method = 'BRUSH'
-        return {'FINISHED'}

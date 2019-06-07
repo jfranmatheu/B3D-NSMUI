@@ -29,6 +29,9 @@ class NSMUI_PT_th_settings(Panel):
             row.prop(wm, 'toggle_slider_brushSize', text="Size", toggle=True)
             row.prop(wm, 'toggle_slider_brushStrength', text="Strength", toggle=True)
             row.prop(wm, 'toggle_slider_brushSmooth', text="Smooth", toggle=True)
+            
+            row = self.layout.row(align=True)
+            row.prop(wm, 'toggle_slider_spacing', text="Spacing", toggle=True)
 
             row = self.layout.row()
             row.prop(wm, 'toggle_mask', text="Mask", toggle=False)

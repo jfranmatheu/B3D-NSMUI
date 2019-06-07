@@ -8,6 +8,14 @@ from bpy.types import (
     Texture
 )
 
+class NSMUI_OT_toolHeader_brushRemove(bpy.types.Operator):
+    bl_idname = "nsmui.ht_toolheader_brush_remove"
+    bl_label = "New Sculpt-Mode UI"
+    bl_description = "Remove Active Brush plus Unlink"
+    def execute(self, context):
+        brush = bpy.context.tool_settings.sculpt.brush
+        bpy.data.brushes.remove(brush, do_unlink=True)
+        return {'FINISHED'}
 
 class NSMUI_OT_toolHeader_symmetry_all(bpy.types.Operator):
     bl_idname = "nsmui.ht_toolheader_symmetry_all"

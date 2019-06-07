@@ -185,6 +185,7 @@ class NSMUI_HT_toolHeader_sculpt(Header, UnifiedPaintPanel):
                 if wm.toggle_slider_brushSize: toolHeader.draw_slider_brushSize(self, toolsettings, brush, ups)
                 if wm.toggle_slider_brushStrength: toolHeader.draw_slider_brushStrength(self, toolsettings, brush, ups)       
                 if wm.toggle_slider_brushSmooth: toolHeader.draw_slider_brushSmooth(self, brush, capabilities)
+                if wm.toggle_slider_spacing: toolHeader.draw_slider_spacing(self, brush)
                 toolHeader.draw_separator(self, pcoll)
 
             toolHeader.draw_brushSettings(self, pcoll["brush_icon"])
@@ -247,7 +248,7 @@ class NSMUI_HT_toolHeader_sculpt_tools(NSMUI_HT_toolHeader_sculpt):
         # DELETE BRUSH BUTTON
         if canRemove:
             row.ui_units_x = row.ui_units_x + 1
-            row.operator("brush.reset", text="", icon_value=icon_brushRemove.icon_id) # DELETE BRUSH
+            row.operator("nsmui.ht_toolheader_brush_remove", text="", icon_value=icon_brushRemove.icon_id) # DELETE BRUSH
 
 #   BRUSH SIZE    
     def draw_slider_brushSize(self, toolsettings, brush, ups):
@@ -286,6 +287,23 @@ class NSMUI_HT_toolHeader_sculpt_tools(NSMUI_HT_toolHeader_sculpt):
         if (capabilities.has_auto_smooth):
             row.prop(brush, "auto_smooth_factor", slider=True, text="Smooth")
             row.prop(brush, "use_inverse_smooth_pressure", toggle=True, text="")
+
+#   BRUSH > STROKE > SPACING SLIDER
+    def draw_slider_spacing(self, brush):
+        col = self.layout.column()
+        col.ui_units_x = 6
+        # Airbrush
+        if brush.use_airbrush:
+            col.prop(brush, "rate", text="Rate", slider=True)
+        # Space
+        if brush.use_space:
+            row = col.row(align=True)
+            row.prop(brush, "spacing", text="Spacing")
+            row.prop(brush, "use_pressure_spacing", toggle=True, text="")
+        # Line and Curve
+        if brush.use_line or brush.use_curve:
+            row = col.row(align=True)
+            row.prop(brush, "spacing", text="Spacing")
 
 #   BRUSH SETTINGS (DROPDOWN)
     def draw_brushSettings(self, icon):
@@ -520,7 +538,7 @@ class NSMUI_HT_header_sculpt(bpy.types.Header):
                 row.operator('nsmui.ot_header_tool_toggle', text="", icon_value=icon.icon_id)            
 
 # --------------------------------------------- #
-# DYNTOPO STAGES UI PANEL / OPERATOR
+# DYNTOPO STAGES UI PANEL
 # --------------------------------------------- #
 class NSMUI_PT_dyntopo_stages(Panel):
     bl_label = "DyntopoStages"
@@ -689,6 +707,7 @@ def register():
     wm.toggle_slider_brushSize = bpy.props.BoolProperty(default=True, update=update_property)
     wm.toggle_slider_brushStrength = bpy.props.BoolProperty(default=True, update=update_property)
     wm.toggle_slider_brushSmooth = bpy.props.BoolProperty(default=True, update=update_property)
+    wm.toggle_slider_spacing = bpy.props.BoolProperty(default=False, update=update_property)
     wm.toggle_dyntopo = bpy.props.BoolProperty(default=True, update=update_property)
     wm.toggle_mask = bpy.props.BoolProperty(default=True, update=update_property)
     wm.toggle_symmetry = bpy.props.BoolProperty(default=True, update=update_property)
@@ -740,6 +759,7 @@ def unregister():
     del wm.toggle_slider_brushSize
     del wm.toggle_slider_brushStrength
     del wm.toggle_slider_brushSmooth
+    del wm.toggle_slider_spacing
     del wm.toggle_brushAdd
     del wm.toggle_brushRemove
     del wm.toggle_brushReset

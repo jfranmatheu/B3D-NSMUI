@@ -88,6 +88,18 @@ CUSTOMIZE THE UI! :D
 
 ![alt text](http://1.bp.blogspot.com/-WAsXaNIvCuE/XPg0hA3-pAI/AAAAAAAAAhM/UfMkAU1-LA4rmaGbxpsa2MBtKOCEXHTswCK4BGAYYCw/s400/toggleVisibilities.png "Toggle UI Elements")
 
+---
+QUICK PREFERENCES
+---
+![alt text](http://2.bp.blogspot.com/-8l3wWfEEXLw/XPqipPkx7UI/AAAAAAAAAhY/32gEEckEq8EBoJYmjzg1jZJNUZzF5YvoQCK4BGAYYCw/s400/preferences.png Preferences")
+
+---
+BRUSH SIZE AND STRENGTH SHORTCUTS
+---
+LMB up-down and left-right to increase/decrease brush size and brush strength
+Feature by Jean Ayer aka Vrav
+
+---
 CUSTOM ICONS
 ---
 ![alt text](http://4.bp.blogspot.com/-QOTH4wgMenI/XPVO9HooF-I/AAAAAAAAAg8/GNsISB9Rlpkz61XbmH-p3lKqIdm4EVaugCK4BGAYYCw/s640/icons.png "Icons")

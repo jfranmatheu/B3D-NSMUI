@@ -83,9 +83,6 @@ dynStage_Active = 0 # 1 = SKETCH; 2 = DETAIL; 3 = POLISH; 0 = "NONE" # Por defec
 dynMethod_Active = "NONE"
 dynValues_ui = [3,6,9] # valores mostrados en la UI # DEFECTO # Cambiarán al cambiar de stage o detailing (method aquí)
 
-depressL = False
-depressM = False
-depressH = False
 # ----------------------------------------------------------------- #
 #   SETTINGS FOR TOOL HEADER UI                                     #
 # ----------------------------------------------------------------- #
@@ -416,12 +413,12 @@ class NSMUI_HT_toolHeader_sculpt_tools(NSMUI_HT_toolHeader_sculpt):
                     row = col.row(align=True)
                     #row.ui_units_x = 4
                 # BOTONES PARA OPCIONES/VALORES PARA DETAIL SIZE DE DYNTOPO SEGUN EL METHOD Y STAGE
-                    if bpy.types.Scene.depressL == False: dpL = True
-                    else: dpL = False
-                    if bpy.types.Scene.depressM == False: dpM = True
-                    else: dpM = False
-                    if bpy.types.Scene.depressH == False: dpH = True
-                    else: dpH = False
+                    if bpy.types.Scene.depressL == True: dpL = False
+                    else: dpL = True
+                    if bpy.types.Scene.depressM == True: dpM = False
+                    else: dpM = True
+                    if bpy.types.Scene.depressH == True: dpH = False
+                    else: dpH = True
                     
                     row.operator("nsmui.ht_toolheader_dyntopo_any_l", text="", icon_value=iconLow.icon_id, depress=update_depress_M(dpL)).value = dynValues_ui[0] # LOW DETAIL
                     row.operator("nsmui.ht_toolheader_dyntopo_any_m", text="", icon_value=iconMid.icon_id, depress=update_depress_M(dpM)).value = dynValues_ui[1] # MID DETAIL

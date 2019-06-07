@@ -16,7 +16,7 @@ bl_info = {
     "author" : "JFranMatheu",
     "description" : "New UI for Sculpt Mode! :D",
     "blender" : (2, 80, 0),
-    "version" : (0, 2, 2),
+    "version" : (0, 2, 4),
     "location" : "View3D > Tool Header // View3D > 'N' Panel: Sculpt)",
     "warning" : "This version is still in development. ;)",
     "category" : "Generic"
@@ -30,7 +30,7 @@ from bpy.types import Operator, AddonPreferences, Header, Panel, Brush, UIList, 
 from bl_ui.utils import PresetPanel
 import bpy.utils.previews
 from os.path import dirname, join, abspath, basename
-from bpy import context, types
+from bpy import context, types, ops
 from bl_ui.properties_paint_common import (
         UnifiedPaintPanel,
         brush_texture_settings,
@@ -83,6 +83,9 @@ dynStage_Active = 0 # 1 = SKETCH; 2 = DETAIL; 3 = POLISH; 0 = "NONE" # Por defec
 dynMethod_Active = "NONE"
 dynValues_ui = [3,6,9] # valores mostrados en la UI # DEFECTO # Cambiarán al cambiar de stage o detailing (method aquí)
 
+depressL = False
+depressM = False
+depressH = False
 # ----------------------------------------------------------------- #
 #   SETTINGS FOR TOOL HEADER UI                                     #
 # ----------------------------------------------------------------- #
@@ -413,9 +416,16 @@ class NSMUI_HT_toolHeader_sculpt_tools(NSMUI_HT_toolHeader_sculpt):
                     row = col.row(align=True)
                     #row.ui_units_x = 4
                 # BOTONES PARA OPCIONES/VALORES PARA DETAIL SIZE DE DYNTOPO SEGUN EL METHOD Y STAGE
-                    row.operator("nsmui.ht_toolheader_dyntopo_any", text="", icon_value=iconLow.icon_id).value = dynValues_ui[0] # LOW DETAIL
-                    row.operator("nsmui.ht_toolheader_dyntopo_any", text="", icon_value=iconMid.icon_id).value = dynValues_ui[1] # MID DETAIL
-                    row.operator("nsmui.ht_toolheader_dyntopo_any", text="", icon_value=iconHigh.icon_id).value = dynValues_ui[2] # HIGH DETAIL
+                    if bpy.types.Scene.depressL == False: dpL = True
+                    else: dpL = False
+                    if bpy.types.Scene.depressM == False: dpM = True
+                    else: dpM = False
+                    if bpy.types.Scene.depressH == False: dpH = True
+                    else: dpH = False
+                    
+                    row.operator("nsmui.ht_toolheader_dyntopo_any_l", text="", icon_value=iconLow.icon_id, depress=update_depress_M(dpL)).value = dynValues_ui[0] # LOW DETAIL
+                    row.operator("nsmui.ht_toolheader_dyntopo_any_m", text="", icon_value=iconMid.icon_id, depress=update_depress_M(dpM)).value = dynValues_ui[1] # MID DETAIL
+                    row.operator("nsmui.ht_toolheader_dyntopo_any_h", text="", icon_value=iconHigh.icon_id, depress=update_depress_H(dpH)).value = dynValues_ui[2] # HIGH DETAIL
             # Si no hay ningún 'Stage' activado
                 else:
                     sub.popover(panel="NSMUI_PT_dyntopo_stages", text="", icon='STYLUS_PRESSURE') # NUEVO PANEL PARA LOS 'STAGES'
@@ -470,6 +480,18 @@ class NSMUI_HT_toolHeader_sculpt_tools(NSMUI_HT_toolHeader_sculpt):
             row.ui_units_x = 5
             row.template_ID_preview(brush, "texture", rows=3, cols=8, new="texture.new", hide_buttons=False)
 
+def update_depress_L(value):
+    bpy.types.Scene.depressL = not value
+    #depressed_1 = not value
+    return(bpy.types.Scene.depressL)
+def update_depress_M(value):
+    bpy.types.Scene.depressM = not value
+    #depressed_1 = not value
+    return(bpy.types.Scene.depressM)
+def update_depress_H(value):
+    bpy.types.Scene.depressH = not value
+    #depressed_1 = not value
+    return(bpy.types.Scene.depressH)
 # --------------------------------------------- #
 # HEADER UI
 # --------------------------------------------- #
@@ -528,16 +550,18 @@ class NSMUI_PT_dyntopo_stages(Panel):
         # STAGES - SKETCH - DETAIL - POLISH
             layout = self.layout
             row = layout.row(align=True)
-            row.label(text="Stage :   ")
+            #row.label(text="Stage :   ")
             if useStage:
-                row.label(text="Default Mode")
+                row.label(text="DEFAULT MODE")
+                row.prop(wm, 'toggle_stages', text="Use Stages", toggle=True)
             else:
-                row.label(text="Stage Mode")
-            row.prop(wm, 'toggle_stages', text="", icon='LOOP_BACK', toggle=True, expand=True)
-            col = layout.column()
-            row = col.row(align=True)
-            row.prop(wm, 'toggle_dyntopo_stage', text="Sketch", toggle=True, expand=True)
-
+                row.label(text="Actual Stage :    " + dynStage_toString(dynStage_Active))
+                row.prop(wm, 'toggle_stages', text="", icon='LOOP_BACK', toggle=True, expand=True)
+                # STAGES
+                col = layout.column()
+                row = col.row(align=True)
+                row.prop(wm, 'toggle_dyntopo_stage', text="Sketch", toggle=True, expand=True)
+            
         # DETAIL METHODS
             col = layout.column()
             row = col.row(align=True)
@@ -599,6 +623,9 @@ bpy.types.Scene.dynStage_Active = bpy.props.IntProperty(
         get = get_dynStage,
         set = set_dynStage,
     )
+bpy.types.Scene.depressL = bpy.props.BoolProperty(default=True)
+bpy.types.Scene.depressM = bpy.props.BoolProperty(default=True)
+bpy.types.Scene.depressH = bpy.props.BoolProperty(default=True)
 # --------------------------------------------- #
 # ------------------------------------------- #
 #   FUNCIONES SUELTAS 
@@ -659,7 +686,7 @@ def register():
     wm = bpy.types.WindowManager
     wm.toggle_stages = bpy.props.BoolProperty(default=True, update=update_property)
     wm.toggle_brushAdd = bpy.props.BoolProperty(default=True, update=update_property)
-    wm.toggle_brushRemove = bpy.props.BoolProperty(default=True, update=update_property)
+    wm.toggle_brushRemove = bpy.props.BoolProperty(default=False, update=update_property)
     wm.toggle_brushReset = bpy.props.BoolProperty(default=True, update=update_property)
     wm.toggle_sliders = bpy.props.BoolProperty(default=True, update=update_property)
     wm.toggle_slider_brushSize = bpy.props.BoolProperty(default=True, update=update_property)

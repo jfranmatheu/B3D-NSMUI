@@ -42,9 +42,6 @@ class NSMUI_PT_th_settings(Panel):
             row.prop(wm, 'toggle_texture_new', text="New Texture", toggle=True)
             row.prop(wm, 'toggle_texture_open', text="Open Image", toggle=True)
             
-
-# CLASS FROM ADDON "Orbit" by LiquidBleu
-# https://github.com/LiquideBleu/Orbit
 class NSMUI_PT_Prefs(bpy.types.Panel):
         bl_idname = "NSMUI_PT_Panel_Prefs"
         bl_label = "Preferences"
@@ -57,17 +54,34 @@ class NSMUI_PT_Prefs(bpy.types.Panel):
             layout = self.layout
             view = context.space_data
             
-        # User preferences
+        # User prefs
             prefs  = context.preferences
             inputs = prefs.inputs
+            view = prefs.view
             
             row = layout.row()
             flow = layout.grid_flow()
 
         # Navigation
+            flow.label(text="NAVIGATION :")
             flow.row().prop(inputs, "view_rotate_method", expand=True)
             flow.prop(inputs, "use_rotate_around_active")
-            flow.prop(inputs, "use_mouse_depth_navigate")
             flow.prop(inputs, "use_zoom_to_mouse")
+            flow.prop(inputs, "use_mouse_depth_navigate")
             flow.prop(inputs, "use_auto_perspective")
+
+            self.layout.separator()
+        # Inputs
+            self.layout.label(text="INPUTS :")
+            flow = layout.grid_flow()
             flow.prop(inputs, "drag_threshold_tablet")
+            flow.prop(inputs, "pressure_softness", text="Pressure Softness")
+
+        # View
+            self.layout.separator()
+
+            self.layout.label(text="INTERFACE :")
+            self.layout.prop(view, "use_mouse_over_open", text="Open Menus on Mouse Over")
+            flow = layout.grid_flow().row(align=True)
+            flow.prop(view, "open_toplevel_delay", text="Delay")
+            flow.prop(view, "open_sublevel_delay", text="Sub Delay")

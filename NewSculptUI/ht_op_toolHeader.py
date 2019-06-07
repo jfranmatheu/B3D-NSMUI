@@ -134,7 +134,6 @@ class NSMUI_OT_toolHeader_dyntopo_any(bpy.types.Operator):
     bl_description = "Selected Detail Size for Dynamic Topology"
     value: bpy.props.IntProperty(name="value", default=5)
     def execute(self, value):
-        #mode = "MID"
         n = self.value
         if(n!=0):
             if bpy.context.scene.tool_settings.sculpt.detail_type_method == 'CONSTANT':
@@ -143,4 +142,43 @@ class NSMUI_OT_toolHeader_dyntopo_any(bpy.types.Operator):
                 bpy.context.scene.tool_settings.sculpt.detail_percent = n
             else: # bpy.context.scene.tool_settings.sculpt.detail_type_method = 'MANUAL' // 'RELATIVE'
                 bpy.context.scene.tool_settings.sculpt.detail_size = n
+        return {'FINISHED'}
+
+class NSMUI_OT_toolHeader_dyntopo_any_l(bpy.types.Operator):
+    bl_idname = "nsmui.ht_toolheader_dyntopo_any_l"
+    bl_label = "New Sculpt-Mode UI"
+    bl_description = "Low Value for Dyntopo Detail Size"
+    value: bpy.props.IntProperty(name="value", default=5)
+    def execute(self, value):
+        n = self.value
+        bpy.types.Scene.depressL = True
+        bpy.types.Scene.depressM = False
+        bpy.types.Scene.depressH = False
+        NSMUI_OT_toolHeader_dyntopo_any.execute(self, self.value)
+        return {'FINISHED'}
+
+class NSMUI_OT_toolHeader_dyntopo_any_m(bpy.types.Operator):
+    bl_idname = "nsmui.ht_toolheader_dyntopo_any_m"
+    bl_label = "New Sculpt-Mode UI"
+    bl_description = "Medium Value for Dyntopo Detail Size"
+    value: bpy.props.IntProperty(name="value", default=5)
+    def execute(self, value):
+        n = self.value
+        bpy.types.Scene.depressL = False
+        bpy.types.Scene.depressM = True
+        bpy.types.Scene.depressH = False
+        NSMUI_OT_toolHeader_dyntopo_any.execute(self, self.value)
+        return {'FINISHED'}
+
+class NSMUI_OT_toolHeader_dyntopo_any_h(bpy.types.Operator):
+    bl_idname = "nsmui.ht_toolheader_dyntopo_any_h"
+    bl_label = "New Sculpt-Mode UI"
+    bl_description = "High Value for Dyntopo Detail Size"
+    value: bpy.props.IntProperty(name="value", default=5)
+    def execute(self, value):
+        n = self.value
+        bpy.types.Scene.depressL = False
+        bpy.types.Scene.depressM = False
+        bpy.types.Scene.depressH = True
+        NSMUI_OT_toolHeader_dyntopo_any.execute(self, self.value)
         return {'FINISHED'}

@@ -91,7 +91,7 @@ CUSTOMIZE THE UI! :D
 ---
 QUICK PREFERENCES
 ---
-![alt text](http://2.bp.blogspot.com/-8l3wWfEEXLw/XPqipPkx7UI/AAAAAAAAAhY/32gEEckEq8EBoJYmjzg1jZJNUZzF5YvoQCK4BGAYYCw/s400/preferences.png Preferences")
+![alt text](http://3.bp.blogspot.com/-5zBBfdoxVj8/XPrRkc254hI/AAAAAAAAAhk/gK9GCNfbUxoa7PnAHDHm3TUtSifP1QHAgCK4BGAYYCw/s400/preferences.png", "Preferences")
 
 ---
 BRUSH SIZE AND STRENGTH SHORTCUTS

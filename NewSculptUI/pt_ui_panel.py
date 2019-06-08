@@ -16,12 +16,19 @@ class NSMUI_PT_th_settings(Panel):
             row.operator('nsmui.ot_panel_setup', text="Sculpt-Mode Setup") # id del operador, texto para el botón
         else:
             wm = context.window_manager
+        #   BRUSH MANAGER
             row = self.layout.row(align=True)
             row.label(text="Brush :")
             row.prop(wm, 'toggle_brushAdd', text="Add", toggle=True)
             row.prop(wm, 'toggle_brushRemove', text="Remove", toggle=True)
             row.prop(wm, 'toggle_brushReset', text="Reset", toggle=True)
 
+        #   BRUSH / STROKE / FALLOFF SETTINGS
+            row = self.layout.row(align=True)
+            row.prop(wm, 'toggle_stroke_method', text="Stroke Method", toggle=True)
+            row.prop(wm, 'toggle_falloff_curvePresets', text="Curve Presets", toggle=True)
+
+        #   SLIDERS
             row = self.layout.row(align=True)
             row.label(text="Sliders :")
             row.prop(wm, 'toggle_sliders', text="All Sliders", toggle=False) # si es false, el toggle es un checkbox
@@ -29,21 +36,24 @@ class NSMUI_PT_th_settings(Panel):
             row.prop(wm, 'toggle_slider_brushSize', text="Size", toggle=True)
             row.prop(wm, 'toggle_slider_brushStrength', text="Strength", toggle=True)
             row.prop(wm, 'toggle_slider_brushSmooth', text="Smooth", toggle=True)
-            
+        
             row = self.layout.row(align=True)
             row.prop(wm, 'toggle_slider_spacing', text="Spacing", toggle=True)
-
+        
+        #   OTHERS
             row = self.layout.row()
             row.prop(wm, 'toggle_mask', text="Mask", toggle=False)
             row.prop(wm, 'toggle_symmetry', text="Symmetry", toggle=False)
             row = self.layout.row()
             row.prop(wm, 'toggle_dyntopo', text="Dyntopo", toggle=False)
 
+        #   TEXTURE SETTINGS
             row = self.layout.row()
             row.label(text="Texture Settings :")
             row = self.layout.row(align=True)
             row.prop(wm, 'toggle_texture_new', text="New Texture", toggle=True)
             row.prop(wm, 'toggle_texture_open', text="Open Image", toggle=True)
+            
             
 class NSMUI_PT_Prefs(bpy.types.Panel):
         bl_idname = "NSMUI_PT_Panel_Prefs"

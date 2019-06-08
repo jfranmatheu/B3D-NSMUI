@@ -171,9 +171,10 @@ class NSMUI_HT_toolHeader_sculpt(Header, UnifiedPaintPanel):
             wm = context.window_manager
             
             # IF THERE'S NO BRUSH, JUST STOP DRAWING
+            
             if brush is None:
                 return
-            
+
             toolHeader.draw_brushManager(self, sculpt, wm, 
                 pcoll["brushAdd_icon"], wm.toggle_brushAdd,
                 pcoll["brushReset_icon"], wm.toggle_brushReset, # bpy.types.Scene.resetBrush_Active
@@ -189,8 +190,8 @@ class NSMUI_HT_toolHeader_sculpt(Header, UnifiedPaintPanel):
                 toolHeader.draw_separator(self, pcoll)
 
             toolHeader.draw_brushSettings(self, pcoll["brush_icon"])
-            toolHeader.draw_strokeSettings(self, pcoll["stroke_icon"])
-            toolHeader.draw_fallOff(self, pcoll["fallOff_icon"])
+            toolHeader.draw_strokeSettings(self, pcoll["stroke_icon"], brush, wm.toggle_stroke_method)
+            toolHeader.draw_fallOff(self, pcoll["fallOff_icon"], brush, wm.toggle_falloff_curvePresets)
             toolHeader.draw_frontFaces(self, brush, pcoll["frontFaces_icon"])
 
             toolHeader.draw_separator(self, pcoll)
@@ -201,7 +202,7 @@ class NSMUI_HT_toolHeader_sculpt(Header, UnifiedPaintPanel):
             toolHeader.draw_separator(self, pcoll)
 
             if wm.toggle_dyntopo: 
-                toolHeader.draw_topologySettings(self, context, pcoll)
+                toolHeader.draw_topologySettings(self, context, sculpt, pcoll)
                 toolHeader.draw_separator(self, pcoll)
 
             toolHeader.draw_textureSettings(self,
@@ -315,7 +316,7 @@ class NSMUI_HT_toolHeader_sculpt_tools(NSMUI_HT_toolHeader_sculpt):
         #VIEW3D_PT_sculpt_options_unified
 
 #   BRUSH STROKE SETTINGS (DROPDOWN)
-    def draw_strokeSettings(self, icon):
+    def draw_strokeSettings(self, icon, brush, drawStrokeMethod):
         layout = self.layout
         split = layout.split()
         col = split.column()
@@ -324,9 +325,13 @@ class NSMUI_HT_toolHeader_sculpt_tools(NSMUI_HT_toolHeader_sculpt):
             panel="VIEW3D_PT_tools_brush_stroke",
             icon_value=icon.icon_id,
             text="")
+        if drawStrokeMethod:
+            row = layout.row(align=True)
+            row.ui_units_x = 4
+            row.prop(brush, "stroke_method", text="")
 
 #   BRUSH FALLOFF SETTINGS/CURVES (DROPDOWN)
-    def draw_fallOff(self, icon):
+    def draw_fallOff(self, icon, brush, drawCurvePresets):
         layout = self.layout
         split = layout.split()
         col = split.column()
@@ -335,6 +340,15 @@ class NSMUI_HT_toolHeader_sculpt_tools(NSMUI_HT_toolHeader_sculpt):
             panel="VIEW3D_PT_tools_brush_falloff",
             icon_value=icon.icon_id,
             text="")
+        if drawCurvePresets:
+            col = layout.column(align=True)
+            row = col.row(align=True)
+            row.operator("brush.curve_preset", icon='SMOOTHCURVE', text="").shape = 'SMOOTH'
+            row.operator("brush.curve_preset", icon='SPHERECURVE', text="").shape = 'ROUND'
+            row.operator("brush.curve_preset", icon='ROOTCURVE', text="").shape = 'ROOT'
+            row.operator("brush.curve_preset", icon='SHARPCURVE', text="").shape = 'SHARP'
+            row.operator("brush.curve_preset", icon='LINCURVE', text="").shape = 'LINE'
+            row.operator("brush.curve_preset", icon='NOCURVE', text="").shape = 'MAX'
 
 #   FRONT FACES ONLY (TOGGLE)
     def draw_frontFaces(self, brush, icon):
@@ -368,7 +382,7 @@ class NSMUI_HT_toolHeader_sculpt_tools(NSMUI_HT_toolHeader_sculpt):
         row.prop(sculpt, "use_symmetry_z", text="Z", toggle=True)
 
 #   TOPOLOGY SETTINGS / DYNTOPO / MULTIRES
-    def draw_topologySettings(self, context, pcoll):
+    def draw_topologySettings(self, context, sculpt, pcoll):
         mods = context.active_object.modifiers # Carga los modificadores del objeto activo
         ibool = False # Para comprobar si el objeto activo tiene el modificador multires
         # SCULPT --> MULTIRES
@@ -385,6 +399,9 @@ class NSMUI_HT_toolHeader_sculpt_tools(NSMUI_HT_toolHeader_sculpt):
                     row = self.layout.row(align=True)
                     row.ui_units_x = 3.6
                     row.operator("nsmui.ht_toolheader_multires_subdivide", text="Subdivide")
+                    row = self.layout.row(align=True)
+                    row.ui_units_x = 3.8
+                    row.prop(sculpt, "show_low_resolution", text="Fast Nav", toggle=False)
                     break
         # SCULPT --> DYNAMIC TOPOLOGY
         # Si no hay multires y dyntopo está activado
@@ -495,18 +512,6 @@ class NSMUI_HT_toolHeader_sculpt_tools(NSMUI_HT_toolHeader_sculpt):
             row.ui_units_x = 5
             row.template_ID_preview(brush, "texture", rows=3, cols=8, new="texture.new", hide_buttons=False)
 
-def update_depress_L(value):
-    bpy.types.Scene.depressL = not value
-    #depressed_1 = not value
-    return(bpy.types.Scene.depressL)
-def update_depress_M(value):
-    bpy.types.Scene.depressM = not value
-    #depressed_1 = not value
-    return(bpy.types.Scene.depressM)
-def update_depress_H(value):
-    bpy.types.Scene.depressH = not value
-    #depressed_1 = not value
-    return(bpy.types.Scene.depressH)
 # --------------------------------------------- #
 # HEADER UI
 # --------------------------------------------- #
@@ -568,7 +573,7 @@ class NSMUI_PT_dyntopo_stages(Panel):
             #row.label(text="Stage :   ")
             if useStage:
                 row.label(text="DEFAULT MODE")
-                row.prop(wm, 'toggle_stages', text="Use Stages", toggle=True)
+                row.prop(wm, 'toggle_stages', text="Use Stages", toggle=True, invert_checkbox=True)
             else:
                 row.label(text="Actual Stage :    " + dynStage_toString(dynStage_Active))
                 row.prop(wm, 'toggle_stages', text="", icon='LOOP_BACK', toggle=True, expand=True)
@@ -621,7 +626,7 @@ class NSMUI_PT_dyntopo_stages(Panel):
                     row.label(text="NONE! Select a Stage!")
 
 # --------------------------------------------- #
-# PROPERTIES                                    #
+# PROPERTIES // UPDATERS                        #
 # --------------------------------------------- #
 #   DYNTOPO STAGE - ACTIVE
 def get_dynStage(self):
@@ -638,9 +643,40 @@ bpy.types.Scene.dynStage_Active = bpy.props.IntProperty(
         get = get_dynStage,
         set = set_dynStage,
     )
+
+# DEPRESS PROPS TO L/M/H Values of 'Stages'
+def update_depress_L(value):
+    bpy.types.Scene.depressL = not value
+    return(bpy.types.Scene.depressL)
+def update_depress_M(value):
+    bpy.types.Scene.depressM = not value
+    return(bpy.types.Scene.depressM)
+def update_depress_H(value):
+    bpy.types.Scene.depressH = not value
+    return(bpy.types.Scene.depressH)
 bpy.types.Scene.depressL = bpy.props.BoolProperty(default=True)
 bpy.types.Scene.depressM = bpy.props.BoolProperty(default=True)
 bpy.types.Scene.depressH = bpy.props.BoolProperty(default=True)
+
+# Update Properties [Toggle] for all props
+def update_property(self, context):
+    if self==True:
+        self = not self   
+
+def update_dyntopo_detailing(self, context):
+    method = context.window_manager.toggle_dyntopo_detailing
+    update_dyntopo_stage(self, context)
+    if method == 'RELATIVE':
+        bpy.context.scene.tool_settings.sculpt.detail_type_method = 'RELATIVE'
+    elif method == 'CONSTANT':
+        bpy.context.scene.tool_settings.sculpt.detail_type_method = 'CONSTANT'
+    elif method == 'BRUSH':
+        bpy.context.scene.tool_settings.sculpt.detail_type_method = 'BRUSH'
+
+def update_dyntopo_stage(self, context):
+    bpy.types.Scene.depressL = False
+    bpy.types.Scene.depressM = False
+    bpy.types.Scene.depressH = False
 # --------------------------------------------- #
 # ------------------------------------------- #
 #   FUNCIONES SUELTAS 
@@ -654,20 +690,6 @@ def dynStage_toString(_dynStage):
     elif _dynStage == '3':
         s_dynStage = "POLISH"
     return s_dynStage
-
-# Update Properties [Toggle] for all props
-def update_property(self, context):
-    if self==True:
-        self = not self   
-
-def update_dyntopo_detailing(self, context):
-    method = context.window_manager.toggle_dyntopo_detailing
-    if method == 'RELATIVE':
-        bpy.context.scene.tool_settings.sculpt.detail_type_method = 'RELATIVE'
-    elif method == 'CONSTANT':
-        bpy.context.scene.tool_settings.sculpt.detail_type_method = 'CONSTANT'
-    elif method == 'BRUSH':
-        bpy.context.scene.tool_settings.sculpt.detail_type_method = 'BRUSH'
 
 #################################################
 #   REGISTRATION !!!!                      #
@@ -699,10 +721,13 @@ def register():
 
     # WM PROPERTIES
     wm = bpy.types.WindowManager
+    wm.toggle_test = bpy.props.BoolProperty(default=False, update=update_property)
     wm.toggle_stages = bpy.props.BoolProperty(default=True, update=update_property)
     wm.toggle_brushAdd = bpy.props.BoolProperty(default=True, update=update_property)
     wm.toggle_brushRemove = bpy.props.BoolProperty(default=False, update=update_property)
     wm.toggle_brushReset = bpy.props.BoolProperty(default=True, update=update_property)
+    wm.toggle_stroke_method = bpy.props.BoolProperty(default=False, update=update_property)
+    wm.toggle_falloff_curvePresets = bpy.props.BoolProperty(default=False, update=update_property)
     wm.toggle_sliders = bpy.props.BoolProperty(default=True, update=update_property)
     wm.toggle_slider_brushSize = bpy.props.BoolProperty(default=True, update=update_property)
     wm.toggle_slider_brushStrength = bpy.props.BoolProperty(default=True, update=update_property)
@@ -730,6 +755,7 @@ def register():
             ('3', "Polish", "")
         ),
         #default='0',
+        update = update_dyntopo_stage,
     )
     # REGISTER ORIGINAL TOOL HEADER # changed - antes al final del código de la clase del tool header
     try:
@@ -755,6 +781,7 @@ def unregister():
 
     # PROPERTIES
     wm = bpy.types.WindowManager
+    del wm.toggle_test
     del wm.toggle_sliders
     del wm.toggle_slider_brushSize
     del wm.toggle_slider_brushStrength
@@ -763,6 +790,8 @@ def unregister():
     del wm.toggle_brushAdd
     del wm.toggle_brushRemove
     del wm.toggle_brushReset
+    del wm.toggle_stroke_method
+    del wm.toggle_falloff_curvePresets
     del wm.toggle_dyntopo
     del wm.toggle_mask
     del wm.toggle_symmetry

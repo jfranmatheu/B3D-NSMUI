@@ -3,8 +3,6 @@ import bpy
 from bpy import context, types
 from bpy.types import (
     Brush,
-    FreestyleLineStyle,
-    ParticleSettings,
     Texture
 )
 
@@ -189,4 +187,69 @@ class NSMUI_OT_toolHeader_dyntopo_any_h(bpy.types.Operator):
         bpy.types.Scene.depressM = False
         bpy.types.Scene.depressH = True
         NSMUI_OT_toolHeader_dyntopo_any.execute(self, self.value)
+        return {'FINISHED'}
+
+class NSMUI_OT_toolHeader_brush_custom_icon(bpy.types.Operator):
+    bl_idname = "nsmui.ht_toolheader_brush_custom_icon"
+    bl_label = "Create Custom Icon"
+    bl_description = "Create a Custom Icon for the Actual Brush based on the Viewport"
+    def execute(self, context):
+        import random
+        scene = context.scene
+        brush = bpy.context.tool_settings.sculpt.brush # Get active brush
+        brush.use_custom_icon = True # Mark to use custom icon
+        # active = context.active_object
+
+        # BACKUP DATA
+        overlays_state = context.space_data.overlay.show_overlays
+        gizmo_state = context.space_data.show_gizmo
+        resX = scene.render.resolution_x
+        resY = scene.render.resolution_y
+        displayMode = scene.render.display_mode
+        oldpath = scene.render.filepath
+        lens = context.space_data.lens
+        film = scene.render.film_transparent
+
+        # PRIMEROS PREPARATIVOS :)
+        scene.render.display_mode = 'NONE'
+        context.space_data.overlay.show_overlays = False
+        context.space_data.show_gizmo = False
+        scene.render.resolution_x = 256
+        scene.render.resolution_y = 256
+        context.space_data.lens = 80
+        scene.render.film_transparent = True
+
+
+        n = random.randint(0,23) # GENERATE RANDOM NUMBER
+        filename = brush.name + "_icon_" + str(n) + ".png" # GENERATE FILENAME WITH RANDOM NUMBER
+        filepath = bpy.app.tempdir + filename
+        # print(filepath)
+
+        # RENDER SETTINGS
+        
+        scene.render.image_settings.file_format = 'PNG'
+        scene.render.filepath = filepath
+        bpy.ops.render.opengl(write_still=True) # RENDER + SAVE (In filepath as PNG)
+        render_image = bpy.data.images["Render Result"] # GET RENDERED IMAGE
+        image = render_image
+        image
+        render_image.name = filename # CHANGE RENDERED IMAGE' NAME TO GENERATE FILENAME
+        bpy.ops.image.pack() # PACK IMAGE TO .BLEND FILE
+
+        # ASIGN ICON (RENDER) TO BRUSH
+        bpy.data.brushes[brush.name].icon_filepath = filepath
+
+        # RESTORE DATA
+        scene.render.resolution_x = resX
+        scene.render.resolution_y = resY
+        context.space_data.overlay.show_overlays = overlays_state
+        context.space_data.show_gizmo = gizmo_state
+        scene.render.display_mode = displayMode
+        scene.render.filepath = oldpath
+        context.space_data.lens = lens
+        scene.render.film_transparent = film
+
+        # PREPARE NEW RENDER IMAGE SLOT FOR ANOTHER ICON
+        bpy.ops.image.new(name="Render Result")
+        
         return {'FINISHED'}

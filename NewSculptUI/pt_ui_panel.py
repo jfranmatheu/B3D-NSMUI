@@ -8,7 +8,7 @@ class NSMUI_PT_th_settings(Panel):
     bl_category = 'Sculpt'
     bl_space_type = "VIEW_3D"
     bl_region_type = "UI"
-    bl_options = {'DEFAULT_CLOSED'}
+    # bl_options = {'DEFAULT_CLOSED'}
 
     def draw(self, context):
         if(context.mode != "SCULPT"):
@@ -22,6 +22,8 @@ class NSMUI_PT_th_settings(Panel):
             row.prop(wm, 'toggle_brushAdd', text="Add", toggle=True)
             row.prop(wm, 'toggle_brushRemove', text="Remove", toggle=True)
             row.prop(wm, 'toggle_brushReset', text="Reset", toggle=True)
+            row = self.layout.row()
+            row.prop(wm, 'toggle_brush_customIcon', text="Render Custom Brush Icon", toggle=True)
 
         #   BRUSH / STROKE / FALLOFF SETTINGS
             row = self.layout.row(align=True)
@@ -57,7 +59,7 @@ class NSMUI_PT_th_settings(Panel):
             
 class NSMUI_PT_Prefs(bpy.types.Panel):
         bl_idname = "NSMUI_PT_Panel_Prefs"
-        bl_label = "Preferences"
+        bl_label = "Quick Preferences"
         bl_space_type = 'VIEW_3D'
         bl_region_type = 'UI'
         bl_category = 'Sculpt'

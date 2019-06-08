@@ -16,7 +16,7 @@ bl_info = {
     "author" : "JFranMatheu",
     "description" : "New UI for Sculpt Mode! :D",
     "blender" : (2, 80, 0),
-    "version" : (0, 2, 4),
+    "version" : (0, 3, 0),
     "location" : "View3D > Tool Header // View3D > 'N' Panel: Sculpt)",
     "warning" : "This version is still in development. ;)",
     "category" : "Generic"
@@ -175,6 +175,8 @@ class NSMUI_HT_toolHeader_sculpt(Header, UnifiedPaintPanel):
             if brush is None:
                 return
 
+            if wm.toggle_brush_customIcon: toolHeader.draw_brush_customIcon(self, context)
+                
             toolHeader.draw_brushManager(self, sculpt, wm, 
                 pcoll["brushAdd_icon"], wm.toggle_brushAdd,
                 pcoll["brushReset_icon"], wm.toggle_brushReset, # bpy.types.Scene.resetBrush_Active
@@ -231,6 +233,11 @@ class NSMUI_HT_toolHeader_sculpt_tools(NSMUI_HT_toolHeader_sculpt):
         col = split.column()
         icon = pcoll["separator_icon"]
         col.label(text="", icon_value=icon.icon_id)
+
+#   CUSTOM BRUSH ICON
+    def draw_brush_customIcon(self, context):
+        row = self.layout.row(align=True)
+        row.operator("nsmui.ht_toolheader_brush_custom_icon", text="", icon='RESTRICT_RENDER_OFF')
 
 #   BRUSH SELECTOR // ADD / RESET // REMOVE
     def draw_brushManager(self, sculpt, wm, icon_brushAdd, canAdd, icon_brushReset, canReset, icon_brushRemove, canRemove):
@@ -481,15 +488,8 @@ class NSMUI_HT_toolHeader_sculpt_tools(NSMUI_HT_toolHeader_sculpt):
 
 #   TEXTURE SETTINGS (DROPDOWN) / NEW TEXTURE / OPEN IMAGE
     def draw_textureSettings(self, icon_texture, icon_textureNew, icon_textureOpen, toggle_newTexture, toggle_openImage):
-        layout = self.layout
-        split = layout
-        col = split.column()
-        sub = col.column(align=True)
+        sub = self.layout.column()
         sub.popover(panel="VIEW3D_PT_tools_brush_texture", icon_value=icon_texture.icon_id, text="")
-        layout = self.layout
-        split = layout.split()
-        col = split.column()
-        row = col.row(align=True)
         row = self.layout.row(align=True)
         if toggle_newTexture:
             row.operator("nsmui.ht_toolheader_new_texture", text="", icon_value=icon_textureNew.icon_id) # NEW TEXTURE
@@ -721,7 +721,7 @@ def register():
 
     # WM PROPERTIES
     wm = bpy.types.WindowManager
-    wm.toggle_test = bpy.props.BoolProperty(default=False, update=update_property)
+    wm.toggle_brush_customIcon = bpy.props.BoolProperty(default=False, update=update_property)
     wm.toggle_stages = bpy.props.BoolProperty(default=True, update=update_property)
     wm.toggle_brushAdd = bpy.props.BoolProperty(default=True, update=update_property)
     wm.toggle_brushRemove = bpy.props.BoolProperty(default=False, update=update_property)
@@ -781,7 +781,7 @@ def unregister():
 
     # PROPERTIES
     wm = bpy.types.WindowManager
-    del wm.toggle_test
+    del wm.toggle_brush_customIcon
     del wm.toggle_sliders
     del wm.toggle_slider_brushSize
     del wm.toggle_slider_brushStrength

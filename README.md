@@ -54,6 +54,7 @@ RENDER YOUR CUSTOM BRUSH ICONS! WITH JUST ONE CLICK!!!!!
 2. Pick your custom brush, make some strokes and zoom in and center the mesh to be ready for the shoot
 3. Click at the very first icon (camera icon) of the tool header, BOOM, now you have a custom icon for your brush
 - NOTE: this is a very new feature so feedback and bug reports are needed to improve this powefull feature!
+- If you want a custom icon with alpha (no background) you should go to layout workspace or any other but Sculpting workspace (idk why this is not working well in Sculpting workspace)
 
 ![alt text](http://1.bp.blogspot.com/-Owg9jgXh-70/XPzbvlBIlOI/AAAAAAAAAj8/514iqEJ5KNs9ccagtUiMjVBBFzkSaPvkwCK4BGAYYCw/s400/togglecustomicon.png "Toggle Render Custom Brush Icon")
 ![alt text](http://4.bp.blogspot.com/--oLt_7tWMq4/XPzbvucr4HI/AAAAAAAAAkA/DUcOYBjvGPEM_EzVt79CdFLgUl0nwa4ywCK4BGAYYCw/s400/shooticonbrushicon.png "Render Custom Brush Icon")

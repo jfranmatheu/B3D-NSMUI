@@ -86,15 +86,24 @@ Brush Settings / Stroke Settings / Curves
 ---
 ![alt text](http://3.bp.blogspot.com/-VMm2vj-sXSE/XOgZiymhfnI/AAAAAAAAAfI/opiTVUUTAY8EPwCeoN6Vxy3lzulD4cwdACK4BGAYYCw/s320/NewSMUI_settings.png "Settings")
 
+- Stroke Method
+
+![alt text](http://3.bp.blogspot.com/-mBfSnCKoZLk/XPzmULIsYyI/AAAAAAAAAkw/uYMStMA4bYEyEvDBYPQIx8r7DrmS1xYUgCK4BGAYYCw/s400/stroke_method.png "Stroke Method")
+
+- Curve Presets
+
+![alt text](http://2.bp.blogspot.com/-xDDbk3kxQtg/XPzmUGdXGQI/AAAAAAAAAks/PypOGIbdSiEVo1uUhaBEOorGyarBMeibQCK4BGAYYCw/s400/curve%2Bpresets.png "Curve Presets")
+
 ---
 MASKING
 ---
 ![alt text](http://3.bp.blogspot.com/-rUSzGjTz-Ps/XOgZi8H9P7I/AAAAAAAAAe8/y1Nssl4haHsnV4kJmB4NbNfpCw2kYWP7wCK4BGAYYCw/s400/NewSMUI_mask.png "Mask")
 
 ---
-BRUSH PROPERTIES SLIDERS
+BRUSH SLIDERS (they all are activatable)
 ---
 ![alt text](http://1.bp.blogspot.com/-g5QFeNxN_RA/XOga3bJZxNI/AAAAAAAAAf0/JxUM67mqqqMwavQHcQvRWKIQ-rta5yCtACK4BGAYYCw/s320/NewSMUI_sliders.png "Sliders")
+![alt text](http://2.bp.blogspot.com/-WZH5SsT3BC8/XPzlLbCKbrI/AAAAAAAAAkc/QDWwk8mxKvIOURQ-dbgsbkkUquC321MJgCK4BGAYYCw/s400/slider_spacing.png "Spacing")
 
 ---
 CUSTOMIZE THE UI!!! :D
@@ -115,6 +124,7 @@ BRUSH SIZE AND STRENGTH SHORTCUTS
 ---
 RMB up-down and left-right to increase/decrease brush size and brush strength
 Feature by Jean Ayer aka Vrav
+![alt text](https://1.bp.blogspot.com/-rWhBA9iwelk/XPznBcnJIPI/AAAAAAAAAk8/l6FBSdnkadgsRKHz9CLz0UCAM1iVZQ-oQCLcBGAs/s320/l21ZeJa0vS.gif "Brush resize and strength")
 
 ---
 CUSTOM ICONS

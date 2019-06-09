@@ -64,6 +64,8 @@ RENDER YOUR CUSTOM BRUSH ICONS! WITH JUST ONE CLICK!!!!!
 
 DYNTOPO + QUICK 'DETAIL SIZE' SELECTOR [DEFAULT MODE]
 ---
+- Try to activate the Stage Mode!!! It's a great improvement to the dyntopo and scultpting workflow :D
+
 ![alt text](http://4.bp.blogspot.com/-TWXG-spErQU/XPzRNix3jPI/AAAAAAAAAjU/g3N0ejbrePA6CnSCc72c_AeVNW4H56nowCK4BGAYYCw/s400/dyntopo_default.png "Dyntopo")
 ---
 

@@ -112,12 +112,16 @@ CUSTOMIZE THE UI!!! :D
 - There are so much tools that are not showed by default but you can activate them with just only click :-)
 - I recommend you to try "Render Custom Brush Icon", "Stroke Method" and "Curve Presets", also feedback for the UI is needed in order to have actived by default the most useful features.
 
-![alt text](http://1.bp.blogspot.com/-JwL_eoMrY-Y/XPzYuHjKE_I/AAAAAAAAAjs/gDTW5BFGWrwoaPa44w2COTDOmlZ3x24zQCK4BGAYYCw/s400/toggleui.png "Toggle UI Elements")
+![alt text](https://4.bp.blogspot.com/-ihNMglxkB1E/XPz0zjDv04I/AAAAAAAAAlM/vztxm_9byks_KwwlcouapCfIJIYY7JFdACK4BGAYYCw/s1600/toggleui.png "Toggle UI Elements")
 
 ---
 QUICK PREFERENCES
 ---
-![alt text](http://3.bp.blogspot.com/-5zBBfdoxVj8/XPrRkc254hI/AAAAAAAAAhk/gK9GCNfbUxoa7PnAHDHm3TUtSifP1QHAgCK4BGAYYCw/s400/preferences.png", "Preferences")
+![alt text](http://3.bp.blogspot.com/-5zBBfdoxVj8/XPrRkc254hI/AAAAAAAAAhk/gK9GCNfbUxoa7PnAHDHm3TUtSifP1QHAgCK4BGAYYCw/s400/preferences.png "Preferences")
+
+- Also there are dropdown menus available at the end of the tool header:
+
+![alt text](http://2.bp.blogspot.com/-wQ6qvSWHf8w/XPz1M71AA7I/AAAAAAAAAlY/Xdx6JIg4r8QVH8wNpOlRGHCLp__3HUnJQCK4BGAYYCw/s400/dropdownmenusettings.png "Dropdown menu settings")
 
 ---
 BRUSH SIZE AND STRENGTH SHORTCUTS

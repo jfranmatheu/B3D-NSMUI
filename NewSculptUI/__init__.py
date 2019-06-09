@@ -16,7 +16,7 @@ bl_info = {
     "author" : "JFranMatheu",
     "description" : "New UI for Sculpt Mode! :D",
     "blender" : (2, 80, 0),
-    "version" : (0, 3, 1),
+    "version" : (0, 3, 2),
     "location" : "View3D > Tool Header // View3D > 'N' Panel: Sculpt)",
     "warning" : "This version is still in development. ;)",
     "category" : "Generic"
@@ -145,6 +145,8 @@ class NSMUI_HT_toolHeader_sculpt(Header, UnifiedPaintPanel):
     bl_label = "Header Toolbar"
     bl_space_type = "VIEW_3D"
     bl_region_type = "TOOL_HEADER"
+    bl_context = ".paint_common"
+    bl_options = {'REGISTER'}
 
     def redraw():
         try:
@@ -538,6 +540,7 @@ class NSMUI_HT_header_sculpt(bpy.types.Header):
     bl_label = "Header Toolbar for Sculpt Mode"
     bl_space_type = "VIEW_3D"
     bl_region_type = "HEADER"
+    bl_context = ".paint_common"
 
     def draw(self, context):
         layout = self.layout

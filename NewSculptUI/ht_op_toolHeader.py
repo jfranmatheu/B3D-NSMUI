@@ -194,7 +194,6 @@ class NSMUI_OT_toolHeader_brush_custom_icon(bpy.types.Operator):
     bl_label = "Create Custom Icon"
     bl_description = "Create a Custom Icon for the Actual Brush based on the Viewport"
     def execute(self, context):
-        import random
         scene = context.scene
         brush = bpy.context.tool_settings.sculpt.brush # Get active brush
         brush.use_custom_icon = True # Mark to use custom icon
@@ -219,20 +218,28 @@ class NSMUI_OT_toolHeader_brush_custom_icon(bpy.types.Operator):
         context.space_data.lens = 80
         scene.render.film_transparent = True
 
+        # RANDOM GENERATION / NOW IS NOT NECESARY
+        # import random
+        # n = random.randint(0,23) # GENERATE RANDOM NUMBER
+        # filename = brush.name + "_icon_" + str(n) + ".png" # GENERATE FILENAME WITH RANDOM NUMBER
 
-        n = random.randint(0,23) # GENERATE RANDOM NUMBER
-        filename = brush.name + "_icon_" + str(n) + ".png" # GENERATE FILENAME WITH RANDOM NUMBER
-        filepath = bpy.app.tempdir + filename
+        import os
+        temp_dir = bpy.app.tempdir # TEMPORAL FOLDER OF THE ACTUAL BLENDER PROJECT
+        script_file = os.path.realpath(__file__)
+        addon_dir = os.path.dirname(script_file) # ADDON'S DIRECTORY
+        icons_folder = "/brush_icons/"
+        icons_dir = addon_dir + "/Sculpt" + icons_folder
+        
+        filename = brush.name + "_icon.png"
+        filepath = icons_dir + filename
         # print(filepath)
 
         # RENDER SETTINGS
-        
         scene.render.image_settings.file_format = 'PNG'
         scene.render.filepath = filepath
         bpy.ops.render.opengl(write_still=True) # RENDER + SAVE (In filepath as PNG)
+
         render_image = bpy.data.images["Render Result"] # GET RENDERED IMAGE
-        image = render_image
-        image
         render_image.name = filename # CHANGE RENDERED IMAGE' NAME TO GENERATE FILENAME
         bpy.ops.image.pack() # PACK IMAGE TO .BLEND FILE
 
@@ -248,6 +255,11 @@ class NSMUI_OT_toolHeader_brush_custom_icon(bpy.types.Operator):
         scene.render.filepath = oldpath
         context.space_data.lens = lens
         scene.render.film_transparent = film
+
+        try:
+            bpy.data.images.remove(bpy.data.images[filename + ".001"])
+        except:
+            pass
 
         # PREPARE NEW RENDER IMAGE SLOT FOR ANOTHER ICON
         bpy.ops.image.new(name="Render Result")

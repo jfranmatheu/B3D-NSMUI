@@ -301,14 +301,14 @@ class PAINT_OT_brush_modal_quickset(bpy.types.Operator):
     bl_idname = "brush.modal_quickset"
     bl_label = "Brush QuickSet"
 
-    axisaffect = bpy.props.EnumProperty(
+    axisaffect : bpy.props.EnumProperty(
         name        = "Axis Order",
         description = "Which axis affects which brush property",
         items       = [('YSTR', 'X: Radius, Y: Strength', ''),
                        ('YRAD', 'Y: Radius, X: Strength', '')],
         default     = 'YRAD')
 
-    keyaction = bpy.props.EnumProperty(
+    keyaction : bpy.props.EnumProperty(
         name        = "Key Action",
         description = "Hotkey second press or initial release behaviour",
         items       = [('IGNORE', 'Key Ignored', ''),
@@ -316,7 +316,7 @@ class PAINT_OT_brush_modal_quickset(bpy.types.Operator):
                        ('FINISH', 'Key Applies', '')],
         default     = 'FINISH')
 
-    text = bpy.props.EnumProperty(
+    text : bpy.props.EnumProperty(
         name        = "Numeric",
         description = "Text display; only shows when strength adjusted",
         items       = [('NONE', 'None', ''),
@@ -325,7 +325,7 @@ class PAINT_OT_brush_modal_quickset(bpy.types.Operator):
                        ('SMALL', 'Small', '')],
         default     = 'MEDIUM')
 
-    slider = bpy.props.EnumProperty(
+    slider : bpy.props.EnumProperty(
         name        = "Slider",
         description = "Slider display for strength visualization",
         items       = [('NONE', 'None', ''),
@@ -334,25 +334,25 @@ class PAINT_OT_brush_modal_quickset(bpy.types.Operator):
                        ('SMALL', 'Small', '')],
         default     = 'MEDIUM')
 
-    deadzone = bpy.props.IntProperty(
+    deadzone : bpy.props.IntProperty(
         name        = "Pixel Deadzone",
         description = "Screen distance after which movement has effect",
         default     = 16,
         min         = 0)
 
-    sens = bpy.props.FloatProperty(
+    sens : bpy.props.FloatProperty(
         name        = "Sensitivity",
         description = "Multiplier to affect brush settings by",
         default     = 1.0,
         min         = 0.1,
         max         = 2.0)
 
-    graphic = bpy.props.BoolProperty(
+    graphic : bpy.props.BoolProperty(
         name        = "Graphic",
         description = "Transparent circle to visually represent strength",
         default     = True)
 
-    lock = bpy.props.BoolProperty(
+    lock : bpy.props.BoolProperty(
         name        = "Lock Axis",
         description = "When adjusting one value, lock the other",
         default     = True)

@@ -46,15 +46,30 @@ Differences between buttons 2/5 and 3/7:
 - '5' Create one and assign it to the active brush
 - While '3' imports an image
 - '7' Imports one and assigns it to the active or selected texture
-
-DYNTOPO + QUICK 'DETAIL SIZE' SELECTOR
----
-![alt text](http://2.bp.blogspot.com/-r4btsP6QOfo/XPVOYB5afkI/AAAAAAAAAg0/gny6nxJN81khNhLsV3Ro8F_xavx3e1ykACK4BGAYYCw/s400/dyntopo.png "Dyntopo")
 ---
 
-DYNTOPO NEW "STAGE" CONCEPT + NEW MENU
+RENDER YOUR CUSTOM BRUSH ICONS! WITH JUST ONE CLICK!!!!!
 ---
-![alt text](http://4.bp.blogspot.com/-mQMJIIRN2kk/XPVNZYkHfuI/AAAAAAAAAgo/XkdWWAI_m7IL4uU2rLf3_ioZKbGKsDx_wCK4BGAYYCw/s400/dyntopo_newPanel.png "Dyntopo Stages")
+1. Toggle "Render Custom Brush Icon" in the addon's tab "Sculpt" over the 'N' sidebar panel. (by default isn't active)
+2. Pick your custom brush, make some strokes and zoom in and center the mesh to be ready for the shoot
+3. Click at the very first icon (camera icon) of the tool header, BOOM, now you have a custom icon for your brush
+- NOTE: this is a very new feature so feedback and bug reports are needed to improve this powefull feature!
+- If you want a custom icon with alpha (no background) you should go to layout workspace or any other because in Sculpting workspace this is not working well as expected
+
+![alt text](http://1.bp.blogspot.com/-Owg9jgXh-70/XPzbvlBIlOI/AAAAAAAAAj8/514iqEJ5KNs9ccagtUiMjVBBFzkSaPvkwCK4BGAYYCw/s400/togglecustomicon.png "Toggle Render Custom Brush Icon")
+![alt text](http://4.bp.blogspot.com/--oLt_7tWMq4/XPzbvucr4HI/AAAAAAAAAkA/DUcOYBjvGPEM_EzVt79CdFLgUl0nwa4ywCK4BGAYYCw/s400/shooticonbrushicon.png "Render Custom Brush Icon")
+![alt text](http://3.bp.blogspot.com/-D42C0JvgY3o/XPzbw_sNRjI/AAAAAAAAAkI/HDyVqbFZHboosrEZPi2F2FsNm8lU81FzQCK4BGAYYCw/s640/previewiconscene.png "New Custom Brush Icon!")
+
+---
+
+DYNTOPO + QUICK 'DETAIL SIZE' SELECTOR [DEFAULT MODE]
+---
+![alt text](http://4.bp.blogspot.com/-TWXG-spErQU/XPzRNix3jPI/AAAAAAAAAjU/g3N0ejbrePA6CnSCc72c_AeVNW4H56nowCK4BGAYYCw/s400/dyntopo_default.png "Dyntopo")
+---
+
+DYNTOPO NEW "STAGE" CONCEPT + NEW MENU [STAGE MODE]
+---
+![alt text](http://1.bp.blogspot.com/-tCsMLruKp7M/XPzYDNUOxRI/AAAAAAAAAjg/pxjg7LVn1AI0U0Z0-dWQhN0pQaPcIYTTACK4BGAYYCw/s400/dyntopo_stages.png "Dyntopo Stages")
 
 ---
 QUICK SYMMETRY
@@ -71,33 +86,49 @@ Brush Settings / Stroke Settings / Curves
 ---
 ![alt text](http://3.bp.blogspot.com/-VMm2vj-sXSE/XOgZiymhfnI/AAAAAAAAAfI/opiTVUUTAY8EPwCeoN6Vxy3lzulD4cwdACK4BGAYYCw/s320/NewSMUI_settings.png "Settings")
 
+- Stroke Method
+
+![alt text](http://3.bp.blogspot.com/-mBfSnCKoZLk/XPzmULIsYyI/AAAAAAAAAkw/uYMStMA4bYEyEvDBYPQIx8r7DrmS1xYUgCK4BGAYYCw/s400/stroke_method.png "Stroke Method")
+
+- Curve Presets
+
+![alt text](http://2.bp.blogspot.com/-xDDbk3kxQtg/XPzmUGdXGQI/AAAAAAAAAks/PypOGIbdSiEVo1uUhaBEOorGyarBMeibQCK4BGAYYCw/s400/curve%2Bpresets.png "Curve Presets")
+
 ---
 MASKING
 ---
 ![alt text](http://3.bp.blogspot.com/-rUSzGjTz-Ps/XOgZi8H9P7I/AAAAAAAAAe8/y1Nssl4haHsnV4kJmB4NbNfpCw2kYWP7wCK4BGAYYCw/s400/NewSMUI_mask.png "Mask")
 
 ---
-BRUSH PROPERTIES SLIDERS
+BRUSH SLIDERS (they all are activatable)
 ---
 ![alt text](http://1.bp.blogspot.com/-g5QFeNxN_RA/XOga3bJZxNI/AAAAAAAAAf0/JxUM67mqqqMwavQHcQvRWKIQ-rta5yCtACK4BGAYYCw/s320/NewSMUI_sliders.png "Sliders")
+![alt text](http://2.bp.blogspot.com/-WZH5SsT3BC8/XPzlLbCKbrI/AAAAAAAAAkc/QDWwk8mxKvIOURQ-dbgsbkkUquC321MJgCK4BGAYYCw/s400/slider_spacing.png "Spacing")
 
 ---
-CUSTOMIZE THE UI! :D
+CUSTOMIZE THE UI!!! :D
 ---
-- Toggle UI Elements!
+- Toggle UI Element, have only the UI elements that you really want!!!
+- There are so much tools that are not showed by default but you can activate them with just only click :-)
+- I recommend you to try "Render Custom Brush Icon", "Stroke Method" and "Curve Presets", also feedback for the UI is needed in order to have actived by default the most useful features.
 
-![alt text](http://1.bp.blogspot.com/-WAsXaNIvCuE/XPg0hA3-pAI/AAAAAAAAAhM/UfMkAU1-LA4rmaGbxpsa2MBtKOCEXHTswCK4BGAYYCw/s400/toggleVisibilities.png "Toggle UI Elements")
+![alt text](https://4.bp.blogspot.com/-ihNMglxkB1E/XPz0zjDv04I/AAAAAAAAAlM/vztxm_9byks_KwwlcouapCfIJIYY7JFdACK4BGAYYCw/s1600/toggleui.png "Toggle UI Elements")
 
 ---
 QUICK PREFERENCES
 ---
-![alt text](http://3.bp.blogspot.com/-5zBBfdoxVj8/XPrRkc254hI/AAAAAAAAAhk/gK9GCNfbUxoa7PnAHDHm3TUtSifP1QHAgCK4BGAYYCw/s400/preferences.png", "Preferences")
+![alt text](http://3.bp.blogspot.com/-5zBBfdoxVj8/XPrRkc254hI/AAAAAAAAAhk/gK9GCNfbUxoa7PnAHDHm3TUtSifP1QHAgCK4BGAYYCw/s400/preferences.png "Preferences")
+
+- Also there are dropdown menus available at the end of the tool header:
+
+![alt text](http://2.bp.blogspot.com/-wQ6qvSWHf8w/XPz1M71AA7I/AAAAAAAAAlY/Xdx6JIg4r8QVH8wNpOlRGHCLp__3HUnJQCK4BGAYYCw/s400/dropdownmenusettings.png "Dropdown menu settings")
 
 ---
 BRUSH SIZE AND STRENGTH SHORTCUTS
 ---
-LMB up-down and left-right to increase/decrease brush size and brush strength
+RMB up-down and left-right to increase/decrease brush size and brush strength
 Feature by Jean Ayer aka Vrav
+![alt text](https://1.bp.blogspot.com/-rWhBA9iwelk/XPznBcnJIPI/AAAAAAAAAk8/l6FBSdnkadgsRKHz9CLz0UCAM1iVZQ-oQCLcBGAs/s320/l21ZeJa0vS.gif "Brush resize and strength")
 
 ---
 CUSTOM ICONS
@@ -121,6 +152,8 @@ FUTUROS CAMBIOS E IDEAS LOCAS
 - [ ] Mantener dyntopo activado al cambiar de modo.
 
 # OTROS
+- [x] Icono personalizados para la brocha seleccionada con solo un click, basado en la vista actual con un render.
+- [ ] Insertar primitivas sin salir de sculpt, usando el 3dcursor con snap de superficie o de volumen y la normal de este para posicionarlo. SHIF + RMB
 - [ ] Filtros para las texturas.
 - [ ] Sets de brochas: 1, Recientemente usadas. 2, Por tipo según la brocha activa. 3, Favoritas.
 - [x] Nuevos y mejores atajos de teclado. Gracias al addon de Jean Ayer que he integrado podemos usar click derecho y arrastrar en uno de los axis (horizontal y vertical) para cambiar el tamaño o la fuerza de la brocha de forma fácil.
@@ -147,8 +180,5 @@ Disponibles de momento en otra 'branch' -> Sculpt-Features
 ---
 "brush quickset" addon by Jean Ayer aka Vrav
 https://blenderartists.org/t/sculpt-paint-edit-workflow-suite-new-grow-sel-to-cursor/553819
-
-"Orbit" addon by Liquide Bleu
-https://github.com/LiquideBleu/Orbit
 
 Icons for dyntopo detailing (Relative, Brush and Constant + high, mid and low) made by g3n.es

@@ -16,7 +16,7 @@ bl_info = {
     "author" : "JFranMatheu",
     "description" : "New UI for Sculpt Mode! :D",
     "blender" : (2, 80, 0),
-    "version" : (0, 3, 0),
+    "version" : (0, 3, 1),
     "location" : "View3D > Tool Header // View3D > 'N' Panel: Sculpt)",
     "warning" : "This version is still in development. ;)",
     "category" : "Generic"
@@ -191,9 +191,11 @@ class NSMUI_HT_toolHeader_sculpt(Header, UnifiedPaintPanel):
                 if wm.toggle_slider_spacing: toolHeader.draw_slider_spacing(self, brush)
                 toolHeader.draw_separator(self, pcoll)
 
-            toolHeader.draw_brushSettings(self, pcoll["brush_icon"])
-            toolHeader.draw_strokeSettings(self, pcoll["stroke_icon"], brush, wm.toggle_stroke_method)
-            toolHeader.draw_fallOff(self, pcoll["fallOff_icon"], brush, wm.toggle_falloff_curvePresets)
+            if wm.toggle_brush_settings: toolHeader.draw_brushSettings(self, pcoll["brush_icon"])
+            if wm.toggle_stroke_settings: toolHeader.draw_strokeSettings(self, pcoll["stroke_icon"])
+            if wm.toggle_stroke_method: toolHeader.draw_strokeMethod(self, brush)
+            if wm.toggle_falloff: toolHeader.draw_fallOff(self, pcoll["fallOff_icon"])
+            if wm.toggle_falloff_curvePresets: toolHeader.draw_fallOff_curvePresets(self, brush)
             toolHeader.draw_frontFaces(self, brush, pcoll["frontFaces_icon"])
 
             toolHeader.draw_separator(self, pcoll)
@@ -213,6 +215,9 @@ class NSMUI_HT_toolHeader_sculpt(Header, UnifiedPaintPanel):
             toolHeader.draw_textureManager(self, brush, pcoll["texture_icon"])
 
             toolHeader.draw_separator(self, pcoll)
+
+            if wm.toggle_UI_elements: toolHeader.draw_toggle_UI_elements(self)
+            if wm.toggle_prefs: toolHeader.draw_toggle_preferences(self)
 
             # self.layout.template_palette(toolsettings.image_paint, "palette", color=True)
 
@@ -323,7 +328,7 @@ class NSMUI_HT_toolHeader_sculpt_tools(NSMUI_HT_toolHeader_sculpt):
         #VIEW3D_PT_sculpt_options_unified
 
 #   BRUSH STROKE SETTINGS (DROPDOWN)
-    def draw_strokeSettings(self, icon, brush, drawStrokeMethod):
+    def draw_strokeSettings(self, icon):
         layout = self.layout
         split = layout.split()
         col = split.column()
@@ -331,14 +336,16 @@ class NSMUI_HT_toolHeader_sculpt_tools(NSMUI_HT_toolHeader_sculpt):
         sub.popover(
             panel="VIEW3D_PT_tools_brush_stroke",
             icon_value=icon.icon_id,
-            text="")
-        if drawStrokeMethod:
-            row = layout.row(align=True)
-            row.ui_units_x = 4
-            row.prop(brush, "stroke_method", text="")
+            text="")          
+
+#   BRUSH STROKE METHOD
+    def draw_strokeMethod(self, brush):
+        row = self.layout.row(align=True)
+        row.ui_units_x = 4
+        row.prop(brush, "stroke_method", text="")
 
 #   BRUSH FALLOFF SETTINGS/CURVES (DROPDOWN)
-    def draw_fallOff(self, icon, brush, drawCurvePresets):
+    def draw_fallOff(self, icon):
         layout = self.layout
         split = layout.split()
         col = split.column()
@@ -346,16 +353,18 @@ class NSMUI_HT_toolHeader_sculpt_tools(NSMUI_HT_toolHeader_sculpt):
         sub.popover(
             panel="VIEW3D_PT_tools_brush_falloff",
             icon_value=icon.icon_id,
-            text="")
-        if drawCurvePresets:
-            col = layout.column(align=True)
-            row = col.row(align=True)
-            row.operator("brush.curve_preset", icon='SMOOTHCURVE', text="").shape = 'SMOOTH'
-            row.operator("brush.curve_preset", icon='SPHERECURVE', text="").shape = 'ROUND'
-            row.operator("brush.curve_preset", icon='ROOTCURVE', text="").shape = 'ROOT'
-            row.operator("brush.curve_preset", icon='SHARPCURVE', text="").shape = 'SHARP'
-            row.operator("brush.curve_preset", icon='LINCURVE', text="").shape = 'LINE'
-            row.operator("brush.curve_preset", icon='NOCURVE', text="").shape = 'MAX'
+            text="")       
+
+#   BRUSH FALLOFF CURVE PRESETS
+    def draw_fallOff_curvePresets(self, brush):
+        col = self.layout.column(align=True)
+        row = col.row(align=True)
+        row.operator("brush.curve_preset", icon='SMOOTHCURVE', text="").shape = 'SMOOTH'
+        row.operator("brush.curve_preset", icon='SPHERECURVE', text="").shape = 'ROUND'
+        row.operator("brush.curve_preset", icon='ROOTCURVE', text="").shape = 'ROOT'
+        row.operator("brush.curve_preset", icon='SHARPCURVE', text="").shape = 'SHARP'
+        row.operator("brush.curve_preset", icon='LINCURVE', text="").shape = 'LINE'
+        row.operator("brush.curve_preset", icon='NOCURVE', text="").shape = 'MAX'
 
 #   FRONT FACES ONLY (TOGGLE)
     def draw_frontFaces(self, brush, icon):
@@ -512,6 +521,15 @@ class NSMUI_HT_toolHeader_sculpt_tools(NSMUI_HT_toolHeader_sculpt):
             row.ui_units_x = 5
             row.template_ID_preview(brush, "texture", rows=3, cols=8, new="texture.new", hide_buttons=False)
 
+#   PANEL FOR TOGGLE UI ELEMENTS
+    def draw_toggle_UI_elements(self):
+        sub = self.layout.split().column(align=True)
+        sub.popover(panel="NSMUI_PT_th_settings",icon='VISIBLE_IPO_ON',text="")
+
+#   PREFERENCES PANEL
+    def draw_toggle_preferences(self):
+        sub = self.layout.split().column(align=True)
+        sub.popover(panel="NSMUI_PT_Prefs",icon='PREFERENCES',text="")
 # --------------------------------------------- #
 # HEADER UI
 # --------------------------------------------- #
@@ -573,7 +591,9 @@ class NSMUI_PT_dyntopo_stages(Panel):
             #row.label(text="Stage :   ")
             if useStage:
                 row.label(text="DEFAULT MODE")
-                row.prop(wm, 'toggle_stages', text="Use Stages", toggle=True, invert_checkbox=True)
+                row = layout.row(align=True)
+                row.prop(wm, 'toggle_stages', text="USE STAGES !", toggle=True, invert_checkbox=True)
+                
             else:
                 row.label(text="Actual Stage :    " + dynStage_toString(dynStage_Active))
                 row.prop(wm, 'toggle_stages', text="", icon='LOOP_BACK', toggle=True, expand=True)
@@ -721,12 +741,17 @@ def register():
 
     # WM PROPERTIES
     wm = bpy.types.WindowManager
+    wm.toggle_UI_elements = bpy.props.BoolProperty(default=True, update=update_property)
+    wm.toggle_prefs = bpy.props.BoolProperty(default=True, update=update_property)
     wm.toggle_brush_customIcon = bpy.props.BoolProperty(default=False, update=update_property)
     wm.toggle_stages = bpy.props.BoolProperty(default=True, update=update_property)
+    wm.toggle_brush_settings = bpy.props.BoolProperty(default=True, update=update_property)
     wm.toggle_brushAdd = bpy.props.BoolProperty(default=True, update=update_property)
     wm.toggle_brushRemove = bpy.props.BoolProperty(default=False, update=update_property)
     wm.toggle_brushReset = bpy.props.BoolProperty(default=True, update=update_property)
+    wm.toggle_stroke_settings = bpy.props.BoolProperty(default=True, update=update_property)
     wm.toggle_stroke_method = bpy.props.BoolProperty(default=False, update=update_property)
+    wm.toggle_falloff = bpy.props.BoolProperty(default=True, update=update_property)
     wm.toggle_falloff_curvePresets = bpy.props.BoolProperty(default=False, update=update_property)
     wm.toggle_sliders = bpy.props.BoolProperty(default=True, update=update_property)
     wm.toggle_slider_brushSize = bpy.props.BoolProperty(default=True, update=update_property)
@@ -781,16 +806,20 @@ def unregister():
 
     # PROPERTIES
     wm = bpy.types.WindowManager
+    del wm.toggle_UI_elements
     del wm.toggle_brush_customIcon
     del wm.toggle_sliders
     del wm.toggle_slider_brushSize
     del wm.toggle_slider_brushStrength
     del wm.toggle_slider_brushSmooth
     del wm.toggle_slider_spacing
+    del wm.toggle_brush_settings
     del wm.toggle_brushAdd
     del wm.toggle_brushRemove
     del wm.toggle_brushReset
+    del wm.toggle_stroke_settings
     del wm.toggle_stroke_method
+    del wm.toggle_falloff
     del wm.toggle_falloff_curvePresets
     del wm.toggle_dyntopo
     del wm.toggle_mask
@@ -800,5 +829,6 @@ def unregister():
     del wm.toggle_dyntopo_detailing
     del wm.toggle_dyntopo_stage
     del wm.toggle_stages
+    del wm.toggle_prefs
 
     print("Unregistered New Sculpt Mode UI")

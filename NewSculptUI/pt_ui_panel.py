@@ -3,7 +3,7 @@ import bpy
 from bpy.types import Panel
 
 class NSMUI_PT_th_settings(Panel):
-    bl_idname = "NSMUI_PT_Panel_TH_Settings"
+    #bl_idname = "NSMUI_PT_Panel_TH_Settings"
     bl_label = "Toggle UI Elements"
     bl_category = 'Sculpt'
     bl_space_type = "VIEW_3D"
@@ -25,11 +25,6 @@ class NSMUI_PT_th_settings(Panel):
             row = self.layout.row()
             row.prop(wm, 'toggle_brush_customIcon', text="Render Custom Brush Icon", toggle=True)
 
-        #   BRUSH / STROKE / FALLOFF SETTINGS
-            row = self.layout.row(align=True)
-            row.prop(wm, 'toggle_stroke_method', text="Stroke Method", toggle=True)
-            row.prop(wm, 'toggle_falloff_curvePresets', text="Curve Presets", toggle=True)
-
         #   SLIDERS
             row = self.layout.row(align=True)
             row.label(text="Sliders :")
@@ -39,9 +34,24 @@ class NSMUI_PT_th_settings(Panel):
             row.prop(wm, 'toggle_slider_brushStrength', text="Strength", toggle=True)
             row.prop(wm, 'toggle_slider_brushSmooth', text="Smooth", toggle=True)
         
-            row = self.layout.row(align=True)
+            row = self.layout.row()
             row.prop(wm, 'toggle_slider_spacing', text="Spacing", toggle=True)
         
+        #   SETTINGS // BRUSH // STROKE // FALLOFF (CURVES)
+            row = self.layout.row()
+            row.label(text="Dropdowns :")
+            row = self.layout.row(align=True)
+            row.prop(wm, 'toggle_brush_settings', text="Brush", toggle=True)
+            row.prop(wm, 'toggle_stroke_settings', text="Stroke", toggle=True)
+            row.prop(wm, 'toggle_falloff', text="Falloff", toggle=True)
+            row = self.layout.row(align=True)
+            row.label(text="Others :")
+
+        #   BRUSH / STROKE / FALLOFF SETTINGS
+            row = self.layout.row(align=True)
+            row.prop(wm, 'toggle_stroke_method', text="Stroke Method", toggle=True)
+            row.prop(wm, 'toggle_falloff_curvePresets', text="Curve Presets", toggle=True)
+
         #   OTHERS
             row = self.layout.row()
             row.prop(wm, 'toggle_mask', text="Mask", toggle=False)
@@ -55,10 +65,17 @@ class NSMUI_PT_th_settings(Panel):
             row = self.layout.row(align=True)
             row.prop(wm, 'toggle_texture_new', text="New Texture", toggle=True)
             row.prop(wm, 'toggle_texture_open', text="Open Image", toggle=True)
+
+        #   DROPDOWN PANEL SETTINGS / VISIBILITY AND PREFERENCES
+            row = self.layout.row()
+            row.label(text="Settings :")
+            row = self.layout.row(align=True)
+            row.prop(wm, 'toggle_UI_elements', text="Toggle Elements", toggle=True)
+            row.prop(wm, 'toggle_prefs', text="Preferences", toggle=True)
             
             
 class NSMUI_PT_Prefs(bpy.types.Panel):
-        bl_idname = "NSMUI_PT_Panel_Prefs"
+        # bl_idname = "NSMUI_PT_Panel_Prefs"
         bl_label = "Quick Preferences"
         bl_space_type = 'VIEW_3D'
         bl_region_type = 'UI'

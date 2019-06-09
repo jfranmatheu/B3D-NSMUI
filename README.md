@@ -46,15 +46,29 @@ Differences between buttons 2/5 and 3/7:
 - '5' Create one and assign it to the active brush
 - While '3' imports an image
 - '7' Imports one and assigns it to the active or selected texture
-
-DYNTOPO + QUICK 'DETAIL SIZE' SELECTOR
----
-![alt text](http://2.bp.blogspot.com/-r4btsP6QOfo/XPVOYB5afkI/AAAAAAAAAg0/gny6nxJN81khNhLsV3Ro8F_xavx3e1ykACK4BGAYYCw/s400/dyntopo.png "Dyntopo")
 ---
 
-DYNTOPO NEW "STAGE" CONCEPT + NEW MENU
+RENDER YOUR CUSTOM BRUSH ICONS! WITH JUST ONE CLICK!!!!!
 ---
-![alt text](http://4.bp.blogspot.com/-mQMJIIRN2kk/XPVNZYkHfuI/AAAAAAAAAgo/XkdWWAI_m7IL4uU2rLf3_ioZKbGKsDx_wCK4BGAYYCw/s400/dyntopo_newPanel.png "Dyntopo Stages")
+1. Toggle "Render Custom Brush Icon" in the addon's tab "Sculpt" over the 'N' sidebar panel. (by default isn't active)
+2. Pick your custom brush, make some strokes and zoom in and center the mesh to be ready for the shoot
+3. Click at the very first icon (camera icon) of the tool header, BOOM, now you have a custom icon for your brush
+- NOTE: this is a very new feature so feedback and bug reports are needed to improve this powefull feature!
+
+![alt text](http://1.bp.blogspot.com/-Owg9jgXh-70/XPzbvlBIlOI/AAAAAAAAAj8/514iqEJ5KNs9ccagtUiMjVBBFzkSaPvkwCK4BGAYYCw/s400/togglecustomicon.png "Toggle Render Custom Brush Icon")
+![alt text](http://4.bp.blogspot.com/--oLt_7tWMq4/XPzbvucr4HI/AAAAAAAAAkA/DUcOYBjvGPEM_EzVt79CdFLgUl0nwa4ywCK4BGAYYCw/s400/shooticonbrushicon.png "Render Custom Brush Icon")
+![alt text](http://3.bp.blogspot.com/-D42C0JvgY3o/XPzbw_sNRjI/AAAAAAAAAkI/HDyVqbFZHboosrEZPi2F2FsNm8lU81FzQCK4BGAYYCw/s640/previewiconscene.png "New Custom Brush Icon!")
+
+---
+
+DYNTOPO + QUICK 'DETAIL SIZE' SELECTOR [DEFAULT MODE]
+---
+![alt text](http://4.bp.blogspot.com/-TWXG-spErQU/XPzRNix3jPI/AAAAAAAAAjU/g3N0ejbrePA6CnSCc72c_AeVNW4H56nowCK4BGAYYCw/s400/dyntopo_default.png "Dyntopo")
+---
+
+DYNTOPO NEW "STAGE" CONCEPT + NEW MENU [STAGE MODE]
+---
+![alt text](http://1.bp.blogspot.com/-tCsMLruKp7M/XPzYDNUOxRI/AAAAAAAAAjg/pxjg7LVn1AI0U0Z0-dWQhN0pQaPcIYTTACK4BGAYYCw/s400/dyntopo_stages.png "Dyntopo Stages")
 
 ---
 QUICK SYMMETRY
@@ -82,11 +96,13 @@ BRUSH PROPERTIES SLIDERS
 ![alt text](http://1.bp.blogspot.com/-g5QFeNxN_RA/XOga3bJZxNI/AAAAAAAAAf0/JxUM67mqqqMwavQHcQvRWKIQ-rta5yCtACK4BGAYYCw/s320/NewSMUI_sliders.png "Sliders")
 
 ---
-CUSTOMIZE THE UI! :D
+CUSTOMIZE THE UI!!! :D
 ---
-- Toggle UI Elements!
+- Toggle UI Element, have only the UI elements that you really want!!!
+- There are so much tools that are not showed by default but you can activate them with just only click :-)
+- I recommend you to try "Render Custom Brush Icon", "Stroke Method" and "Curve Presets", also feedback for the UI is needed in order to have actived by default the most useful features.
 
-![alt text](http://1.bp.blogspot.com/-WAsXaNIvCuE/XPg0hA3-pAI/AAAAAAAAAhM/UfMkAU1-LA4rmaGbxpsa2MBtKOCEXHTswCK4BGAYYCw/s400/toggleVisibilities.png "Toggle UI Elements")
+![alt text](http://1.bp.blogspot.com/-JwL_eoMrY-Y/XPzYuHjKE_I/AAAAAAAAAjs/gDTW5BFGWrwoaPa44w2COTDOmlZ3x24zQCK4BGAYYCw/s400/toggleui.png "Toggle UI Elements")
 
 ---
 QUICK PREFERENCES
@@ -96,7 +112,7 @@ QUICK PREFERENCES
 ---
 BRUSH SIZE AND STRENGTH SHORTCUTS
 ---
-LMB up-down and left-right to increase/decrease brush size and brush strength
+RMB up-down and left-right to increase/decrease brush size and brush strength
 Feature by Jean Ayer aka Vrav
 
 ---
@@ -121,6 +137,8 @@ FUTUROS CAMBIOS E IDEAS LOCAS
 - [ ] Mantener dyntopo activado al cambiar de modo.
 
 # OTROS
+- [x] Icono personalizados para la brocha seleccionada con solo un click, basado en la vista actual con un render.
+- [ ] Insertar primitivas sin salir de sculpt, usando el 3dcursor con snap de superficie o de volumen y la normal de este para posicionarlo. SHIF + RMB
 - [ ] Filtros para las texturas.
 - [ ] Sets de brochas: 1, Recientemente usadas. 2, Por tipo según la brocha activa. 3, Favoritas.
 - [x] Nuevos y mejores atajos de teclado. Gracias al addon de Jean Ayer que he integrado podemos usar click derecho y arrastrar en uno de los axis (horizontal y vertical) para cambiar el tamaño o la fuerza de la brocha de forma fácil.

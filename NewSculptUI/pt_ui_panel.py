@@ -16,26 +16,35 @@ class NSMUI_PT_th_settings(Panel):
             row.operator('nsmui.ot_panel_setup', text="Sculpt-Mode Setup") # id del operador, texto para el botón
         else:
             wm = context.window_manager
+
+            row = self.layout.row()
+            row.label(text="Customize your UI !")
+            row.separator()
+
         #   BRUSH MANAGER
             row = self.layout.row(align=True)
             row.label(text="Brush :")
-            row.prop(wm, 'toggle_brushAdd', text="Add", toggle=True)
-            row.prop(wm, 'toggle_brushRemove', text="Remove", toggle=True)
-            row.prop(wm, 'toggle_brushReset', text="Reset", toggle=True)
-            row = self.layout.row()
-            row.prop(wm, 'toggle_brush_customIcon', text="Render Custom Brush Icon", toggle=True)
+            row.prop(wm, 'toggle_brush_menu', text="Collapse !", toggle=False)
+
+            if not wm.toggle_brush_menu:
+                row = self.layout.row(align=True)
+                row.prop(wm, 'toggle_brushAdd', text="Add", toggle=True)
+                row.prop(wm, 'toggle_brushRemove', text="Remove", toggle=True)
+                row.prop(wm, 'toggle_brushReset', text="Reset", toggle=True)
+                row = self.layout.row()
+                row.prop(wm, 'toggle_brush_customIcon', text="Render Custom Brush Icon", toggle=True)
 
         #   SLIDERS
             row = self.layout.row(align=True)
             row.label(text="Sliders :")
-            row.prop(wm, 'toggle_sliders', text="All Sliders", toggle=False) # si es false, el toggle es un checkbox
-            row = self.layout.row(align=True)
-            row.prop(wm, 'toggle_slider_brushSize', text="Size", toggle=True)
-            row.prop(wm, 'toggle_slider_brushStrength', text="Strength", toggle=True)
-            row.prop(wm, 'toggle_slider_brushSmooth', text="Smooth", toggle=True)
-        
-            row = self.layout.row()
-            row.prop(wm, 'toggle_slider_spacing', text="Spacing", toggle=True)
+            row.prop(wm, 'toggle_sliders', text="Hide All !", toggle=False) # si es false, el toggle es un checkbox
+            if not wm.toggle_sliders: # SI NO ESTÁN OCULTOS
+                row = self.layout.row(align=True)
+                row.prop(wm, 'toggle_slider_brushSize', text="Size", toggle=True)
+                row.prop(wm, 'toggle_slider_brushStrength', text="Strength", toggle=True)
+                row.prop(wm, 'toggle_slider_brushSmooth', text="Smooth", toggle=True)
+                row = self.layout.row()
+                row.prop(wm, 'toggle_slider_spacing', text="Spacing", toggle=True)
         
         #   SETTINGS // BRUSH // STROKE // FALLOFF (CURVES)
             row = self.layout.row()
@@ -70,8 +79,21 @@ class NSMUI_PT_th_settings(Panel):
             row = self.layout.row()
             row.label(text="Settings :")
             row = self.layout.row(align=True)
-            row.prop(wm, 'toggle_UI_elements', text="Toggle Elements", toggle=True)
+            row.prop(wm, 'toggle_UI_elements', text="Personalization", toggle=True)
             row.prop(wm, 'toggle_prefs', text="Preferences", toggle=True)
+
+            #   PRESETS
+            row.separator()
+            row = self.layout.row()
+            box = self.layout.box()
+            row = box.row()
+            row.label(text="UI PRESETS :")
+            row = box.row()
+            row.operator('nsmui.ht_toolheader_ui_preset_default', text="Default")
+            row = box.row()
+            row.operator('nsmui.ht_toolheader_ui_preset_recommendation', text="Recommendation")
+            row = box.row()
+            row.label(text="Custom Preset Coming Soon!")
             
             
 class NSMUI_PT_Prefs(bpy.types.Panel):

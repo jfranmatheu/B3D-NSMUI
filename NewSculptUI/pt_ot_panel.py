@@ -16,12 +16,6 @@ class NSMUI_OT_panel_setup(bpy.types.Operator):
         # CANCELS ANIMATION AND RESET FRAME POSITION
         #bpy.ops.spcreen.animation_cancel(restore_frame=True)
 
-        # CHANGE PREFERENCES - INPUTS
-        #bpy.types.PreferencesInput.use_zoom_to_mouse = True
-        #bpy.types.PreferencesInput.use_mouse_depth_navigate = True
-        #bpy.types.PreferencesInput.use_auto_perspective = True
-        #bpy.types.PreferencesInput.use_rotate_around_active = True
-
         # APPEND OF CUSTOM WORKSPACE
         
 

@@ -163,6 +163,7 @@ class NSMUI_HT_toolHeader_sculpt(Header, UnifiedPaintPanel):
             pcoll = preview_collections["main"]
             # VARIABLES
             toolHeader = NSMUI_HT_toolHeader_sculpt_tools
+
             brush = bpy.context.tool_settings.sculpt.brush
             sculpt = context.tool_settings.sculpt
             capabilities = brush.sculpt_capabilities
@@ -177,16 +178,17 @@ class NSMUI_HT_toolHeader_sculpt(Header, UnifiedPaintPanel):
             if brush is None:
                 return
 
-            if wm.toggle_brush_customIcon: toolHeader.draw_brush_customIcon(self, context)
+            if wm.toggle_brush_customIcon and (not wm.toggle_brush_menu): 
+                toolHeader.draw_brush_customIcon(self)
                 
-            toolHeader.draw_brushManager(self, sculpt, wm, 
+            toolHeader.draw_brushManager(self, sculpt, wm, wm.toggle_brush_menu,
                 pcoll["brushAdd_icon"], wm.toggle_brushAdd,
                 pcoll["brushReset_icon"], wm.toggle_brushReset, # bpy.types.Scene.resetBrush_Active
                 pcoll["brushRemove_icon"], wm.toggle_brushRemove) #bpy.types.Scene.removeBrush_Active
             
             toolHeader.draw_separator(self, pcoll)
 
-            if wm.toggle_sliders: # bpy.types.Scene.sliders_Active [OLD]
+            if not wm.toggle_sliders: # bpy.types.Scene.sliders_Active [OLD]
                 if wm.toggle_slider_brushSize: toolHeader.draw_slider_brushSize(self, toolsettings, brush, ups)
                 if wm.toggle_slider_brushStrength: toolHeader.draw_slider_brushStrength(self, toolsettings, brush, ups)       
                 if wm.toggle_slider_brushSmooth: toolHeader.draw_slider_brushSmooth(self, brush, capabilities)
@@ -242,28 +244,41 @@ class NSMUI_HT_toolHeader_sculpt_tools(NSMUI_HT_toolHeader_sculpt):
         col.label(text="", icon_value=icon.icon_id)
 
 #   CUSTOM BRUSH ICON
-    def draw_brush_customIcon(self, context):
+    def draw_brush_customIcon(self):
         row = self.layout.row(align=True)
         row.operator("nsmui.ht_toolheader_brush_custom_icon", text="", icon='RESTRICT_RENDER_OFF')
 
 #   BRUSH SELECTOR // ADD / RESET // REMOVE
-    def draw_brushManager(self, sculpt, wm, icon_brushAdd, canAdd, icon_brushReset, canReset, icon_brushRemove, canRemove):
+    def draw_brushManager(self, sculpt, wm, isCollapse, icon_brushAdd, canAdd, icon_brushReset, canReset, icon_brushRemove, canRemove):
         layout = self.layout
         row = layout.row(align=True)
         row.ui_units_x = 9
         # BRUSH LIST
         row.template_ID_preview(sculpt, "brush", new="brush.add", rows=3, cols=8, hide_buttons=True)
         # NEW BRUSH BUTTON (DUPLICATE)
-        if canAdd:
-            row.operator("brush.add", text="", icon_value=icon_brushAdd.icon_id)     
-        # RESET BRUSH BUTTON
-        if canReset:
-            row.ui_units_x = row.ui_units_x + 1
-            row.operator("brush.reset", text="", icon_value=icon_brushReset.icon_id) # RESET BRUSH
-        # DELETE BRUSH BUTTON
-        if canRemove:
-            row.ui_units_x = row.ui_units_x + 1
-            row.operator("nsmui.ht_toolheader_brush_remove", text="", icon_value=icon_brushRemove.icon_id) # DELETE BRUSH
+        if isCollapse:
+            row.ui_units_x = 8
+            NSMUI_HT_toolHeader_sculpt_tools.draw_brushOptions(self)
+        else:
+            if canAdd:
+                row.operator("brush.add", text="", icon_value=icon_brushAdd.icon_id)     
+            # RESET BRUSH BUTTON
+            if canReset:
+                row.ui_units_x = row.ui_units_x + 1
+                row.operator("brush.reset", text="", icon_value=icon_brushReset.icon_id) # RESET BRUSH
+            # DELETE BRUSH BUTTON
+            if canRemove:
+                row.ui_units_x = row.ui_units_x + 1
+                row.operator("nsmui.ht_toolheader_brush_remove", text="", icon_value=icon_brushRemove.icon_id) # DELETE BRUSH
+
+#   BRUSH options
+    def draw_brushOptions(self):
+        split = self.layout.split()
+        col = split.column()
+        sub = col.column(align=True)
+        sub.popover(
+            panel="NSMUI_PT_brush_optionsMenu",
+            text="")  
 
 #   BRUSH SIZE    
     def draw_slider_brushSize(self, toolsettings, brush, ups):
@@ -543,11 +558,9 @@ class NSMUI_HT_header_sculpt(bpy.types.Header):
     bl_context = ".paint_common"
 
     def draw(self, context):
-        layout = self.layout
-        tool_mode = context.mode
-        if(tool_mode == "SCULPT"):
+        if(context.mode == "SCULPT"):
             pcoll = preview_collections["main"]
-            row = layout
+            row = self.layout
             temp = False
             if(bpy.context.space_data.show_region_tool_header == False):
                 if(temp == False):
@@ -572,7 +585,6 @@ class NSMUI_PT_dyntopo_stages(Panel):
     bl_region_type = "UI"
     bl_context = ".paint_common"
     bl_category = 'Sculpt'
-    bl_label = "Dyntopo Stages"
     bl_options = {'DEFAULT_CLOSED'}
     def draw(self, context):
         dynStage_Active = context.window_manager.toggle_dyntopo_stage
@@ -647,6 +659,46 @@ class NSMUI_PT_dyntopo_stages(Panel):
                     row.label(icon_value=icon_H.icon_id, text=str(dyntopoStages[n].relative_Values[2]))
                 else:
                     row.label(text="NONE! Select a Stage!")
+
+class NSMUI_PT_brush_optionsMenu(Panel):
+    bl_label = "Brush Options"
+    bl_space_type = "VIEW_3D"
+    bl_region_type = "UI"
+    bl_context = "NONE"
+    bl_category = 'Sculpt'
+    #   BRUSH OPTIONS
+    def draw(self, context):
+        pcoll = preview_collections["main"]
+        #wm = context.window_manager
+        brush = bpy.context.tool_settings.sculpt.brush
+        icon_brushAdd = pcoll["brushAdd_icon"]
+        icon_brushReset = pcoll["brushReset_icon"]
+        icon_brushRemove = pcoll["brushRemove_icon"]
+
+        # 1ST ROW
+        col = self.layout.column()
+        row = col.row(align=True)
+        # NEW BRUSH BUTTON (DUPLICATE)
+        row.operator("brush.add", text="New / Duplicate", icon_value=icon_brushAdd.icon_id)     
+
+        # 2ND ROW
+        row = col.row(align=True)
+        # RESET BRUSH BUTTON
+        row.operator("brush.reset", text="Reset", icon_value=icon_brushReset.icon_id) # RESET BRUSH
+        # DELETE BRUSH BUTTON
+        row.operator("nsmui.ht_toolheader_brush_remove", text="Remove", icon_value=icon_brushRemove.icon_id) # DELETE BRUSH
+        col.separator()
+
+        # 3RD ROW
+        row = col.row(align=True)
+        row.operator("nsmui.ht_toolheader_brush_custom_icon", text="Render Custom Brush Icon", icon='RESTRICT_RENDER_OFF')
+        col.separator()
+
+        # 4TH ROW
+        row = col.row(align=True)
+        # LOAD BRUSHES / IMPORT FROM JSON DATABASE
+        # row.operator("nsmui.ot_read_json_data", text="Import All Brushes")
+
 
 # --------------------------------------------- #
 # PROPERTIES // UPDATERS                        #
@@ -732,6 +784,7 @@ def register():
     register_class(NSMUI_HT_toolHeader_sculpt) # TOOL HEADER - SCULPT MODE
     register_class(NSMUI_HT_header_sculpt)     # HEADER      - SCULPT MODE
     register_class(NSMUI_PT_dyntopo_stages)
+    register_class(NSMUI_PT_brush_optionsMenu)
 
     # AutoLoad Exterior Classes
     auto_load.register()
@@ -744,6 +797,7 @@ def register():
 
     # WM PROPERTIES
     wm = bpy.types.WindowManager
+    wm.toggle_brush_menu = bpy.props.BoolProperty(default=False, update=update_property)
     wm.toggle_UI_elements = bpy.props.BoolProperty(default=True, update=update_property)
     wm.toggle_prefs = bpy.props.BoolProperty(default=True, update=update_property)
     wm.toggle_brush_customIcon = bpy.props.BoolProperty(default=False, update=update_property)
@@ -756,7 +810,7 @@ def register():
     wm.toggle_stroke_method = bpy.props.BoolProperty(default=False, update=update_property)
     wm.toggle_falloff = bpy.props.BoolProperty(default=True, update=update_property)
     wm.toggle_falloff_curvePresets = bpy.props.BoolProperty(default=False, update=update_property)
-    wm.toggle_sliders = bpy.props.BoolProperty(default=True, update=update_property)
+    wm.toggle_sliders = bpy.props.BoolProperty(default=False, update=update_property)
     wm.toggle_slider_brushSize = bpy.props.BoolProperty(default=True, update=update_property)
     wm.toggle_slider_brushStrength = bpy.props.BoolProperty(default=True, update=update_property)
     wm.toggle_slider_brushSmooth = bpy.props.BoolProperty(default=True, update=update_property)
@@ -798,6 +852,7 @@ def unregister():
     unregister_class(NSMUI_HT_toolHeader_sculpt) # TOOL HEADER - SCULPT MODE
     unregister_class(NSMUI_HT_header_sculpt)     # HEADER      - SCULPT MODE
     unregister_class(NSMUI_PT_dyntopo_stages)
+    unregister_class(NSMUI_PT_brush_optionsMenu)
 
     # AutoLoad Exterior Classes
     auto_load.unregister()
@@ -809,6 +864,7 @@ def unregister():
 
     # PROPERTIES
     wm = bpy.types.WindowManager
+    del wm.toggle_brush_menu
     del wm.toggle_UI_elements
     del wm.toggle_brush_customIcon
     del wm.toggle_sliders

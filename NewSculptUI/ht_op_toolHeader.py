@@ -227,8 +227,8 @@ class NSMUI_OT_toolHeader_brush_custom_icon(bpy.types.Operator):
         temp_dir = bpy.app.tempdir # TEMPORAL FOLDER OF THE ACTUAL BLENDER PROJECT
         script_file = os.path.realpath(__file__)
         addon_dir = os.path.dirname(script_file) # ADDON'S DIRECTORY
-        icons_folder = "/brush_icons/"
-        icons_dir = addon_dir + "/Sculpt" + icons_folder
+        icons_folder = "/icons/"
+        icons_dir = addon_dir + "/Sculpt_Brushes" + icons_folder
         
         filename = brush.name + "_icon.png"
         filepath = icons_dir + filename
@@ -260,8 +260,84 @@ class NSMUI_OT_toolHeader_brush_custom_icon(bpy.types.Operator):
             bpy.data.images.remove(bpy.data.images[filename + ".001"])
         except:
             pass
+        #print(brush.__dir__())
+        #for prop in brush.__dir__():
+        #    print("{'0'" + str(prop) + "'0':" +"'0'" + str(prop) + "'0'},")
 
         # PREPARE NEW RENDER IMAGE SLOT FOR ANOTHER ICON
         bpy.ops.image.new(name="Render Result")
         
+        return {'FINISHED'}
+
+
+def printAttr(brush):
+    for attr in dir(brush):
+        if hasattr( brush, attr ):
+            print( "{'0'%s'0': '0'%s'0'}," % (attr, getattr(brush, attr)))
+            # print( "obj.%s = %s" % (attr, getattr(brush, attr)))
+    return {'FINISHED'}
+
+
+class NSMUI_OT_toolHeader_UI_preset_default(bpy.types.Operator):
+    bl_idname = "nsmui.ht_toolheader_ui_preset_default"
+    bl_label = "Default UI Preset"
+    bl_description = "Change Tool Header UI to default state. Reset."
+    def execute(self, context):
+        wm = context.window_manager
+        wm.toggle_brush_menu = False
+        wm.toggle_UI_elements = True
+        wm.toggle_prefs = True
+        wm.toggle_brush_customIcon = False
+        wm.toggle_stages = True
+        wm.toggle_brush_settings = True
+        wm.toggle_brushAdd = True
+        wm.toggle_brushRemove = False
+        wm.toggle_brushReset = True
+        wm.toggle_stroke_settings = True
+        wm.toggle_stroke_method = False
+        wm.toggle_falloff = True
+        wm.toggle_falloff_curvePresets = False
+        wm.toggle_sliders = True
+        wm.toggle_slider_brushSize = True
+        wm.toggle_slider_brushStrength = True
+        wm.toggle_slider_brushSmooth = True
+        wm.toggle_slider_spacing = False
+        wm.toggle_dyntopo = True
+        wm.toggle_mask = True
+        wm.toggle_symmetry = True
+        wm.toggle_texture_new = True
+        wm.toggle_texture_open = True
+
+        return {'FINISHED'}
+
+class NSMUI_OT_toolHeader_UI_preset_recommendation(bpy.types.Operator):
+    bl_idname = "nsmui.ht_toolheader_ui_preset_recommendation"
+    bl_label = "Recommended UI Preset"
+    bl_description = "Use recommended preset to change Tool Header UI."
+    def execute(self, context):
+        wm = context.window_manager
+        wm.toggle_brush_menu = True
+        wm.toggle_UI_elements = True
+        wm.toggle_prefs = True
+        wm.toggle_brush_customIcon = False
+        wm.toggle_stages = True
+        wm.toggle_brush_settings = False
+        wm.toggle_brushAdd = False
+        wm.toggle_brushRemove = False
+        wm.toggle_brushReset = False
+        wm.toggle_stroke_settings = False
+        wm.toggle_stroke_method = True
+        wm.toggle_falloff = False
+        wm.toggle_falloff_curvePresets = True
+        wm.toggle_sliders = True
+        wm.toggle_slider_brushSize = False
+        wm.toggle_slider_brushStrength = False
+        wm.toggle_slider_brushSmooth = False
+        wm.toggle_slider_spacing = False
+        wm.toggle_dyntopo = True
+        wm.toggle_mask = True
+        wm.toggle_symmetry = True
+        wm.toggle_texture_new = True
+        wm.toggle_texture_open = True
+
         return {'FINISHED'}

@@ -9,3 +9,4 @@ NewSculptUI/.vscode/settings.json
 NewSculptUI/.vscode/launch.json
 NewSculptUI/__pycache__/ht_ui_toolHeader.cpython-37.pyc
 NewSculptUI/__pycache__/brush_quickset.cpython-37.pyc
+NewSculptUI/__pycache__/brush_io_manager.cpython-37.pyc

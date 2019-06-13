@@ -60,6 +60,10 @@ RENDER YOUR CUSTOM BRUSH ICONS! WITH JUST ONE CLICK!!!!!
 ![alt text](http://4.bp.blogspot.com/--oLt_7tWMq4/XPzbvucr4HI/AAAAAAAAAkA/DUcOYBjvGPEM_EzVt79CdFLgUl0nwa4ywCK4BGAYYCw/s400/shooticonbrushicon.png "Render Custom Brush Icon")
 ![alt text](http://3.bp.blogspot.com/-D42C0JvgY3o/XPzbw_sNRjI/AAAAAAAAAkI/HDyVqbFZHboosrEZPi2F2FsNm8lU81FzQCK4BGAYYCw/s640/previewiconscene.png "New Custom Brush Icon!")
 
+- GIF EXAMPLE - (by gen.es)
+
+![alt text](http://4.bp.blogspot.com/-qh358q7MjJs/XQEBkCvsUWI/AAAAAAAAAlo/mhskAOlgnCoOFurdBTFtKRvsI0s45LaQQCK4BGAYYCw/s1600/pinceles.gif "Gif example")
+
 ---
 
 DYNTOPO + QUICK 'DETAIL SIZE' SELECTOR [DEFAULT MODE]

@@ -78,6 +78,12 @@ DYNTOPO NEW "STAGE" CONCEPT + NEW MENU [STAGE MODE]
 ![alt text](http://1.bp.blogspot.com/-tCsMLruKp7M/XPzYDNUOxRI/AAAAAAAAAjg/pxjg7LVn1AI0U0Z0-dWQhN0pQaPcIYTTACK4BGAYYCw/s400/dyntopo_stages.png "Dyntopo Stages")
 
 ---
+NEW BRUSH SET PANELS !!!
+---
+## Recent Brushes and Brushes per type !!!
+https://blender.chat/file-upload/CjSzJWhscJngPC7m7/2019-06-15%2000-50-23.mp4
+
+---
 QUICK SYMMETRY
 ---
 ![alt text](http://4.bp.blogspot.com/-AQyygMd2kbo/XOgZi7420RI/AAAAAAAAAfA/f3e5ViEtS7oEIN1Z5TlMZkyYv8j-2oHSACK4BGAYYCw/s400/NewSMUI_symmetry.png "Symmetry")

@@ -297,7 +297,7 @@ class NSMUI_OT_toolHeader_UI_preset_default(bpy.types.Operator):
         wm.toggle_stroke_method = False
         wm.toggle_falloff = True
         wm.toggle_falloff_curvePresets = False
-        wm.toggle_sliders = True
+        wm.toggle_sliders = False
         wm.toggle_slider_brushSize = True
         wm.toggle_slider_brushStrength = True
         wm.toggle_slider_brushSmooth = True

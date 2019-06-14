@@ -16,7 +16,7 @@ bl_info = {
     "author" : "JFranMatheu",
     "description" : "New UI for Sculpt Mode! :D",
     "blender" : (2, 80, 0),
-    "version" : (0, 3, 2),
+    "version" : (0, 3, 4),
     "location" : "View3D > Tool Header // View3D > 'N' Panel: Sculpt)",
     "warning" : "This version is still in development. ;)",
     "category" : "Generic"
@@ -38,9 +38,9 @@ from bl_ui.properties_paint_common import (
         brush_mask_texture_settings,
         brush_basic_sculpt_settings
         )
-from bl_ui.space_view3d import VIEW3D_HT_tool_header
 from bpy.props import StringProperty, IntProperty, FloatProperty
 from bpy.utils import register_class, unregister_class
+from bl_ui.space_view3d import VIEW3D_HT_tool_header
 
 # ----------------------------------------------------------------- #
 #   DYNTOPO SETUP                                                   #
@@ -82,6 +82,7 @@ dyntopoStages = [dynStage_Low, dynStage_Mid, dynStage_High]
 dynStage_Active = 0 # 1 = SKETCH; 2 = DETAIL; 3 = POLISH; 0 = "NONE" # Por defecto ningún 'stage' está activado
 dynMethod_Active = "NONE"
 dynValues_ui = [3,6,9] # valores mostrados en la UI # DEFECTO # Cambiarán al cambiar de stage o detailing (method aquí)
+
 
 # ----------------------------------------------------------------- #
 #   SETTINGS FOR TOOL HEADER UI                                     #
@@ -163,20 +164,21 @@ class NSMUI_HT_toolHeader_sculpt(Header, UnifiedPaintPanel):
             pcoll = preview_collections["main"]
             # VARIABLES
             toolHeader = NSMUI_HT_toolHeader_sculpt_tools
-
             brush = bpy.context.tool_settings.sculpt.brush
+            settings = self.paint_settings(context)
             sculpt = context.tool_settings.sculpt
             capabilities = brush.sculpt_capabilities
             toolsettings = context.tool_settings
-            settings = self.paint_settings(context)
-            brush = settings.brush
+            activeBrush = brush
             ups = toolsettings.unified_paint_settings
             wm = context.window_manager
+            brush = settings.brush
             
             # IF THERE'S NO BRUSH, JUST STOP DRAWING
             
             if brush is None:
                 return
+
 
             if wm.toggle_brush_customIcon and (not wm.toggle_brush_menu): 
                 toolHeader.draw_brush_customIcon(self)
@@ -224,6 +226,9 @@ class NSMUI_HT_toolHeader_sculpt(Header, UnifiedPaintPanel):
             if wm.toggle_prefs: toolHeader.draw_toggle_preferences(self)
 
             # self.layout.template_palette(toolsettings.image_paint, "palette", color=True)
+
+            row = self.layout.split().row(align=True)
+            # view3d_header_collections(self, context)
 
             self.layout.separator(factor=300.0)
             
@@ -774,6 +779,7 @@ from . import auto_load
 auto_load.init()
 
 def register():
+    #bpy.types.VIEW3D_HT_header.append(view3d_header_collections)
     # UNREGISTER ORIGINAL TOOL HEADER # changed - antes al inicio del script
     try:
         bpy.utils.unregister_class(VIEW3D_HT_tool_header)
@@ -847,7 +853,11 @@ def register():
 
     print("Registered New Sculpt Mode UI")
 
+
+
 def unregister():
+    #bpy.types.VIEW3D_HT_header.remove(view3d_header_collections)
+    bpy.types.VIEW3D_HT_header.remove(view3d_header_collections)
     # UnRegister Classes
     unregister_class(NSMUI_HT_toolHeader_sculpt) # TOOL HEADER - SCULPT MODE
     unregister_class(NSMUI_HT_header_sculpt)     # HEADER      - SCULPT MODE
@@ -891,3 +901,43 @@ def unregister():
     del wm.toggle_prefs
 
     print("Unregistered New Sculpt Mode UI")
+
+
+def view3d_header_collections(self, context):
+ 
+    layout = self.layout
+ 
+    collections = bpy.data.collections
+    act_ob = context.active_object
+ 
+    idx = 1
+ 
+    split = layout.split()
+    col = split.column(align=True)
+    row = col.row(align=True)
+    row.scale_y = 0.5
+ 
+ 
+    for coll in bpy.data.collections:
+ 
+        # If there are icons, use LAYER_USED
+        icon = 'LAYER_USED' if len(coll.objects) > 0 else 'BLANK1'
+ 
+        # if the active object is in the current collection
+        if act_ob and (coll in act_ob.users_collection):
+            icon = 'LAYER_ACTIVE'
+ 
+        props = row.operator('object.hide_collection', text='', icon=icon)
+        props.collection_index = idx
+ 
+        if idx%5==0:
+            row = col.row(align=True)
+            row.scale_y = 0.5
+ 
+        if idx%10==0:
+            layout.separator()
+            col = layout.column(align=True)
+            row = col.row(align=True)
+            row.scale_y = 0.5
+ 
+        idx += 1

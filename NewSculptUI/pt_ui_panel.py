@@ -1,6 +1,6 @@
 import bpy
 
-from bpy.types import Panel
+from bpy.types import Panel, Operator
 
 class NSMUI_PT_th_settings(Panel):
     #bl_idname = "NSMUI_PT_Panel_TH_Settings"
@@ -139,3 +139,60 @@ class NSMUI_PT_Prefs(bpy.types.Panel):
             flow = layout.grid_flow().row(align=True)
             flow.prop(view, "open_toplevel_delay", text="Delay")
             flow.prop(view, "open_sublevel_delay", text="Sub Delay")
+
+
+# RECENT BRUSHES
+recentBrushes = []
+class NSMUI_PT_Brushes_Recent(Panel):
+    bl_label = "Recent Brushes"
+    bl_category = 'Brushes'
+    bl_space_type = "VIEW_3D"
+    bl_region_type = "UI"
+    bl_context = ".paint_common"
+    # bl_options = {'DEFAULT_CLOSED'}
+    def draw(self, context):
+        if(context.mode == "SCULPT"):
+            activeBrush = bpy.context.tool_settings.sculpt.brush
+            # RECENT BRUSHES
+            length = len(recentBrushes)
+            n = 6
+            if length == 0: # or recentBrushes == [] # EMPTY LIST
+                recentBrushes.append(activeBrush.name)
+            elif length < n+1:
+                if recentBrushes[length-1] == activeBrush.name:
+                    pass
+                elif length == n:
+                    recentBrushes.pop(0)
+                    recentBrushes.append(activeBrush.name)
+                else:
+                    recentBrushes.append(activeBrush.name)
+
+            # print (length)
+            # print(recentBrushes)
+
+            col = self.layout.column() # define una fila
+            for b in reversed(recentBrushes):
+                # col.label(text=b, icon_value=bpy.data.brushes[b].preview.icon_id) # SOLO PREVIEW
+                col.operator('nsmui.ot_change_brush', text=b, icon_value=bpy.data.brushes[b].preview.icon_id).nBrush = b
+
+
+class NSMUI_PT_Brushes_ByType(Panel):
+    #bl_idname = "NSMUI_PT_Panel_TH_RecentBrushes"
+    bl_label = "Brushes by Type"
+    bl_category = 'Brushes'
+    bl_space_type = "VIEW_3D"
+    bl_region_type = "UI"
+    # bl_options = {'DEFAULT_CLOSED'}
+
+    def draw(self, context):
+        if(context.mode == "SCULPT"):
+            brush = bpy.context.tool_settings.sculpt.brush
+            #sculpt = context.tool_settings.sculpt
+            col = self.layout.column() # define una fila
+            col.label(text="BRUSHES")
+            # BRUSH LIST
+            for b in bpy.data.brushes:
+                if(b.sculpt_tool == brush.sculpt_tool):
+                    col.operator('nsmui.ot_change_brush', text=b.name, icon_value=bpy.data.brushes[b.name].preview.icon_id).nBrush = b.name
+
+    

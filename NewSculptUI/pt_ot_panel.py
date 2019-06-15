@@ -40,13 +40,12 @@ class NSMUI_OT_panel_setup(bpy.types.Operator):
             bpy.ops.sculpt.sculptmode_toggle() # ACTIVA / DESACTIVA
         return {'FINISHED'}
 
-class NSMUI_OT_panel_setup(bpy.types.Operator):
+class NSMUI_OT_change_brush(bpy.types.Operator):
     bl_idname = "nsmui.ot_change_brush"
     bl_label = "change_ui_for_new_sculpt_mode"
     bl_description = ""
     nBrush: bpy.props.StringProperty()
-    def execute(self, n_brush):
+    def execute(self, nbrush):
         bpy.context.tool_settings.sculpt.brush = bpy.data.brushes[self.nBrush]
-        
-
         return {'FINISHED'}
+

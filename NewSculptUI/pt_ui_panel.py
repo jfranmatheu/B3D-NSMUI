@@ -1,5 +1,5 @@
 import bpy
-
+import os
 from bpy.types import Panel, Operator
 
 class NSMUI_PT_th_settings(Panel):
@@ -149,7 +149,7 @@ class NSMUI_PT_Brushes_Recent(Panel):
     bl_space_type = "VIEW_3D"
     bl_region_type = "UI"
     bl_context = ".paint_common"
-    # bl_options = {'DEFAULT_CLOSED'}
+    bl_options = {'DEFAULT_CLOSED'}
     def draw(self, context):
         if(context.mode == "SCULPT"):
             activeBrush = bpy.context.tool_settings.sculpt.brush
@@ -175,6 +175,65 @@ class NSMUI_PT_Brushes_Recent(Panel):
                 # col.label(text=b, icon_value=bpy.data.brushes[b].preview.icon_id) # SOLO PREVIEW
                 col.operator('nsmui.ot_change_brush', text=b, icon_value=bpy.data.brushes[b].preview.icon_id).nBrush = b
 
+# RECENT BRUSHES
+favBrushes = []
+class NSMUI_PT_Brushes_Favs(Panel):
+    bl_label = "Favourite Brushes"
+    bl_category = 'Brushes'
+    bl_space_type = "VIEW_3D"
+    bl_region_type = "UI"
+    bl_context = ".paint_common"
+    # bl_options = {'DEFAULT_CLOSED'}
+    def draw(self, context):
+        if(context.mode == "SCULPT"):
+            activeBrush = bpy.context.tool_settings.sculpt.brush
+            # RECENT BRUSHES
+            length = len(favBrushes)
+
+            row = self.layout.row(align=True)
+            brushName = activeBrush.name
+            row.operator('nsmui.ot_brush_fav_add', text="ADD", icon='ADD').nBrush = brushName
+            row.operator('nsmui.ot_brush_fav_remove', text="REMOVE", icon='REMOVE').nBrush = brushName
+            row = self.layout.row()
+            # print (length)
+            # print(recentBrushes)
+
+            if length != 0:
+                col = row.column() # define una fila
+                col.separator()
+                for b in favBrushes:
+                    if b == brushName:
+                        act = True
+                    else:
+                        act = False
+                    col.scale_y = 1.1
+                    col.scale_x = 1.1
+                    # col.label(text=b, icon_value=bpy.data.brushes[b].preview.icon_id) # SOLO PREVIEW
+                    col.operator('nsmui.ot_change_brush', depress=act, text=b, icon_value=bpy.data.brushes[b].preview.icon_id).nBrush = b
+
+class NSMUI_OT_brush_fav_remove(bpy.types.Operator):
+    bl_idname = "nsmui.ot_brush_fav_remove"
+    bl_label = "Remove Fav Brush"
+    bl_description = "Remove Active Brush from Favourites."
+    nBrush: bpy.props.StringProperty()
+    def execute(self, nbrush):
+        try:
+            favBrushes.remove(self.nBrush)
+        except:
+            pass
+        return {'FINISHED'}
+class NSMUI_OT_brush_fav_add(bpy.types.Operator):
+    bl_idname = "nsmui.ot_brush_fav_add"
+    bl_label = "Add Fav Brush"
+    bl_description = "Add Active Brush to Favourites."
+    nBrush: bpy.props.StringProperty()
+    def execute(self, nBrush):
+        if self.nBrush in favBrushes:
+            return {'FINISHED'}
+        else:
+            favBrushes.append(self.nBrush)
+        return {'FINISHED'}
+
 
 class NSMUI_PT_Brushes_ByType(Panel):
     #bl_idname = "NSMUI_PT_Panel_TH_RecentBrushes"
@@ -192,7 +251,135 @@ class NSMUI_PT_Brushes_ByType(Panel):
             col.label(text="BRUSHES")
             # BRUSH LIST
             for b in bpy.data.brushes:
-                if(b.sculpt_tool == brush.sculpt_tool):
-                    col.operator('nsmui.ot_change_brush', text=b.name, icon_value=bpy.data.brushes[b.name].preview.icon_id).nBrush = b.name
+                if (b.sculpt_tool == brush.sculpt_tool) and (not b.use_paint_vertex) and (b.use_paint_sculpt):
+                    icon = bpy.data.brushes[b.name].preview
+                    if b.name == brush.name:
+                        act = True
+                    else:
+                        act = False
+                    #icon.icon_size = (2,2)
+                    col.scale_y = 1.1
+                    col.scale_x = 1.1
+                    col.operator('nsmui.ot_change_brush', depress=act, text=b.name, icon_value=icon.icon_id).nBrush = b.name
 
-    
+
+def enum_previews_from_directory_items(self, context):
+    """EnumProperty callback"""
+    enum_items = []
+
+    if context is None:
+        return enum_items
+
+    wm = context.window_manager
+    directory = wm.my_previews_dir
+
+    # Get the preview collection (defined in register func).
+    pcol = preview_collections["main"]
+
+    if directory == pcol.my_previews_dir:
+        return pcol.my_previews
+
+    print("Scanning directory: %s" % directory)
+
+    if directory and os.path.exists(directory):
+        # Scan the directory for png files
+        image_paths = []
+        for fn in os.listdir(directory):
+            if fn.lower().endswith(".png"):
+                image_paths.append(fn)
+
+        for i, name in enumerate(image_paths):
+            # generates a thumbnail preview for a file.
+            filepath = os.path.join(directory, name)
+            icon = pcol.get(name)
+            if not icon:
+                thumb = pcol.load(name, filepath, 'IMAGE')
+            else:
+                thumb = pcol[name]
+            enum_items.append((name, name, "", thumb.icon_id, i))
+
+    pcol.my_previews = enum_items
+    pcol.my_previews_dir = directory
+    return pcol.my_previews 
+
+
+
+class PreviewsTestPanel(bpy.types.Panel):
+    """Creates a Panel in the Object properties window"""
+    bl_label = "Custom Icon Previews [Test]"
+    bl_idname = "BRUSH_PT_previews"
+    bl_category = 'Brushes'
+    bl_space_type = "VIEW_3D"
+    bl_region_type = "UI"
+    bl_context = ".paint_common"
+    bl_options = {'DEFAULT_CLOSED'}
+
+    def draw(self, context):
+        layout = self.layout
+        wm = context.window_manager
+
+        row = layout.row()
+        row.prop(wm, "my_previews_dir")
+
+        row = layout.row()
+        row.template_icon_view(wm, "my_previews")
+
+        row = layout.row()
+        row.prop(wm, "my_previews")
+        #row.operator("my_previews")
+
+
+# We can store multiple preview collections here,
+# however in this example we only store "main"
+preview_collections = {}
+
+script_file = os.path.realpath(__file__)
+addon_dir = os.path.dirname(script_file) # ADDON'S DIRECTORY
+icons_folder = "/icons/"
+icons_dir = addon_dir + "/Sculpt_Brushes" + icons_folder
+
+def register():
+    from bpy.types import WindowManager
+    from bpy.props import (
+        StringProperty,
+        EnumProperty,
+    )
+
+    WindowManager.my_previews_dir = StringProperty(
+        name="Folder Path",
+        subtype='DIR_PATH',
+        default=icons_dir
+    )
+
+    WindowManager.my_previews = EnumProperty(
+        items=enum_previews_from_directory_items,
+    )
+
+    # Note that preview collections returned by bpy.utils.previews
+    # are regular Python objects - you can use them to store custom data.
+    #
+    # This is especially useful here, since:
+    # - It avoids us regenerating the whole enum over and over.
+    # - It can store enum_items' strings
+    #   (remember you have to keep those strings somewhere in py,
+    #   else they get freed and Blender references invalid memory!).
+    import bpy.utils.previews
+    pcol = bpy.utils.previews.new()
+    pcol.my_previews_dir = ""
+    pcol.my_previews = ()
+
+    preview_collections["main"] = pcol
+
+
+def unregister():
+    from bpy.types import WindowManager
+
+    del WindowManager.my_previews
+
+    for pcol in preview_collections.values():
+        bpy.utils.previews.remove(pcol)
+    preview_collections.clear()
+
+
+if __name__ == "__main__":
+    register()

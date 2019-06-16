@@ -16,7 +16,7 @@ bl_info = {
     "author" : "JFranMatheu",
     "description" : "New UI for Sculpt Mode! :D",
     "blender" : (2, 80, 0),
-    "version" : (0, 3, 5),
+    "version" : (0, 3, 6),
     "location" : "View3D > Tool Header // View3D > 'N' Panel: Sculpt)",
     "warning" : "This version is still in development. ;)",
     "category" : "Generic"
@@ -101,6 +101,13 @@ icons = {"mirror_icon" : "mirror_icon.png",
          "brushAdd_icon"  : "brushAdd_icon.png",
          "brushRemove_icon"  : "brushRemove_icon.png",
          "brushReset_icon"  : "brushReset_icon.png",
+         "strokeSpace_icon" : "strokeSpace_icon.png",
+         "strokeDots_icon" : "strokeDots_icon.png",
+         "strokeDragDot_icon" : "strokeDragDot_icon.png",
+         "strokeAnchored_icon" : "strokeAnchored_icon.png",
+         "strokeAirbrush_icon" : "strokeAirbrush_icon.png",
+         "strokeLine_icon" : "strokeLine_icon.png",
+         "strokeCurve_icon" : "strokeCurve_icon.png",
          "stroke_icon" : "stroke_icon.png",
          "texture_icon"  : "texture_icon.png",
          "textureNew_icon"  : "textureNew_icon.png",
@@ -137,6 +144,12 @@ if addonName != "NewSculptUI": # CHANGE THIS
         "The name of the folder containing this addon has to be 'NewSculptUI'.\n" # CHANGE THIS
         "Please rename it.")
     raise Exception(message)
+
+
+def init():
+    """init function - runs once"""
+    print("Hello World!")
+
 
 # --------------------------------------------- #
 # TOOL HEADER - UI - SCULPT MODE
@@ -179,7 +192,6 @@ class NSMUI_HT_toolHeader_sculpt(Header, UnifiedPaintPanel):
             if brush is None:
                 return
 
-
             if wm.toggle_brush_customIcon and (not wm.toggle_brush_menu): 
                 toolHeader.draw_brush_customIcon(self)
                 
@@ -199,7 +211,7 @@ class NSMUI_HT_toolHeader_sculpt(Header, UnifiedPaintPanel):
 
             if wm.toggle_brush_settings: toolHeader.draw_brushSettings(self, pcoll["brush_icon"])
             if wm.toggle_stroke_settings: toolHeader.draw_strokeSettings(self, pcoll["stroke_icon"])
-            if wm.toggle_stroke_method: toolHeader.draw_strokeMethod(self, brush)
+            if wm.toggle_stroke_method: toolHeader.draw_strokeMethod(self, brush, pcoll)
             if wm.toggle_falloff: toolHeader.draw_fallOff(self, pcoll["fallOff_icon"])
             if wm.toggle_falloff_curvePresets: toolHeader.draw_fallOff_curvePresets(self, brush)
             toolHeader.draw_frontFaces(self, brush, pcoll["frontFaces_icon"])
@@ -361,10 +373,12 @@ class NSMUI_HT_toolHeader_sculpt_tools(NSMUI_HT_toolHeader_sculpt):
             text="")          
 
 #   BRUSH STROKE METHOD
-    def draw_strokeMethod(self, brush):
+    def draw_strokeMethod(self, brush, pcoll):
         row = self.layout.row(align=True)
-        row.ui_units_x = 4
-        row.prop(brush, "stroke_method", text="")
+        icon = strokeMethod_icon(brush.stroke_method, pcoll)
+        row.ui_units_x = 4.5
+        # row.label(text="", icon_value=icon.icon_id)
+        row.prop(brush, "stroke_method", text="", icon_value=icon.icon_id)
 
 #   BRUSH FALLOFF SETTINGS/CURVES (DROPDOWN)
     def draw_fallOff(self, icon):
@@ -379,14 +393,29 @@ class NSMUI_HT_toolHeader_sculpt_tools(NSMUI_HT_toolHeader_sculpt):
 
 #   BRUSH FALLOFF CURVE PRESETS
     def draw_fallOff_curvePresets(self, brush):
+        scn = bpy.types.Scene
+        
+        if scn.depress_Smooth == False: dp_Smooth = True
+        else: dp_Smooth = False
+        if scn.depress_Round == False: dp_Round = True
+        else: dp_Round = False
+        if scn.depress_Root == False: dp_Root = True
+        else: dp_Root = False
+        if scn.depress_Sharp == False: dp_Sharp = True
+        else: dp_Sharp = False
+        if scn.depress_Line == False: dp_Line = True
+        else: dp_Line = False
+        if scn.depress_Max == False: dp_Max = True
+        else: dp_Max = False
+        
         col = self.layout.column(align=True)
         row = col.row(align=True)
-        row.operator("brush.curve_preset", icon='SMOOTHCURVE', text="").shape = 'SMOOTH'
-        row.operator("brush.curve_preset", icon='SPHERECURVE', text="").shape = 'ROUND'
-        row.operator("brush.curve_preset", icon='ROOTCURVE', text="").shape = 'ROOT'
-        row.operator("brush.curve_preset", icon='SHARPCURVE', text="").shape = 'SHARP'
-        row.operator("brush.curve_preset", icon='LINCURVE', text="").shape = 'LINE'
-        row.operator("brush.curve_preset", icon='NOCURVE', text="").shape = 'MAX'
+        row.operator("nsmui.ot_curve_shape", icon='SMOOTHCURVE', depress=dp_Smooth).shape = 'SMOOTH'
+        row.operator("nsmui.ot_curve_shape", icon='SPHERECURVE', depress=dp_Round).shape = 'ROUND'
+        row.operator("nsmui.ot_curve_shape", icon='ROOTCURVE', depress=dp_Root).shape = 'ROOT'
+        row.operator("nsmui.ot_curve_shape", icon='SHARPCURVE', depress=dp_Sharp).shape = 'SHARP'
+        row.operator("nsmui.ot_curve_shape", icon='LINCURVE', depress=dp_Line).shape = 'LINE'
+        row.operator("nsmui.ot_curve_shape", icon='NOCURVE', depress=dp_Max).shape = 'MAX'
 
 #   FRONT FACES ONLY (TOGGLE)
     def draw_frontFaces(self, brush, icon):
@@ -503,13 +532,29 @@ class NSMUI_HT_toolHeader_sculpt_tools(NSMUI_HT_toolHeader_sculpt):
                     col = layout.column()
                     row = col.row(align=True)
                     row.ui_units_x = 6
+
+                    scn = bpy.types.Scene
+        
+                    if scn.depress_dyntopo_lvl_1 == False: dp_lvl_1 = True
+                    else: dp_lvl_1 = False
+                    if scn.depress_dyntopo_lvl_2 == False: dp_lvl_2 = True
+                    else: dp_lvl_2 = False
+                    if scn.depress_dyntopo_lvl_3 == False: dp_lvl_3 = True
+                    else: dp_lvl_3 = False
+                    if scn.depress_dyntopo_lvl_4 == False: dp_lvl_4 = True
+                    else: dp_lvl_4 = False
+                    if scn.depress_dyntopo_lvl_5 == False: dp_lvl_5 = True
+                    else: dp_lvl_5 = False
+                    if scn.depress_dyntopo_lvl_6 == False: dp_lvl_6 = True
+                    else: dp_lvl_6 = False
+
                     # A menor nivel, mayor detalle, es decir para detalles más pequeños
-                    row.operator("nsmui.ht_toolheader_dyntopo_lvl_6", text="1") # Botón 1, primer nivel, nivel más alto de detalle
-                    row.operator("nsmui.ht_toolheader_dyntopo_lvl_5", text="2")
-                    row.operator("nsmui.ht_toolheader_dyntopo_lvl_4", text="3")
-                    row.operator("nsmui.ht_toolheader_dyntopo_lvl_3", text="4")
-                    row.operator("nsmui.ht_toolheader_dyntopo_lvl_2", text="5")
-                    row.operator("nsmui.ht_toolheader_dyntopo_lvl_1", text="6") # Botón 6, último nivel, nivel más bajo de detalle
+                    row.operator("nsmui.ht_toolheader_dyntopo_lvl_6", text="1", depress=dp_lvl_1) # Botón 1, primer nivel, nivel más alto de detalle
+                    row.operator("nsmui.ht_toolheader_dyntopo_lvl_5", text="2", depress=dp_lvl_2)
+                    row.operator("nsmui.ht_toolheader_dyntopo_lvl_4", text="3", depress=dp_lvl_3)
+                    row.operator("nsmui.ht_toolheader_dyntopo_lvl_3", text="4", depress=dp_lvl_4)
+                    row.operator("nsmui.ht_toolheader_dyntopo_lvl_2", text="5", depress=dp_lvl_5)
+                    row.operator("nsmui.ht_toolheader_dyntopo_lvl_1", text="6", depress=dp_lvl_6) # Botón 6, último nivel, nivel más bajo de detalle
                     
             else:
                 try:
@@ -705,6 +750,7 @@ class NSMUI_PT_brush_optionsMenu(Panel):
         # row.operator("nsmui.ot_read_json_data", text="Import All Brushes")
 
 
+
 # --------------------------------------------- #
 # PROPERTIES // UPDATERS                        #
 # --------------------------------------------- #
@@ -737,6 +783,14 @@ def update_depress_H(value):
 bpy.types.Scene.depressL = bpy.props.BoolProperty(default=True)
 bpy.types.Scene.depressM = bpy.props.BoolProperty(default=True)
 bpy.types.Scene.depressH = bpy.props.BoolProperty(default=True)
+
+def update_dp_Smooth(value):
+    bpy.types.Scene.depress_Smooth = not value
+    return(bpy.types.Scene.depress_Smooth)
+def update_dp_Round(value):
+    bpy.types.Scene.depress_Round = not value
+    return(bpy.types.Scene.depress_Round)
+
 
 # Update Properties [Toggle] for all props
 def update_property(self, context):
@@ -771,6 +825,23 @@ def dynStage_toString(_dynStage):
         s_dynStage = "POLISH"
     return s_dynStage
 
+def strokeMethod_icon(method, pcoll):
+    if method == 'SPACE':
+        return pcoll["strokeSpace_icon"]
+    elif method == 'DOTS':
+        return pcoll["strokeDots_icon"]
+    elif method == 'DRAG_DOT':
+        return pcoll["strokeDragDot_icon"]
+    elif method == 'ANCHORED':
+        return pcoll["strokeAnchored_icon"]
+    elif method == 'AIRBRUSH':
+        return pcoll["strokeAirbrush_icon"]
+    elif method == 'LINE':
+        return pcoll["strokeLine_icon"]
+    elif method == 'CURVE':
+        return pcoll["strokeCurve_icon"]
+
+
 #################################################
 #   REGISTRATION !!!!                      #
 #################################################
@@ -779,7 +850,6 @@ from . import auto_load
 auto_load.init()
 
 def register():
-    #bpy.types.VIEW3D_HT_header.append(view3d_header_collections)
     # UNREGISTER ORIGINAL TOOL HEADER # changed - antes al inicio del script
     try:
         bpy.utils.unregister_class(VIEW3D_HT_tool_header)
@@ -803,6 +873,12 @@ def register():
 
     # WM PROPERTIES
     wm = bpy.types.WindowManager
+    wm.toggle_PT_brushes_collapse = bpy.props.BoolProperty(default=False, update=update_property)
+    wm.toggle_PT_brushPreview = bpy.props.BoolProperty(default=True, update=update_property)
+    wm.toggle_PT_brushFavs = bpy.props.BoolProperty(default=True, update=update_property)
+    wm.toggle_PT_brushType = bpy.props.BoolProperty(default=True, update=update_property)
+    
+
     wm.toggle_brush_menu = bpy.props.BoolProperty(default=False, update=update_property)
     wm.toggle_UI_elements = bpy.props.BoolProperty(default=True, update=update_property)
     wm.toggle_prefs = bpy.props.BoolProperty(default=True, update=update_property)
@@ -833,8 +909,7 @@ def register():
             ('BRUSH', "Brush", "")
         ),
         default='RELATIVE',
-        update=update_dyntopo_detailing,
-    )
+        update=update_dyntopo_detailing,)
     wm.toggle_dyntopo_stage = bpy.props.EnumProperty(
         items=(
             #('0', "", ""),
@@ -843,8 +918,24 @@ def register():
             ('3', "Polish", "")
         ),
         #default='0',
-        update = update_dyntopo_stage,
-    )
+        update = update_dyntopo_stage,)
+
+    scn = bpy.types.Scene
+    scn.depress_Smooth = bpy.props.BoolProperty(default=False)
+    scn.depress_Round = bpy.props.BoolProperty(default=False)
+    scn.depress_Root = bpy.props.BoolProperty(default=False)
+    scn.depress_Sharp = bpy.props.BoolProperty(default=False)
+    scn.depress_Line = bpy.props.BoolProperty(default=False)
+    scn.depress_Max = bpy.props.BoolProperty(default=False)
+
+    scn.depress_dyntopo_lvl_1 = bpy.props.BoolProperty(default=False)
+    scn.depress_dyntopo_lvl_2 = bpy.props.BoolProperty(default=False)
+    scn.depress_dyntopo_lvl_3 = bpy.props.BoolProperty(default=False)
+    scn.depress_dyntopo_lvl_4 = bpy.props.BoolProperty(default=False)
+    scn.depress_dyntopo_lvl_5 = bpy.props.BoolProperty(default=False)
+    scn.depress_dyntopo_lvl_6 = bpy.props.BoolProperty(default=False)
+
+
     # REGISTER ORIGINAL TOOL HEADER # changed - antes al final del código de la clase del tool header
     try:
         bpy.utils.register_class(VIEW3D_HT_tool_header)
@@ -856,8 +947,6 @@ def register():
 
 
 def unregister():
-    #bpy.types.VIEW3D_HT_header.remove(view3d_header_collections)
-    bpy.types.VIEW3D_HT_header.remove(view3d_header_collections)
     # UnRegister Classes
     unregister_class(NSMUI_HT_toolHeader_sculpt) # TOOL HEADER - SCULPT MODE
     unregister_class(NSMUI_HT_header_sculpt)     # HEADER      - SCULPT MODE
@@ -874,6 +963,11 @@ def unregister():
 
     # PROPERTIES
     wm = bpy.types.WindowManager
+    del wm.toggle_PT_brushes_collapse
+    del wm.toggle_PT_brushPreview
+    del wm.toggle_PT_brushFavs
+    del wm.toggle_PT_brushType
+
     del wm.toggle_brush_menu
     del wm.toggle_UI_elements
     del wm.toggle_brush_customIcon
@@ -900,44 +994,20 @@ def unregister():
     del wm.toggle_stages
     del wm.toggle_prefs
 
+    scn = bpy.types.Scene
+    del bpy.types.Scene.depress_Smooth
+    del bpy.types.Scene.depress_Round
+    del bpy.types.Scene.depress_Root
+    del bpy.types.Scene.depress_Sharp
+    del bpy.types.Scene.depress_Line
+    del bpy.types.Scene.depress_Max
+
+    del scn.depress_dyntopo_lvl_1
+    del scn.depress_dyntopo_lvl_2
+    del scn.depress_dyntopo_lvl_3
+    del scn.depress_dyntopo_lvl_4
+    del scn.depress_dyntopo_lvl_5
+    del scn.depress_dyntopo_lvl_6
+
     print("Unregistered New Sculpt Mode UI")
 
-
-def view3d_header_collections(self, context):
- 
-    layout = self.layout
- 
-    collections = bpy.data.collections
-    act_ob = context.active_object
- 
-    idx = 1
- 
-    split = layout.split()
-    col = split.column(align=True)
-    row = col.row(align=True)
-    row.scale_y = 0.5
- 
- 
-    for coll in bpy.data.collections:
- 
-        # If there are icons, use LAYER_USED
-        icon = 'LAYER_USED' if len(coll.objects) > 0 else 'BLANK1'
- 
-        # if the active object is in the current collection
-        if act_ob and (coll in act_ob.users_collection):
-            icon = 'LAYER_ACTIVE'
- 
-        props = row.operator('object.hide_collection', text='', icon=icon)
-        props.collection_index = idx
- 
-        if idx%5==0:
-            row = col.row(align=True)
-            row.scale_y = 0.5
- 
-        if idx%10==0:
-            layout.separator()
-            col = layout.column(align=True)
-            row = col.row(align=True)
-            row.scale_y = 0.5
- 
-        idx += 1

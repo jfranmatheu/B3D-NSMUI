@@ -6,6 +6,46 @@ from bpy.types import (
     Texture
 )
 
+def toggle_off_curves(scn):
+    scn.depress_Smooth = True
+    scn.depress_Round = True
+    scn.depress_Root = True
+    scn.depress_Sharp = True
+    scn.depress_Line = True
+    scn.depress_Max = True
+
+def toggle_off_dyntopo_levels():
+    scn = bpy.types.Scene
+    scn.depress_dyntopo_lvl_1 = True
+    scn.depress_dyntopo_lvl_2 = True
+    scn.depress_dyntopo_lvl_3 = True
+    scn.depress_dyntopo_lvl_4 = True
+    scn.depress_dyntopo_lvl_5 = True
+    scn.depress_dyntopo_lvl_6 = True
+
+class NSMUI_OT_toolHeader_brush_curve(bpy.types.Operator):
+    bl_idname = "nsmui.ot_curve_shape"
+    bl_label = ""
+    bl_description = "Change Curve Preset."
+    shape: bpy.props.StringProperty(name="shape", default='SMOOTH')
+    def execute(self, shape):
+        toggle_off_curves()
+        if self.shape == 'SMOOTH':
+            scn.depress_Smooth = False
+        elif self.shape == 'ROUND':
+            scn.depress_Round = False
+        elif self.shape == 'ROOT':
+            scn.depress_Root = False
+        elif self.shape == 'SHARP':
+            scn.depress_Sharp = False
+        elif self.shape == 'LINE':
+            scn.depress_Line = False
+        elif self.shape == 'MAX':
+            scn.depress_Max = False
+
+        bpy.ops.brush.curve_preset(shape=self.shape)
+        return {'FINISHED'}
+
 class NSMUI_OT_toolHeader_brushRemove(bpy.types.Operator):
     bl_idname = "nsmui.ht_toolheader_brush_remove"
     bl_label = "New Sculpt-Mode UI"
@@ -61,12 +101,14 @@ class NSMUI_OT_toolHeader_dyntopo_lvl_1(bpy.types.Operator):
     bl_label = "New Sculpt-Mode UI"
     bl_description = "Lvl 1 : Detail Size for Dynamic Topology"
     def execute(self, context):
+        toggle_off_dyntopo_levels()
         if bpy.context.scene.tool_settings.sculpt.detail_type_method == 'CONSTANT':
             bpy.context.scene.tool_settings.sculpt.constant_detail_resolution = 125
         elif bpy.context.scene.tool_settings.sculpt.detail_type_method == 'BRUSH':
             bpy.context.scene.tool_settings.sculpt.detail_percent = 5
         else: # bpy.context.scene.tool_settings.sculpt.detail_type_method = 'MANUAL' // 'RELATIVE'
             bpy.context.scene.tool_settings.sculpt.detail_size = 1
+        bpy.types.Scene.depress_dyntopo_lvl_6 = False
         return {'FINISHED'}
 
 class NSMUI_OT_toolHeader_dyntopo_lvl_2(bpy.types.Operator):
@@ -74,12 +116,14 @@ class NSMUI_OT_toolHeader_dyntopo_lvl_2(bpy.types.Operator):
     bl_label = "New Sculpt-Mode UI"
     bl_description = "Lvl 2 : Detail Size for Dynamic Topology"
     def execute(self, context):
+        toggle_off_dyntopo_levels()
         if(bpy.context.scene.tool_settings.sculpt.detail_type_method == 'CONSTANT'):
             bpy.context.scene.tool_settings.sculpt.constant_detail_resolution = 100
         elif(bpy.context.scene.tool_settings.sculpt.detail_type_method == 'BRUSH'):
             bpy.context.scene.tool_settings.sculpt.detail_percent = 10
         else: # bpy.context.scene.tool_settings.sculpt.detail_type_method = 'MANUAL' // 'RELATIVE'
             bpy.context.scene.tool_settings.sculpt.detail_size = 2
+        bpy.types.Scene.depress_dyntopo_lvl_5 = False
         return {'FINISHED'}
 
 class NSMUI_OT_toolHeader_dyntopo_lvl_3(bpy.types.Operator):
@@ -87,12 +131,14 @@ class NSMUI_OT_toolHeader_dyntopo_lvl_3(bpy.types.Operator):
     bl_label = "New Sculpt-Mode UI"
     bl_description = "Lvl 3 : Detail Size for Dynamic Topology"
     def execute(self, context):
+        toggle_off_dyntopo_levels()
         if(bpy.context.scene.tool_settings.sculpt.detail_type_method == 'CONSTANT'):
             bpy.context.scene.tool_settings.sculpt.constant_detail_resolution = 80
         elif(bpy.context.scene.tool_settings.sculpt.detail_type_method == 'BRUSH'):
             bpy.context.scene.tool_settings.sculpt.detail_percent = 16
         else: # bpy.context.scene.tool_settings.sculpt.detail_type_method = 'MANUAL' // 'RELATIVE'
             bpy.context.scene.tool_settings.sculpt.detail_size = 4
+        bpy.types.Scene.depress_dyntopo_lvl_4 = False
         return {'FINISHED'}
 
 class NSMUI_OT_toolHeader_dyntopo_lvl_4(bpy.types.Operator):
@@ -100,12 +146,14 @@ class NSMUI_OT_toolHeader_dyntopo_lvl_4(bpy.types.Operator):
     bl_label = "New Sculpt-Mode UI"
     bl_description = "Lvl 4 : Detail Size for Dynamic Topology"
     def execute(self, context):
+        toggle_off_dyntopo_levels()
         if(bpy.context.scene.tool_settings.sculpt.detail_type_method == 'CONSTANT'):
             bpy.context.scene.tool_settings.sculpt.constant_detail_resolution = 65
         elif(bpy.context.scene.tool_settings.sculpt.detail_type_method == 'BRUSH'):
             bpy.context.scene.tool_settings.sculpt.detail_percent = 24
         else: # bpy.context.scene.tool_settings.sculpt.detail_type_method = 'MANUAL' // 'RELATIVE'
             bpy.context.scene.tool_settings.sculpt.detail_size = 6
+        bpy.types.Scene.depress_dyntopo_lvl_3 = False
         return {'FINISHED'}
 
 class NSMUI_OT_toolHeader_dyntopo_lvl_5(bpy.types.Operator):
@@ -113,12 +161,14 @@ class NSMUI_OT_toolHeader_dyntopo_lvl_5(bpy.types.Operator):
     bl_label = "New Sculpt-Mode UI"
     bl_description = "Lvl 5 : Detail Size for Dynamic Topology"
     def execute(self, context):
+        toggle_off_dyntopo_levels()
         if(bpy.context.scene.tool_settings.sculpt.detail_type_method == 'CONSTANT'):
             bpy.context.scene.tool_settings.sculpt.constant_detail_resolution = 50
         elif(bpy.context.scene.tool_settings.sculpt.detail_type_method == 'BRUSH'):
             bpy.context.scene.tool_settings.sculpt.detail_percent = 32
         else: # bpy.context.scene.tool_settings.sculpt.detail_type_method = 'MANUAL' // 'RELATIVE'
             bpy.context.scene.tool_settings.sculpt.detail_size = 9
+        bpy.types.Scene.depress_dyntopo_lvl_2 = False
         return {'FINISHED'}
 
 class NSMUI_OT_toolHeader_dyntopo_lvl_6(bpy.types.Operator):
@@ -126,12 +176,14 @@ class NSMUI_OT_toolHeader_dyntopo_lvl_6(bpy.types.Operator):
     bl_label = "New Sculpt-Mode UI"
     bl_description = "Lvl 6 : Detail Size for Dynamic Topology"
     def execute(self, context):
+        toggle_off_dyntopo_levels()
         if(bpy.context.scene.tool_settings.sculpt.detail_type_method == 'CONSTANT'):
             bpy.context.scene.tool_settings.sculpt.constant_detail_resolution = 35
         elif(bpy.context.scene.tool_settings.sculpt.detail_type_method == 'BRUSH'):
             bpy.context.scene.tool_settings.sculpt.detail_percent = 48
         else: # bpy.context.scene.tool_settings.sculpt.detail_type_method = 'MANUAL' // 'RELATIVE'
             bpy.context.scene.tool_settings.sculpt.detail_size = 12
+        bpy.types.Scene.depress_dyntopo_lvl_1 = False
         return {'FINISHED'}
 
 class NSMUI_OT_toolHeader_dyntopo_any(bpy.types.Operator):
@@ -188,6 +240,10 @@ class NSMUI_OT_toolHeader_dyntopo_any_h(bpy.types.Operator):
         bpy.types.Scene.depressH = True
         NSMUI_OT_toolHeader_dyntopo_any.execute(self, self.value)
         return {'FINISHED'}
+
+
+def foo():
+    print (time.ctime())
 
 class NSMUI_OT_toolHeader_brush_custom_icon(bpy.types.Operator):
     bl_idname = "nsmui.ht_toolheader_brush_custom_icon"
@@ -266,7 +322,7 @@ class NSMUI_OT_toolHeader_brush_custom_icon(bpy.types.Operator):
 
         # PREPARE NEW RENDER IMAGE SLOT FOR ANOTHER ICON
         bpy.ops.image.new(name="Render Result")
-        
+
         return {'FINISHED'}
 
 

@@ -182,7 +182,7 @@ class NSMUI_PT_Brushes_Recent(Panel):
             for b in reversed(recentBrushes):
                 # col.label(text=b, icon_value=bpy.data.brushes[b].preview.icon_id) # SOLO PREVIEW
                 col.operator('nsmui.ot_change_brush', text=b, icon_value=bpy.data.brushes[b].preview.icon_id).nBrush = b
-
+'''
 #   'BRUSHES' PANEL VISIBILITY SETTINGS
 class NSMUI_PT_brushes_visibility(Panel):
     bl_label = "Toggle UI Elements"
@@ -202,7 +202,7 @@ class NSMUI_PT_brushes_visibility(Panel):
         row.prop(wm, 'toggle_PT_brushPreview', text="Preview", toggle=True)
         row.prop(wm, 'toggle_PT_brushFavs', text="Favs", toggle=True)
         row.prop(wm, 'toggle_PT_brushType', text="Type", toggle=True)
-
+'''
 # BRUSHES MAIN PANEL
 class NSMUI_PT_Brushes(Panel, UnifiedPaintPanel):
     bl_label = "Brushes"
@@ -215,10 +215,12 @@ class NSMUI_PT_Brushes(Panel, UnifiedPaintPanel):
         if(context.mode == "SCULPT"):
             scn = context.scene
             wm = bpy.types.WindowManager
-            layout = self.layout
 
-            sub = layout.column()
-            sub.popover(panel="NSMUI_PT_brushes_visibility", icon='HIDE_OFF', text="")
+            layout = self.layout
+            #sub = layout.column()
+            #sub.popover(panel="NSMUI_PT_brushes_visibility", icon='HIDE_OFF', text="")
+            row = self.layout.row(align=True)
+            row.prop(wm, 'toggle_pt_brushPreview', text="", toggle=True)
             '''
             b = context.tool_settings.sculpt.brush.name
             from. import preview_collections
@@ -354,10 +356,21 @@ class NSMUI_PT_Brushes_ByType(NSMUI_PT_Brushes):
                     col.scale_x = 1.1
                     col.operator('nsmui.ot_change_brush', depress=act, text=b.name, icon_value=icon.icon_id).nBrush = b.name
 
+def update_property(self, context):
+    if self:
+        self = not self
+    return self
+
 def register():
     bpy.types.Scene.show_brushes_fav = bpy.props.BoolProperty(name='Show Fav Brushes', default=True)
     bpy.types.Scene.show_brushes_type = bpy.props.BoolProperty(name='Show Per Type Bruhes', default=True)
     bpy.types.Scene.show_brushes_temp = bpy.props.BoolProperty(name='Show Recent Brushes', default=False)
+
+    wm = bpy.types.WindowManager
+    wm.toggle_pt_brushes_collapse = bpy.props.BoolProperty(default=False, update=update_property)
+    wm.toggle_pt_brushPreview = bpy.props.BoolProperty(default=True, update=update_property)
+    wm.toggle_pt_brushFavs = bpy.props.BoolProperty(default=True, update=update_property)
+    wm.toggle_pt_brushType = bpy.props.BoolProperty(default=True, update=update_property)
 
     
 
@@ -365,6 +378,12 @@ def unregister():
     del bpy.types.Scene.show_brushes_fav
     del bpy.types.Scene.show_brushes_type
     del bpy.types.Scene.show_brushes_temp
+
+    wm = bpy.types.WindowManager
+    del wm.toggle_pt_brushes_collapse
+    del wm.toggle_pt_brushPreview
+    del wm.toggle_pt_brushFavs
+    del wm.toggle_pt_brushType
 
 # PREVIEWS CUSTOM ICONS # NOT USED NOW
 '''

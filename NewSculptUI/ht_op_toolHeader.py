@@ -6,7 +6,8 @@ from bpy.types import (
     Texture
 )
 
-def toggle_off_curves(scn):
+def toggle_off_curves():
+    scn = bpy.types.Scene
     scn.depress_Smooth = True
     scn.depress_Round = True
     scn.depress_Root = True
@@ -29,6 +30,7 @@ class NSMUI_OT_toolHeader_brush_curve(bpy.types.Operator):
     bl_description = "Change Curve Preset."
     shape: bpy.props.StringProperty(name="shape", default='SMOOTH')
     def execute(self, shape):
+        scn = bpy.types.Scene
         toggle_off_curves()
         if self.shape == 'SMOOTH':
             scn.depress_Smooth = False

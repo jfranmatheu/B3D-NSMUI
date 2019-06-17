@@ -873,10 +873,6 @@ def register():
 
     # WM PROPERTIES
     wm = bpy.types.WindowManager
-    wm.toggle_PT_brushes_collapse = bpy.props.BoolProperty(default=False, update=update_property)
-    wm.toggle_PT_brushPreview = bpy.props.BoolProperty(default=True, update=update_property)
-    wm.toggle_PT_brushFavs = bpy.props.BoolProperty(default=True, update=update_property)
-    wm.toggle_PT_brushType = bpy.props.BoolProperty(default=True, update=update_property)
     
 
     wm.toggle_brush_menu = bpy.props.BoolProperty(default=False, update=update_property)
@@ -963,10 +959,6 @@ def unregister():
 
     # PROPERTIES
     wm = bpy.types.WindowManager
-    del wm.toggle_PT_brushes_collapse
-    del wm.toggle_PT_brushPreview
-    del wm.toggle_PT_brushFavs
-    del wm.toggle_PT_brushType
 
     del wm.toggle_brush_menu
     del wm.toggle_UI_elements

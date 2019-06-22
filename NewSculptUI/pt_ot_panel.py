@@ -3,7 +3,7 @@ import bpy
 class NSMUI_OT_panel_setup(bpy.types.Operator):
     bl_idname = "nsmui.ot_panel_setup"
     bl_label = "change_ui_for_new_sculpt_mode"
-    bl_description = ""
+    bl_description = "Setup New Sculpt Mode UI"
     def execute(self, context):
         blendfile = "./ws/NewSMUI_Workspace.blend"
         section   = "/Workspaces/"
@@ -43,7 +43,7 @@ class NSMUI_OT_panel_setup(bpy.types.Operator):
 class NSMUI_OT_change_brush(bpy.types.Operator):
     bl_idname = "nsmui.ot_change_brush"
     bl_label = "change_ui_for_new_sculpt_mode"
-    bl_description = ""
+    bl_description = "Change actual brush to selected one."
     nBrush: bpy.props.StringProperty()
     def execute(self, nbrush):
         bpy.context.tool_settings.sculpt.brush = bpy.data.brushes[self.nBrush]

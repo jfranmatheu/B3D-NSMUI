@@ -16,7 +16,7 @@ bl_info = {
     "author" : "JFranMatheu",
     "description" : "New UI for Sculpt Mode! :D",
     "blender" : (2, 80, 0),
-    "version" : (0, 4, 0),
+    "version" : (0, 4, 1),
     "location" : "View3D > Tool Header // View3D > 'N' Panel: Sculpt)",
     "warning" : "This version is still in development. ;)",
     "category" : "Generic"
@@ -670,9 +670,11 @@ class NSMUI_PT_dyntopo_stages(Panel):
     bl_label = "DyntopoStages"
     bl_space_type = "VIEW_3D"
     bl_region_type = "UI"
-    bl_context = ".paint_common"
+    bl_context = "NONE"
     bl_category = 'Sculpt'
+    bl_description = "Stages Panel. Stages improve and divide the workflow in 3 stages and each one has 3 nice values to work with. (also depending of the detailing method)"
     bl_options = {'DEFAULT_CLOSED'}
+    
     def draw(self, context):
         dynStage_Active = context.window_manager.toggle_dyntopo_stage
         useStage = context.window_manager.toggle_stages
@@ -753,6 +755,7 @@ class NSMUI_PT_brush_optionsMenu(Panel):
     bl_region_type = "UI"
     bl_context = "NONE"
     bl_category = 'Sculpt'
+    bl_description = "Dropdown Menu for Brush Options! You can create/remove/reset/create custom icon (all based in active brush)"
     #   BRUSH OPTIONS
     def draw(self, context):
         pcoll = preview_collections["main"]
@@ -916,7 +919,7 @@ def register():
     wm.toggle_UI_elements = bpy.props.BoolProperty(default=True, update=update_property)
     wm.toggle_prefs = bpy.props.BoolProperty(default=True, update=update_property)
     wm.toggle_brush_customIcon = bpy.props.BoolProperty(default=False, update=update_property)
-    wm.toggle_stages = bpy.props.BoolProperty(default=True, update=update_property)
+    wm.toggle_stages = bpy.props.BoolProperty(default=True, update=update_property, description="Switch between Stage Mode (per Stages) and Default Mode (per Levels [1-6]).")
     wm.toggle_brush_settings = bpy.props.BoolProperty(default=True, update=update_property)
     wm.toggle_brushAdd = bpy.props.BoolProperty(default=True, update=update_property)
     wm.toggle_brushRemove = bpy.props.BoolProperty(default=False, update=update_property)
@@ -942,7 +945,8 @@ def register():
             ('BRUSH', "Brush", "")
         ),
         default='RELATIVE',
-        update=update_dyntopo_detailing,)
+        update=update_dyntopo_detailing,
+        description="Switch between detailing method used for dynamic topology.")
     wm.toggle_dyntopo_stage = bpy.props.EnumProperty(
         items=(
             #('0', "", ""),
@@ -951,22 +955,23 @@ def register():
             ('3', "Polish", "")
         ),
         #default='0',
-        update = update_dyntopo_stage,)
+        update = update_dyntopo_stage,
+        description="Switch between Stage. Stages improve and divide the workflow in 3 stages: Sketch, Details and Polish.")
 
     scn = bpy.types.Scene
-    scn.depress_Smooth = bpy.props.BoolProperty(default=False)
-    scn.depress_Round = bpy.props.BoolProperty(default=False)
-    scn.depress_Root = bpy.props.BoolProperty(default=False)
-    scn.depress_Sharp = bpy.props.BoolProperty(default=False)
-    scn.depress_Line = bpy.props.BoolProperty(default=False)
-    scn.depress_Max = bpy.props.BoolProperty(default=False)
+    scn.depress_Smooth = bpy.props.BoolProperty(default=False, description="Smooth Curve Preset for the Active Brush.")
+    scn.depress_Round = bpy.props.BoolProperty(default=False, description="Rounded Curve Preset for the Active Brush.")
+    scn.depress_Root = bpy.props.BoolProperty(default=False, description="Root (dome) Curve Preset for the Active Brush.")
+    scn.depress_Sharp = bpy.props.BoolProperty(default=False, description="Sharp (pinch) Curve Preset for the Active Brush.")
+    scn.depress_Line = bpy.props.BoolProperty(default=False, description="Linear (piramid) Curve Preset for the Active Brush.")
+    scn.depress_Max = bpy.props.BoolProperty(default=False, description="Quadratic Curve Preset for the Active Brush.")
 
-    scn.depress_dyntopo_lvl_1 = bpy.props.BoolProperty(default=False)
-    scn.depress_dyntopo_lvl_2 = bpy.props.BoolProperty(default=False)
-    scn.depress_dyntopo_lvl_3 = bpy.props.BoolProperty(default=False)
-    scn.depress_dyntopo_lvl_4 = bpy.props.BoolProperty(default=False)
-    scn.depress_dyntopo_lvl_5 = bpy.props.BoolProperty(default=False)
-    scn.depress_dyntopo_lvl_6 = bpy.props.BoolProperty(default=False)
+    scn.depress_dyntopo_lvl_1 = bpy.props.BoolProperty(default=False, description="Level 1 of detail, the lower one. The more level the more detail !")
+    scn.depress_dyntopo_lvl_2 = bpy.props.BoolProperty(default=False, description="Level 2 of detail. The more level the more detail !")
+    scn.depress_dyntopo_lvl_3 = bpy.props.BoolProperty(default=False, description="Level 3 of detail. The more level the more detail !")
+    scn.depress_dyntopo_lvl_4 = bpy.props.BoolProperty(default=False, description="Level 4 of detail. The more level the more detail !")
+    scn.depress_dyntopo_lvl_5 = bpy.props.BoolProperty(default=False, description="Level 5 of detail. The more level the more detail !")
+    scn.depress_dyntopo_lvl_6 = bpy.props.BoolProperty(default=False, description="Level 6 of detail, the greater one. The more level the more detail !")
 
 
     # REGISTER ORIGINAL TOOL HEADER # changed - antes al final del código de la clase del tool header

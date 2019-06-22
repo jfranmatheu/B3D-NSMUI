@@ -101,7 +101,7 @@ class NSMUI_OT_toolHeader_multires_subdivide(bpy.types.Operator):
 class NSMUI_OT_toolHeader_dyntopo_lvl_1(bpy.types.Operator):
     bl_idname = "nsmui.ht_toolheader_dyntopo_lvl_1"
     bl_label = "New Sculpt-Mode UI"
-    bl_description = "Lvl 1 : Detail Size for Dynamic Topology"
+    bl_description = "Level 6 of detail, the greater one. The more level the more detail !"
     def execute(self, context):
         toggle_off_dyntopo_levels()
         if bpy.context.scene.tool_settings.sculpt.detail_type_method == 'CONSTANT':
@@ -116,7 +116,7 @@ class NSMUI_OT_toolHeader_dyntopo_lvl_1(bpy.types.Operator):
 class NSMUI_OT_toolHeader_dyntopo_lvl_2(bpy.types.Operator):
     bl_idname = "nsmui.ht_toolheader_dyntopo_lvl_2"
     bl_label = "New Sculpt-Mode UI"
-    bl_description = "Lvl 2 : Detail Size for Dynamic Topology"
+    bl_description = "Level 5 of detail. The more level the more detail !"
     def execute(self, context):
         toggle_off_dyntopo_levels()
         if(bpy.context.scene.tool_settings.sculpt.detail_type_method == 'CONSTANT'):
@@ -131,7 +131,7 @@ class NSMUI_OT_toolHeader_dyntopo_lvl_2(bpy.types.Operator):
 class NSMUI_OT_toolHeader_dyntopo_lvl_3(bpy.types.Operator):
     bl_idname = "nsmui.ht_toolheader_dyntopo_lvl_3"
     bl_label = "New Sculpt-Mode UI"
-    bl_description = "Lvl 3 : Detail Size for Dynamic Topology"
+    bl_description = "Level 4 of detail. The more level the more detail !"
     def execute(self, context):
         toggle_off_dyntopo_levels()
         if(bpy.context.scene.tool_settings.sculpt.detail_type_method == 'CONSTANT'):
@@ -146,7 +146,7 @@ class NSMUI_OT_toolHeader_dyntopo_lvl_3(bpy.types.Operator):
 class NSMUI_OT_toolHeader_dyntopo_lvl_4(bpy.types.Operator):
     bl_idname = "nsmui.ht_toolheader_dyntopo_lvl_4"
     bl_label = "New Sculpt-Mode UI"
-    bl_description = "Lvl 4 : Detail Size for Dynamic Topology"
+    bl_description = "Level 3 of detail. The more level the more detail !"
     def execute(self, context):
         toggle_off_dyntopo_levels()
         if(bpy.context.scene.tool_settings.sculpt.detail_type_method == 'CONSTANT'):
@@ -161,7 +161,7 @@ class NSMUI_OT_toolHeader_dyntopo_lvl_4(bpy.types.Operator):
 class NSMUI_OT_toolHeader_dyntopo_lvl_5(bpy.types.Operator):
     bl_idname = "nsmui.ht_toolheader_dyntopo_lvl_5"
     bl_label = "New Sculpt-Mode UI"
-    bl_description = "Lvl 5 : Detail Size for Dynamic Topology"
+    bl_description = "Level 2 of detail. The more level the more detail !"
     def execute(self, context):
         toggle_off_dyntopo_levels()
         if(bpy.context.scene.tool_settings.sculpt.detail_type_method == 'CONSTANT'):
@@ -176,7 +176,7 @@ class NSMUI_OT_toolHeader_dyntopo_lvl_5(bpy.types.Operator):
 class NSMUI_OT_toolHeader_dyntopo_lvl_6(bpy.types.Operator):
     bl_idname = "nsmui.ht_toolheader_dyntopo_lvl_6"
     bl_label = "New Sculpt-Mode UI"
-    bl_description = "Lvl 6 : Detail Size for Dynamic Topology"
+    bl_description = "Level 1 of detail, the lower one. The more level the more detail !"
     def execute(self, context):
         toggle_off_dyntopo_levels()
         if(bpy.context.scene.tool_settings.sculpt.detail_type_method == 'CONSTANT'):

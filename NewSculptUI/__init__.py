@@ -16,13 +16,14 @@ bl_info = {
     "author" : "JFranMatheu",
     "description" : "New UI for Sculpt Mode! :D",
     "blender" : (2, 80, 0),
-    "version" : (0, 3, 6),
+    "version" : (0, 4, 0),
     "location" : "View3D > Tool Header // View3D > 'N' Panel: Sculpt)",
     "warning" : "This version is still in development. ;)",
     "category" : "Generic"
 }
 
 # IMPORTS # NECESITA LIMPIEZA!!!
+import sys
 import os
 import bpy 
 import traceback
@@ -88,6 +89,17 @@ dynValues_ui = [3,6,9] # valores mostrados en la UI # DEFECTO # Cambiarán al ca
 #   SETTINGS FOR TOOL HEADER UI                                     #
 # ----------------------------------------------------------------- #
 
+def get_platform():
+    platforms = {
+        'linux1' : 'Linux',
+        'linux2' : 'Linux',
+        'darwin' : 'OS X',
+        'win32' : 'Windows'
+    }
+    if sys.platform not in platforms:
+        return sys.platform
+    
+    return platforms[sys.platform]
 
 # ----------------------------------------------------------------- #
 # ICONS // PREVIEW COLLECTION
@@ -146,10 +158,31 @@ if addonName != "NewSculptUI": # CHANGE THIS
     raise Exception(message)
 
 
-def init():
-    """init function - runs once"""
-    print("Hello World!")
 
+'''
+# AUTO-CONFIGURE THE UI
+# CHECK OPERATIVE SYSTEM
+platform = get_platform()
+# CHECK SCREEN RESOLUTION
+if platform == 'Linux': # IF LINUX
+    import Xlib.display
+    resolution = Xlib.display.Display().screen().root.get_geometry()
+    width_px = resolution.width
+    height_px = resolution.height
+elif platform == 'Windows': # IF WINDOWS
+    from win32api import GetSystemMetrics
+    width_px = GetSystemMetrics(0)
+    height_px = GetSystemMetrics(1)
+elif  platform == 'OS X': # IF MAC OS
+    import AppKit 
+    for screen in AppKit.NSScreen.screens():
+        width_px = screen.frame().size.width
+        height_px = screen.frame().size.height
+        break
+# CHECK VALUES
+print("Width =", width_px)
+print("Height =", height_px)
+'''
 
 # --------------------------------------------- #
 # TOOL HEADER - UI - SCULPT MODE
@@ -160,12 +193,12 @@ class NSMUI_HT_toolHeader_sculpt(Header, UnifiedPaintPanel):
     bl_space_type = "VIEW_3D"
     bl_region_type = "TOOL_HEADER"
     bl_context = ".paint_common"
-    bl_options = {'REGISTER'}
+    bl_options = {'REGISTER', 'UNDO'}
 
     def redraw():
         try:
             bpy.utils.unregister_class(VIEW3D_HT_tool_header)
-            bpy.utils.unregister_class(NSMUI_HT_toolHeader_sculpt)
+            bpy.utils.usnregister_class(NSMUI_HT_toolHeader_sculpt)
         except:
             pass
         bpy.utils.register_class(NSMUI_HT_toolHeader_sculpt)
@@ -218,7 +251,7 @@ class NSMUI_HT_toolHeader_sculpt(Header, UnifiedPaintPanel):
 
             toolHeader.draw_separator(self, pcoll)
 
-            if wm.toggle_mask: toolHeader.draw_maskSettings(self, pcoll["mask_icon"], pcoll["maskInvert_icon"], pcoll["maskClear_icon"])
+            toolHeader.draw_maskSettings(self, wm.toggle_mask, pcoll["mask_icon"], pcoll["maskInvert_icon"], pcoll["maskClear_icon"])
             if wm.toggle_symmetry: toolHeader.draw_symmetry(self, sculpt, pcoll["mirror_icon"])
 
             toolHeader.draw_separator(self, pcoll)
@@ -303,12 +336,12 @@ class NSMUI_HT_toolHeader_sculpt_tools(NSMUI_HT_toolHeader_sculpt):
         split = layout.split()
         col = split.column()
         row = col.row(align=True)
-        row.ui_units_x = 8
+        row.ui_units_x = 4.4
         # row.prop(ups, "use_unified_size", text="Size") # CHECKBOX PARA MARCAR EL UNIFIED SIZE
         if(toolsettings.unified_paint_settings.use_unified_size):
-            row.prop(ups, "size", slider=True, text="Size") # ups -> tool_settings.unified_paint_settings.size
+            row.prop(ups, "size", slider=True, text="S") # Size
         else:
-            row.prop(brush, "size", slider=True, text="Size")
+            row.prop(brush, "size", slider=True, text="S") # Size
         row.prop(brush, "use_pressure_size", toggle=True, text="")
 
 #   BRUSH STRENTH
@@ -317,11 +350,11 @@ class NSMUI_HT_toolHeader_sculpt_tools(NSMUI_HT_toolHeader_sculpt):
         split = layout.split()
         col = split.column()
         row = col.row(align=True)
-        #row.ui_units_x = 6
+        row.ui_units_x = 4.3
         if(toolsettings.unified_paint_settings.use_unified_strength): 
-            row.prop(ups, "strength", slider=True, text="Hardness") # ups -> tool_settings.unified_paint_settings.strength
+            row.prop(ups, "strength", slider=True, text="H") # Hardness
         else:
-            row.prop(brush, "strength", slider=True, text="Hardness")
+            row.prop(brush, "strength", slider=True, text="H") # Hardness
         row.prop(brush, "use_pressure_strength", toggle=True, text="")
 
 #   BRUSH AUTOSMOOTH SLIDER
@@ -330,7 +363,7 @@ class NSMUI_HT_toolHeader_sculpt_tools(NSMUI_HT_toolHeader_sculpt):
         col = split.column()
         row = col.row(align=True)
         # auto_smooth_factor and use_inverse_smooth_pressure
-        row.ui_units_x = 6
+        row.ui_units_x = 5.8
         if (capabilities.has_auto_smooth):
             row.prop(brush, "auto_smooth_factor", slider=True, text="Smooth")
             row.prop(brush, "use_inverse_smooth_pressure", toggle=True, text="")
@@ -425,10 +458,11 @@ class NSMUI_HT_toolHeader_sculpt_tools(NSMUI_HT_toolHeader_sculpt):
         col.prop(brush, "use_frontface", text="", icon_value=icon.icon_id)
 
 #   MASK SETTINGS / INVERT / CLEAR
-    def draw_maskSettings(self, icon_mask, icon_maskInvert, icon_maskClear):
+    def draw_maskSettings(self, showMaskMenu, icon_mask, icon_maskInvert, icon_maskClear):
         # MASK MENU
         row = self.layout.row(align=True)
-        row.menu("VIEW3D_MT_hide_mask", text=" Mask ", icon_value=icon_mask.icon_id)
+        if showMaskMenu:
+            row.menu("VIEW3D_MT_hide_mask", text=" Mask ", icon_value=icon_mask.icon_id)
         # MASK -> INVERT
         props = row.operator("paint.mask_flood_fill", text="", icon_value=icon_maskInvert.icon_id)
         props.mode = 'INVERT'
@@ -609,6 +643,9 @@ class NSMUI_HT_header_sculpt(bpy.types.Header):
 
     def draw(self, context):
         if(context.mode == "SCULPT"):
+            #if (bpy.context.space_data.show_region_tool_header == True):
+            #    bpy.ops.screen.header_toggle_menus()
+            bpy.types.Area.show_menus = False
             pcoll = preview_collections["main"]
             row = self.layout
             temp = False
@@ -875,7 +912,7 @@ def register():
     wm = bpy.types.WindowManager
     
 
-    wm.toggle_brush_menu = bpy.props.BoolProperty(default=False, update=update_property)
+    wm.toggle_brush_menu = bpy.props.BoolProperty(default=True, update=update_property)
     wm.toggle_UI_elements = bpy.props.BoolProperty(default=True, update=update_property)
     wm.toggle_prefs = bpy.props.BoolProperty(default=True, update=update_property)
     wm.toggle_brush_customIcon = bpy.props.BoolProperty(default=False, update=update_property)
@@ -888,13 +925,13 @@ def register():
     wm.toggle_stroke_method = bpy.props.BoolProperty(default=False, update=update_property)
     wm.toggle_falloff = bpy.props.BoolProperty(default=True, update=update_property)
     wm.toggle_falloff_curvePresets = bpy.props.BoolProperty(default=False, update=update_property)
-    wm.toggle_sliders = bpy.props.BoolProperty(default=False, update=update_property)
+    wm.toggle_sliders = bpy.props.BoolProperty(default=True, update=update_property)
     wm.toggle_slider_brushSize = bpy.props.BoolProperty(default=True, update=update_property)
     wm.toggle_slider_brushStrength = bpy.props.BoolProperty(default=True, update=update_property)
     wm.toggle_slider_brushSmooth = bpy.props.BoolProperty(default=True, update=update_property)
     wm.toggle_slider_spacing = bpy.props.BoolProperty(default=False, update=update_property)
     wm.toggle_dyntopo = bpy.props.BoolProperty(default=True, update=update_property)
-    wm.toggle_mask = bpy.props.BoolProperty(default=True, update=update_property)
+    wm.toggle_mask = bpy.props.BoolProperty(default=False, update=update_property)
     wm.toggle_symmetry = bpy.props.BoolProperty(default=True, update=update_property)
     wm.toggle_texture_new = bpy.props.BoolProperty(default=True, update=update_property)
     wm.toggle_texture_open = bpy.props.BoolProperty(default=True, update=update_property)
@@ -1002,4 +1039,5 @@ def unregister():
     del scn.depress_dyntopo_lvl_6
 
     print("Unregistered New Sculpt Mode UI")
+
 

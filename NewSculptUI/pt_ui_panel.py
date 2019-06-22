@@ -17,6 +17,7 @@ class NSMUI_PT_th_settings(Panel):
     bl_category = 'Sculpt'
     bl_space_type = "VIEW_3D"
     bl_region_type = "UI"
+    bl_context = "NONE" # Set it o ".paint_common" to see it on 'N' panel
     # bl_options = {'DEFAULT_CLOSED'}
 
     def draw(self, context):
@@ -85,11 +86,11 @@ class NSMUI_PT_th_settings(Panel):
             row.prop(wm, 'toggle_texture_open', text="Open Image", toggle=True)
 
         #   DROPDOWN PANEL SETTINGS / VISIBILITY AND PREFERENCES
-            row = self.layout.row()
-            row.label(text="Settings :")
-            row = self.layout.row(align=True)
-            row.prop(wm, 'toggle_UI_elements', text="Personalization", toggle=True)
-            row.prop(wm, 'toggle_prefs', text="Preferences", toggle=True)
+            #row = self.layout.row()
+            #row.label(text="Settings :")
+            #row = self.layout.row(align=True)
+            #row.prop(wm, 'toggle_UI_elements', text="Personalization", toggle=True)
+            #row.prop(wm, 'toggle_prefs', text="Preferences", toggle=True)
             
             #   PRESETS
             row.separator()
@@ -111,19 +112,33 @@ class NSMUI_PT_Prefs(bpy.types.Panel):
         bl_space_type = 'VIEW_3D'
         bl_region_type = 'UI'
         bl_category = 'Sculpt'
+        bl_context = "NONE" # Set it o ".paint_common" to see it on 'N' panel
         bl_options = {'DEFAULT_CLOSED'}
 
         def draw(self, context):
+            scn = context.scene
+
             layout = self.layout
+            layout.row().label(text="ADDON PREFS")
+            box = layout.box()
+            col = box.column()
+            col.label(text="RMB Shortcut :")
+            col.prop(scn, "deadzone_prop", text="Drag Threshold")
+            col.prop(scn, "sens_prop", text="Sensibility")
+
+            self.layout.separator()
+
             view = context.space_data
-            
+
         # User prefs
+            layout = self.layout
+            layout.row().label(text="BLENDER QUICK PREFS")
             prefs  = context.preferences
             inputs = prefs.inputs
             view = prefs.view
             
             row = layout.row()
-            flow = layout.grid_flow()
+            flow = layout.grid_flow().box()
 
         # Navigation
             flow.label(text="NAVIGATION :")
@@ -135,17 +150,19 @@ class NSMUI_PT_Prefs(bpy.types.Panel):
 
             self.layout.separator()
         # Inputs
-            self.layout.label(text="INPUTS :")
-            flow = layout.grid_flow()
+            #self.layout.label(text="INPUTS :")
+            flow = layout.grid_flow().box()
+            flow.label(text="INPUTS :")
             flow.prop(inputs, "drag_threshold_tablet")
             flow.prop(inputs, "pressure_softness", text="Pressure Softness")
 
         # View
             self.layout.separator()
-
-            self.layout.label(text="INTERFACE :")
-            self.layout.prop(view, "use_mouse_over_open", text="Open Menus on Mouse Over")
-            flow = layout.grid_flow().row(align=True)
+            #self.layout.label(text="INTERFACE :")
+            #self.layout.prop(view, "use_mouse_over_open", text="Open Menus on Mouse Over")
+            flow = layout.grid_flow().row(align=True).box()
+            flow.label(text="INTERFACE :")
+            flow.prop(view, "use_mouse_over_open", text="Open Menus on Mouse Over")
             flow.prop(view, "open_toplevel_delay", text="Delay")
             flow.prop(view, "open_sublevel_delay", text="Sub Delay")
 
@@ -214,13 +231,21 @@ class NSMUI_PT_Brushes(Panel, UnifiedPaintPanel):
     def draw(self, context):
         if(context.mode == "SCULPT"):
             scn = context.scene
-            wm = bpy.types.WindowManager
+            wm = context.window_manager
 
             layout = self.layout
             #sub = layout.column()
             #sub.popover(panel="NSMUI_PT_brushes_visibility", icon='HIDE_OFF', text="")
             row = self.layout.row(align=True)
-            row.prop(wm, 'toggle_pt_brushPreview', text="", toggle=True)
+            
+            row.prop(wm, 'toggle_pt_brushes_collapse', icon='COLLAPSEMENU', text="", toggle=True)
+            row.separator()
+            #row.split()
+            if not wm.toggle_pt_brushes_collapse:
+                row.prop(wm, 'toggle_pt_brushPreview', icon='IMAGE_PLANE', text="", toggle=True)
+                row.prop(wm, 'toggle_pt_brushFavs', icon='SOLO_ON', text="", toggle=True)
+                row.prop(wm, 'toggle_pt_brushType', icon='IMGDISPLAY', text="", toggle=True)
+            
             '''
             b = context.tool_settings.sculpt.brush.name
             from. import preview_collections
@@ -243,7 +268,7 @@ class NSMUI_PT_Brushes(Panel, UnifiedPaintPanel):
         
             row.template_icon(icon_value=bpy.data.brushes[b].preview.icon_id, scale=5)
             '''
-            if wm.toggle_PT_brushPreview:
+            if wm.toggle_pt_brushPreview:
                 layout.use_property_decorate = False  # No animation.
 
                 settings = self.paint_settings(context)
@@ -251,11 +276,17 @@ class NSMUI_PT_Brushes(Panel, UnifiedPaintPanel):
             
                 layout.column().template_ID_preview(settings, "brush", cols=4, rows=7, hide_buttons=True)
 
-            if not wm.toggle_PT_brushes_collapse:
-                layout = self.layout
+            if wm.toggle_pt_brushes_collapse:
+                popover_kw = {"space_type": 'VIEW_3D', "region_type": 'UI', "category": "Tool"}
+                self.layout.popover_group(context=".paint_common", **popover_kw)
+
+                #NSMUI_PT_Brushes_Favs.bl_context = ".paint_common"
+                #NSMUI_PT_Brushes_ByType.bl_context = ".paint_common"
+                #NSMUI_PT_Brushes_Favs.redraw()
+                
             
             else:
-                if wm.toggle_PT_brushFavs:
+                if wm.toggle_pt_brushFavs and wm.toggle_pt_brushType:
                     box = layout.box()
                     box.scale_y = 0.6
                     box.scale_x = 0.6
@@ -266,8 +297,7 @@ class NSMUI_PT_Brushes(Panel, UnifiedPaintPanel):
                         NSMUI_PT_Brushes_Favs.draw(self, context)
                     else:
                         row.prop(scn, "show_brushes_fav", icon="RIGHTARROW", text="Favourites", emboss=False)
-                    
-                if wm.toggle_PT_brushType:
+                
                     box = layout.box()
                     box.scale_y = 0.6
                     box.scale_x = 0.6
@@ -277,15 +307,45 @@ class NSMUI_PT_Brushes(Panel, UnifiedPaintPanel):
                         row.prop(scn, "show_brushes_type", icon="DOWNARROW_HLT", text="Per Type", emboss=False)
                         NSMUI_PT_Brushes_ByType.draw(self, context)
                     else:
-                        row.prop(scn, "show_brushes_type", icon="RIGHTARROW", text="Per Type", emboss=False) 
+                        row.prop(scn, "show_brushes_type", icon="RIGHTARROW", text="Per Type", emboss=False)
+                
+                elif wm.toggle_pt_brushFavs and (not wm.toggle_pt_brushType):
+                    layout.separator()
+                    NSMUI_PT_Brushes_Favs.draw(self, context)
+
+                elif (not wm.toggle_pt_brushFavs) and wm.toggle_pt_brushType:
+                    layout.separator()
+                    NSMUI_PT_Brushes_ByType.draw(self, context)
+                     
 
 
 # FAV BRUSHES
 favBrushes = []
 class NSMUI_PT_Brushes_Favs(NSMUI_PT_Brushes):
-    bl_context = "NONE"
+    bl_context = None
+    bl_category = 'Favorites'
     # bl_options = {'DEFAULT_CLOSED'}
+    
+
+    @classmethod
+    def poll(cls, context):
+        return (context.paint_common is not None)
+
+    def redraw():
+        from bpy.utils import register_class, unregister_class
+        try:
+            unregister_class(NSMUI_PT_Brushes_Favs)
+        except:
+            pass
+        NSMUI_PT_Brushes_Favs.bl_context = ".paint_common"
+        try:
+            register_class(NSMUI_PT_Brushes_Favs)
+        except:
+            pass
+        
+
     def draw(self, context):
+            
             activeBrush = bpy.context.tool_settings.sculpt.brush
             # RECENT BRUSHES
             length = len(favBrushes)
@@ -336,7 +396,7 @@ class NSMUI_OT_brush_fav_add(bpy.types.Operator):
 
 
 class NSMUI_PT_Brushes_ByType(NSMUI_PT_Brushes):
-    bl_region_type = "NONE"
+    bl_context = "NONE"
     # bl_options = {'DEFAULT_CLOSED'}
 
     def draw(self, context):
@@ -359,7 +419,19 @@ class NSMUI_PT_Brushes_ByType(NSMUI_PT_Brushes):
 def update_property(self, context):
     if self:
         self = not self
-    return self
+
+def collapseBrushPanel(self, context):
+    wm = context.window_manager
+    if self:
+        self = not self
+    if wm.toggle_pt_brushes_collapse == True:
+        NSMUI_PT_Brushes_Favs.bl_context = ".paint_common"
+        
+        NSMUI_PT_Brushes_ByType.bl_context = ".paint_common"
+    else:
+        NSMUI_PT_Brushes_Favs.bl_context = "NONE"
+        NSMUI_PT_Brushes_ByType.bl_context = "NONE"
+
 
 def register():
     bpy.types.Scene.show_brushes_fav = bpy.props.BoolProperty(name='Show Fav Brushes', default=True)
@@ -367,7 +439,7 @@ def register():
     bpy.types.Scene.show_brushes_temp = bpy.props.BoolProperty(name='Show Recent Brushes', default=False)
 
     wm = bpy.types.WindowManager
-    wm.toggle_pt_brushes_collapse = bpy.props.BoolProperty(default=False, update=update_property)
+    wm.toggle_pt_brushes_collapse = bpy.props.BoolProperty(default=False, update=collapseBrushPanel)
     wm.toggle_pt_brushPreview = bpy.props.BoolProperty(default=True, update=update_property)
     wm.toggle_pt_brushFavs = bpy.props.BoolProperty(default=True, update=update_property)
     wm.toggle_pt_brushType = bpy.props.BoolProperty(default=True, update=update_property)

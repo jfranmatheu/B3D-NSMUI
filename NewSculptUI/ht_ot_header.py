@@ -25,7 +25,7 @@ class NSMUI_OT_header_tool_toggle(bpy.types.Operator):
         
         elif (bpy.ops.screen.header_toggle_menus == False and bpy.context.space_data.show_region_tool_header == True):
            bpy.context.space_data.show_region_tool_header = False
-           bpy.ops.screen.header_toggle_menus
+           bpy.ops.screen.header_toggle_menus()
         
         bpy.ops.screen.header_toggle_menus()
 

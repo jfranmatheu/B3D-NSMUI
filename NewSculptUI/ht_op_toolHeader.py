@@ -342,7 +342,7 @@ class NSMUI_OT_toolHeader_UI_preset_default(bpy.types.Operator):
     bl_description = "Change Tool Header UI to default state. Reset."
     def execute(self, context):
         wm = context.window_manager
-        wm.toggle_brush_menu = False
+        wm.toggle_brush_menu = True
         wm.toggle_UI_elements = True
         wm.toggle_prefs = True
         wm.toggle_brush_customIcon = False
@@ -355,13 +355,13 @@ class NSMUI_OT_toolHeader_UI_preset_default(bpy.types.Operator):
         wm.toggle_stroke_method = False
         wm.toggle_falloff = True
         wm.toggle_falloff_curvePresets = False
-        wm.toggle_sliders = False
+        wm.toggle_sliders = True
         wm.toggle_slider_brushSize = True
         wm.toggle_slider_brushStrength = True
         wm.toggle_slider_brushSmooth = True
         wm.toggle_slider_spacing = False
         wm.toggle_dyntopo = True
-        wm.toggle_mask = True
+        wm.toggle_mask = False
         wm.toggle_symmetry = True
         wm.toggle_texture_new = True
         wm.toggle_texture_open = True
@@ -373,14 +373,16 @@ class NSMUI_OT_toolHeader_UI_preset_recommendation(bpy.types.Operator):
     bl_label = "Recommended UI Preset"
     bl_description = "Use recommended preset to change Tool Header UI."
     def execute(self, context):
+        if bpy.context.window.workspace == bpy.data.workspaces["Sculpting"]:
+            bpy.ops.screen.header_toggle_menus()
         wm = context.window_manager
         wm.toggle_brush_menu = True
         wm.toggle_UI_elements = True
         wm.toggle_prefs = True
-        wm.toggle_brush_customIcon = False
+        wm.toggle_brush_customIcon = True
         wm.toggle_stages = True
         wm.toggle_brush_settings = False
-        wm.toggle_brushAdd = False
+        wm.toggle_brushAdd = True
         wm.toggle_brushRemove = False
         wm.toggle_brushReset = False
         wm.toggle_stroke_settings = False
@@ -393,7 +395,7 @@ class NSMUI_OT_toolHeader_UI_preset_recommendation(bpy.types.Operator):
         wm.toggle_slider_brushSmooth = False
         wm.toggle_slider_spacing = False
         wm.toggle_dyntopo = True
-        wm.toggle_mask = True
+        wm.toggle_mask = False
         wm.toggle_symmetry = True
         wm.toggle_texture_new = True
         wm.toggle_texture_open = True

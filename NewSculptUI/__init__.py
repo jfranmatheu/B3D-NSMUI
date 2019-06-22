@@ -16,7 +16,7 @@ bl_info = {
     "author" : "JFranMatheu",
     "description" : "New UI for Sculpt Mode! :D",
     "blender" : (2, 80, 0),
-    "version" : (0, 4, 1),
+    "version" : (0, 4, 2),
     "location" : "View3D > Tool Header // View3D > 'N' Panel: Sculpt)",
     "warning" : "This version is still in development. ;)",
     "category" : "Generic"

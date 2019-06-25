@@ -149,11 +149,11 @@ QUICK PREFERENCES
 ![alt text](http://2.bp.blogspot.com/-wQ6qvSWHf8w/XPz1M71AA7I/AAAAAAAAAlY/Xdx6JIg4r8QVH8wNpOlRGHCLp__3HUnJQCK4BGAYYCw/s400/dropdownmenusettings.png "Dropdown menu settings")
 
 ---
-BRUSH SIZE AND STRENGTH SHORTCUTS
+BRUSH SIZE, STRENGTH AND SMOOTH VALUE SHORTCUTS
 ---
-RMB up-down and left-right to increase/decrease brush size and brush strength
-Feature by Jean Ayer aka Vrav
-![alt text](https://1.bp.blogspot.com/-rWhBA9iwelk/XPznBcnJIPI/AAAAAAAAAk8/l6FBSdnkadgsRKHz9CLz0UCAM1iVZQ-oQCLcBGAs/s320/l21ZeJa0vS.gif "Brush resize and strength")
+RMB up-down and drag to increase/decrease brush size and brush strength
+Also ALT + RMB and drag to increase/decrease autosmooth
+![alt text](http://3.bp.blogspot.com/-NyBd_bUgZHE/XRKTZRIFQFI/AAAAAAAAAzo/8KDk8GPTbsEofzzQeMQzpS_gvIZkfhZUwCK4BGAYYCw/s320/PiLT8oPtT5.gif "Brush resize, strength and smooth shortcut")
 
 ---
 CUSTOM ICONS

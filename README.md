@@ -153,6 +153,7 @@ BRUSH SIZE, STRENGTH AND SMOOTH VALUE SHORTCUTS
 ---
 RMB up-down and drag to increase/decrease brush size and brush strength
 Also ALT + RMB and drag to increase/decrease autosmooth
+
 ![alt text](http://3.bp.blogspot.com/-NyBd_bUgZHE/XRKTZRIFQFI/AAAAAAAAAzo/8KDk8GPTbsEofzzQeMQzpS_gvIZkfhZUwCK4BGAYYCw/s320/PiLT8oPtT5.gif "Brush resize, strength and smooth shortcut")
 
 ---

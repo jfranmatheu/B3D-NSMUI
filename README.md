@@ -80,8 +80,15 @@ DYNTOPO NEW "STAGE" CONCEPT + NEW MENU [STAGE MODE]
 ---
 NEW BRUSH SET PANELS !!!
 ---
-## Recent Brushes and Brushes per type !!!
+## Favorite Brushes, Recent Brushes and Brushes per type !!!
 https://blender.chat/file-upload/CjSzJWhscJngPC7m7/2019-06-15%2000-50-23.mp4
+
+![alt text](http://4.bp.blogspot.com/-_y7dNWNuRaw/XRKRRameGAI/AAAAAAAAAzI/JS6PubqSnmEtKCMtPk9asmOwXp9HGe9ugCK4BGAYYCw/s1600/brushespanel.png "Brushes Panel")
+
+- Panel is responsive !!
+- All parts (preview, favs, per type, recent brushes... can be hidden! And replaced by Active Brush subpanel options)
+
+![alt text](http://2.bp.blogspot.com/-w9z7EAwRkwA/XRKRRbKgSqI/AAAAAAAAAzE/Y8fX_rnAj0UY5DrzCRhMVd-QxnmCsSydACK4BGAYYCw/s320/brushespanelresponsive.png "Brushes Panel Responsive")
 
 ---
 QUICK SYMMETRY
@@ -92,6 +99,10 @@ QUICK SYMMETRY
 BRUSHES
 ---
 ![alt text](http://3.bp.blogspot.com/-PQ7zUxZrncg/XOgZi2edKVI/AAAAAAAAAek/jUMv6gUiYJYmRbhCndKDCX6rF8ab-DMrgCK4BGAYYCw/s320/NewSMUI_brush.png "Brushes")
+
+- Brush Options (collapsed options to a dropdown menu)
+
+![alt text](http://3.bp.blogspot.com/-YNmdm-OwNeQ/XRKRRWJpjZI/AAAAAAAAAy4/vqoEV7MVfegvJqTsttLwasWHp7mdt_D5gCK4BGAYYCw/s320/brushoptions.pngg "Brush Options")
 
 ---
 Brush Settings / Stroke Settings / Curves
@@ -126,6 +137,8 @@ CUSTOMIZE THE UI!!! :D
 
 ![alt text](https://4.bp.blogspot.com/-ihNMglxkB1E/XPz0zjDv04I/AAAAAAAAAlM/vztxm_9byks_KwwlcouapCfIJIYY7JFdACK4BGAYYCw/s1600/toggleui.png "Toggle UI Elements")
 
+![alt text](http://1.bp.blogspot.com/--dwa0-Ue-tw/XRKRSJFot3I/AAAAAAAAAzQ/-hGAKQGyvaYJbJHaKaCux0ZshsUVPgYfgCK4BGAYYCw/s640/allfeaturestoolheader.png "All Features Tool Header")
+
 ---
 QUICK PREFERENCES
 ---
@@ -136,11 +149,12 @@ QUICK PREFERENCES
 ![alt text](http://2.bp.blogspot.com/-wQ6qvSWHf8w/XPz1M71AA7I/AAAAAAAAAlY/Xdx6JIg4r8QVH8wNpOlRGHCLp__3HUnJQCK4BGAYYCw/s400/dropdownmenusettings.png "Dropdown menu settings")
 
 ---
-BRUSH SIZE AND STRENGTH SHORTCUTS
+BRUSH SIZE, STRENGTH AND SMOOTH VALUE SHORTCUTS
 ---
-RMB up-down and left-right to increase/decrease brush size and brush strength
-Feature by Jean Ayer aka Vrav
-![alt text](https://1.bp.blogspot.com/-rWhBA9iwelk/XPznBcnJIPI/AAAAAAAAAk8/l6FBSdnkadgsRKHz9CLz0UCAM1iVZQ-oQCLcBGAs/s320/l21ZeJa0vS.gif "Brush resize and strength")
+RMB up-down and drag to increase/decrease brush size and brush strength
+Also ALT + RMB and drag to increase/decrease autosmooth
+
+![alt text](http://3.bp.blogspot.com/-NyBd_bUgZHE/XRKTZRIFQFI/AAAAAAAAAzo/8KDk8GPTbsEofzzQeMQzpS_gvIZkfhZUwCK4BGAYYCw/s320/PiLT8oPtT5.gif "Brush resize, strength and smooth shortcut")
 
 ---
 CUSTOM ICONS

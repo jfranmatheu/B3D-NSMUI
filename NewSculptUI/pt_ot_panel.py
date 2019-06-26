@@ -45,6 +45,7 @@ class NSMUI_OT_change_brush(bpy.types.Operator):
     bl_label = "change_ui_for_new_sculpt_mode"
     bl_description = "Change actual brush to selected one."
     nBrush: bpy.props.StringProperty()
+
     def execute(self, nbrush):
         bpy.context.tool_settings.sculpt.brush = bpy.data.brushes[self.nBrush]
         return {'FINISHED'}

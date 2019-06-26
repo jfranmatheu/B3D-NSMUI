@@ -16,7 +16,7 @@ bl_info = {
     "author" : "JFranMatheu",
     "description" : "New UI for Sculpt Mode! :D",
     "blender" : (2, 80, 0),
-    "version" : (0, 4, 2),
+    "version" : (0, 4, 3),
     "location" : "View3D > Tool Header // View3D > 'N' Panel: Sculpt)",
     "warning" : "This version is still in development. ;)",
     "category" : "Generic"
@@ -625,7 +625,7 @@ class NSMUI_HT_toolHeader_sculpt_tools(NSMUI_HT_toolHeader_sculpt):
 #   PANEL FOR TOGGLE UI ELEMENTS
     def draw_toggle_UI_elements(self):
         sub = self.layout.split().column(align=True)
-        sub.popover(panel="NSMUI_PT_th_settings",icon='VISIBLE_IPO_ON',text="")
+        sub.popover(panel="NSMUI_PT_th_settings",icon='HIDE_OFF',text="")
 
 #   PREFERENCES PANEL
     def draw_toggle_preferences(self):
@@ -768,6 +768,7 @@ class NSMUI_PT_brush_optionsMenu(Panel):
         # 1ST ROW
         col = self.layout.column()
         row = col.row(align=True)
+        row.scale_y = 1.2
         # NEW BRUSH BUTTON (DUPLICATE)
         row.operator("brush.add", text="New / Duplicate", icon_value=icon_brushAdd.icon_id)     
 
@@ -781,11 +782,19 @@ class NSMUI_PT_brush_optionsMenu(Panel):
 
         # 3RD ROW
         row = col.row(align=True)
+        row.scale_y = 1.5
         row.operator("nsmui.ht_toolheader_brush_custom_icon", text="Render Custom Brush Icon", icon='RESTRICT_RENDER_OFF')
         col.separator()
 
         # 4TH ROW
+        col.separator()
         row = col.row(align=True)
+        # FUTURE
+        # 1. Save Brush
+        # 2. Import/Export
+        # 3. Toggle Aplha
+        # 4. Change BG color
+
         # LOAD BRUSHES / IMPORT FROM JSON DATABASE
         # row.operator("nsmui.ot_read_json_data", text="Import All Brushes")
 

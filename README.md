@@ -44,7 +44,7 @@ QUICK TEXTURE CREATION AND SELECTION
 Differences between buttons 2/5 and 3/7:
 - While '2' creates an empty texture
 - '5' Create one and assign it to the active brush
-- While '3' imports an image
+- While '3' imports an image/multiple images
 - '7' Imports one and assigns it to the active or selected texture
 ---
 

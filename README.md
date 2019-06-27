@@ -50,7 +50,7 @@ Differences between buttons 2/5 and 3/7:
 
 RENDER YOUR CUSTOM BRUSH ICONS! WITH JUST ONE CLICK!!!!!
 ---
-1. Toggle "Render Custom Brush Icon" in the addon's tab "Sculpt" over the 'N' sidebar panel. (by default isn't active)
+1. Toggle "Render Custom Brush Icon" (now it's in the "eye icon" drop down menu of the tool header)
 2. Pick your custom brush, make some strokes and zoom in and center the mesh to be ready for the shoot
 3. Click at the very first icon (camera icon) of the tool header, BOOM, now you have a custom icon for your brush
 - NOTE: this is a very new feature so feedback and bug reports are needed to improve this powefull feature!

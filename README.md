@@ -13,7 +13,7 @@ Nueva UI para el modo Sculpt. Modifica principalmente el Tool Header del sculpt 
 QUICK TEXTURE CREATION AND SELECTION
 ---
 **1ST.** BRUSH HASN'T A TEXTURE -
-- If you don't have textures imported, click at '5' and import one
+- If you don't have textures imported, click at '5' so you create a new empty texture
 - Else -> Click at '4' and select one
 
 ![alt text](http://4.bp.blogspot.com/-IGoDgT9mGJQ/XOgZi-lan7I/AAAAAAAAAe0/v3FrLAScZK8nbzplJuS04rvxjSAma5ZUwCK4BGAYYCw/s400/NewSMUI_1.png "Texture Section 1")

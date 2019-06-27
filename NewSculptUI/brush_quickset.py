@@ -429,6 +429,13 @@ class PAINT_OT_brush_modal_quickset(bpy.types.Operator):
         scn = context.scene
         self.deadzone = scn.deadzone_prop
         self.sens = scn.sens_prop
+        self.slider = scn.textDisplaySize
+        self.text = scn.textDisplaySize
+        self.textSize = scn.textDisplaySize
+        if scn.invertAxis:
+            self.axisaffect = 'YSTR'
+        else:
+            self.axisaffect = 'YRAD'
 
     def modal(self, context, event):
         self.changeValues(context)
@@ -793,7 +800,20 @@ class PAINT_OT_brush_modal_quickset_2(bpy.types.Operator):
         return (context.area.type == 'VIEW_3D'
                 and context.mode in {'SCULPT', 'PAINT_WEIGHT', 'PAINT_VERTEX', 'PAINT_TEXTURE'})
 
+
+    def changeValues(self, context):
+        scn = context.scene
+        self.deadzone = scn.deadzone_prop
+        self.sens = scn.sens_prop
+        self.textSmooth = scn.textDisplaySize
+        self.slider = scn.textDisplaySize
+        if scn.invertAxis:
+            self.axisaffect = 'YSTR'
+        else:
+            self.axisaffect = 'YRAD'
+        
     def modal(self, context, event):
+        self.changeValues(context)
         sens = (self.sens * 0.5) if event.shift else (self.sens)
         self.cur = (event.mouse_region_x, event.mouse_region_y)
         diff = (self.cur[0] - self.prev[0], self.cur[1] - self.prev[1])
@@ -983,6 +1003,22 @@ def register():
         unit        = 'NONE',
         )
 
+    scn.textDisplaySize = bpy.props.EnumProperty(
+        name        = "Text: Display Size",
+        description = "Change Text Display Size",
+        items       = [('NONE', 'None', ''),
+                       ('LARGE', 'Large', ''),
+                       ('MEDIUM', 'Medium', ''),
+                       ('SMALL', 'Small', '')],
+        default     = 'LARGE'
+    )
+
+    scn.invertAxis = bpy.props.BoolProperty(
+        name        = "Invert Axis",
+        description = "Invert Shortcut Directions",
+        default     = False
+    )
+
     cfg = bpy.context.window_manager.keyconfigs.addon
     if not cfg.keymaps.__contains__('Sculpt'):
         cfg.keymaps.new('Sculpt', space_type='EMPTY', region_type='WINDOW')
@@ -997,6 +1033,8 @@ def unregister():
     scn = bpy.types.Scene
     del scn.deadzone_prop
     del scn.sens_prop
+    del scn.textDisplaySize
+    del scn.invertAxis
 
     cfg = bpy.context.window_manager.keyconfigs.addon
     if cfg.keymaps.__contains__('Sculpt'):

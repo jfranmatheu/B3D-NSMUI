@@ -54,8 +54,32 @@ class NSMUI_OT_toolHeader_brushRemove(bpy.types.Operator):
     bl_description = "Remove Active Brush plus Unlink"
     def execute(self, context):
         brush = bpy.context.tool_settings.sculpt.brush
+        st = brush.sculpt_tool
         bpy.data.brushes.remove(brush, do_unlink=True)
+        # Seleccionar automaticamente una brocha del mismo tipo
+        for b in bpy.data.brushes:
+            if b.sculpt_tool == st and (not b.use_paint_vertex):
+                context.brush = b
+                return {'FINISHED'}
+        # Sino hay ninguna del mismo tipo entonces se cogerá la primera en buscar
+        for b in bpy.data.brushes:
+            if not b.use_paint_vertex:
+                context.brush = b
+                return {'FINISHED'}
         return {'FINISHED'}
+'''
+class NSMUI_OT_toolHeader_brushSave(bpy.types.Operator):
+    bl_idname = "nsmui.ht_toolheader_brush_save"
+    bl_label = "Save Brush"
+    bl_description = "Save Brush Configuration"
+    def execute(self, context):
+        oldBrush = bpy.context.tool_settings.sculpt.brush # temp old brush
+        bpy.ops.brush.add() # duplicate brush
+        newBrush = bpy.context.tool_settings.sculpt.brush # New Brush
+        newBrush = oldBrush
+        bpy.data.brushes.remove(oldBrush, do_unlink=True)
+        return {'FINISHED'}
+'''
 
 class NSMUI_OT_toolHeader_symmetry_all(bpy.types.Operator):
     bl_idname = "nsmui.ht_toolheader_symmetry_all"

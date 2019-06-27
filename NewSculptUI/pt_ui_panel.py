@@ -129,7 +129,12 @@ class NSMUI_PT_Prefs(bpy.types.Panel):
             col = box.column()
             col.label(text="RMB Shortcut :")
             col.prop(scn, "deadzone_prop", text="Drag Threshold")
-            col.prop(scn, "sens_prop", text="Sensibility")
+            _row = col.row(align=True)
+            _row.label(text="Font Size", icon='FONTPREVIEW')
+            _row.prop(scn, "textDisplaySize", text="")
+            _row = col.row(align=True)
+            _row.prop(scn, "sens_prop", text="Sensibility")
+            _row.prop(scn, "invertAxis", text="Invert Axis", icon='ORIENTATION_VIEW')
 
             self.layout.separator()
 
@@ -410,13 +415,7 @@ class NSMUI_PT_Brushes(Panel, UnifiedPaintPanel):
                     layout.separator()
                     NSMUI_PT_Brushes_Recent.draw(self, context)
                 
-            #context.space_data.draw_handler_add(draw_callback, (self, context), 'WINDOW', 'POST_PIXEL')
 
-'''
-def draw_callback(self, context):
-    # circle graphic, text, and slider
-    brush = bpy.context.tool_settings.sculpt.brush
-'''
 
 # FAV BRUSHES
 favBrushes = []
@@ -445,7 +444,7 @@ class NSMUI_PT_Brushes_Favs(NSMUI_PT_Brushes):
                 if region.type == "UI":
                     width = region.width
                     break
-            print(width)
+            #print(width)
             if width > 280: 
                 i = 2 
                 if width > 420: 
@@ -510,7 +509,7 @@ class NSMUI_PT_Brushes_ByType(NSMUI_PT_Brushes):
                 if region.type == "UI":
                     width = region.width
                     break
-            print(width)
+            #print(width)
             if width > 280: 
                 i = 2 
                 if width > 420: 

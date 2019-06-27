@@ -111,6 +111,7 @@ preview_collections = {}
 icons = {"mirror_icon" : "mirror_icon.png",
          "brush_icon"  : "brush_icon.png",
          "brushAdd_icon"  : "brushAdd_icon.png",
+         "brushSave_icon"  : "brushSave_icon.png",
          "brushRemove_icon"  : "brushRemove_icon.png",
          "brushReset_icon"  : "brushReset_icon.png",
          "strokeSpace_icon" : "strokeSpace_icon.png",
@@ -230,6 +231,7 @@ class NSMUI_HT_toolHeader_sculpt(Header, UnifiedPaintPanel):
                 
             toolHeader.draw_brushManager(self, sculpt, wm, wm.toggle_brush_menu,
                 pcoll["brushAdd_icon"], wm.toggle_brushAdd,
+                #pcoll["brushSave_icon"], wm.toggle_brushSave,
                 pcoll["brushReset_icon"], wm.toggle_brushReset, # bpy.types.Scene.resetBrush_Active
                 pcoll["brushRemove_icon"], wm.toggle_brushRemove) #bpy.types.Scene.removeBrush_Active
             
@@ -312,6 +314,9 @@ class NSMUI_HT_toolHeader_sculpt_tools(NSMUI_HT_toolHeader_sculpt):
         else:
             if canAdd:
                 row.operator("brush.add", text="", icon_value=icon_brushAdd.icon_id)     
+            
+            #if canSave:
+            #    row.operator("nsmui.ht_toolheader_brush_save", text="", icon_value=icon_brushSave.icon_id)
             # RESET BRUSH BUTTON
             if canReset:
                 row.ui_units_x = row.ui_units_x + 1
@@ -768,10 +773,10 @@ class NSMUI_PT_brush_optionsMenu(Panel):
         # 1ST ROW
         col = self.layout.column()
         row = col.row(align=True)
-        row.scale_y = 1.2
+        row.scale_y = 1.5
         # NEW BRUSH BUTTON (DUPLICATE)
-        row.operator("brush.add", text="New / Duplicate", icon_value=icon_brushAdd.icon_id)     
-
+        row.operator("brush.add", text="New / Duplicate", icon_value=icon_brushAdd.icon_id)
+        # row.operator("nsmui.ht_toolheader_brush_save", text="Save Changes", icon='OUTLINER_DATA_GP_LAYER')
         # 2ND ROW
         row = col.row(align=True)
         # RESET BRUSH BUTTON
@@ -931,8 +936,9 @@ def register():
     wm.toggle_stages = bpy.props.BoolProperty(default=True, update=update_property, description="Switch between Stage Mode (per Stages) and Default Mode (per Levels [1-6]).")
     wm.toggle_brush_settings = bpy.props.BoolProperty(default=True, update=update_property)
     wm.toggle_brushAdd = bpy.props.BoolProperty(default=True, update=update_property)
+    #wm.toggle_brushSave = bpy.props.BoolProperty(default=False, update=update_property)
     wm.toggle_brushRemove = bpy.props.BoolProperty(default=False, update=update_property)
-    wm.toggle_brushReset = bpy.props.BoolProperty(default=True, update=update_property)
+    wm.toggle_brushReset = bpy.props.BoolProperty(default=False, update=update_property)
     wm.toggle_stroke_settings = bpy.props.BoolProperty(default=True, update=update_property)
     wm.toggle_stroke_method = bpy.props.BoolProperty(default=False, update=update_property)
     wm.toggle_falloff = bpy.props.BoolProperty(default=True, update=update_property)
@@ -1021,6 +1027,7 @@ def unregister():
     del wm.toggle_slider_spacing
     del wm.toggle_brush_settings
     del wm.toggle_brushAdd
+    #del wm.toggle_brushSave
     del wm.toggle_brushRemove
     del wm.toggle_brushReset
     del wm.toggle_stroke_settings

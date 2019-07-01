@@ -29,7 +29,7 @@ class NSMUI_PT_th_settings(Panel):
             wm = context.window_manager
 
             row = self.layout.row()
-            row.label(text="Customize your UI !")
+            row.label(text="Customize here the Tool Header !")
             row.separator()
 
         #   BRUSH MANAGER
@@ -119,6 +119,7 @@ class NSMUI_PT_Prefs(bpy.types.Panel):
 
         def draw(self, context):
             scn = context.scene
+            wm = context.window_manager
 
             layout = self.layout
             #layout.use_property_split = True
@@ -143,8 +144,15 @@ class NSMUI_PT_Prefs(bpy.types.Panel):
             col.label(text="'BRUSHES' PANEL :")
             #col.label(, text="[Recent Brushes]")
             _row = col.row(align=True)
+            _row.label(icon='IMAGE_PLANE', text="") # BRUSH_DATA
+            _row.prop(scn, "show_brushOptionsWith", text="Show Brush Options", toggle = False) 
+            _row = col.row(align=True)
+            _row.label(icon='SOLO_OFF', text="") # LONGDISPLAY
+            _row.prop(wm, "toggle_pt_brushShowOnlyIcons", text="Show Icons Only", toggle = False)
+            _row = col.row(align=True)
             _row.label(icon='RECOVER_LAST', text="")
-            _row.prop(scn, "recentBrushes_stayInPlace", text="Stay Brushes in Place", toggle = False)
+            _row.prop(scn, "recentBrushes_stayInPlace", text="Stay Brushes in Place", toggle = False) 
+            
 
             self.layout.separator()
 
@@ -236,7 +244,7 @@ class NSMUI_PT_Brushes_Recent(Panel):
     def draw(self, context):
         if(context.mode == "SCULPT"):
             scn = context.scene
-            activeBrush = bpy.context.tool_settings.sculpt.brush
+            activeBrush = context.tool_settings.sculpt.brush
             # RECENT BRUSHES
             length = len(recentBrushes)
             n = 6
@@ -289,20 +297,14 @@ class NSMUI_PT_Brushes(Panel, UnifiedPaintPanel):
     bl_context = ".paint_common"
     # bl_options = {'DEFAULT_CLOSED'}
 
-    @classmethod
-    def poll(cls, context):
-        settings = cls.paint_settings(context)
-        return (settings and
-                settings.brush and
-                (context.sculpt_object or
-                 context.vertex_paint_object or
-                 context.weight_paint_object or
-                 context.image_paint_object))
-
     def draw(self, context):
         if(context.mode == "SCULPT"):
             scn = context.scene
-            wm = context.window_manager
+
+            wm = context.window_manager 
+            sculpt = context.tool_settings.sculpt
+            settings = self.paint_settings(context)
+            brush = settings.brush
 
             layout = self.layout
             
@@ -322,6 +324,7 @@ class NSMUI_PT_Brushes(Panel, UnifiedPaintPanel):
             split.prop(wm, 'toggle_pt_brushType', icon='IMGDISPLAY', text="", toggle=True)
             split.prop(wm, 'toggle_pt_brushRecents', icon='RECOVER_LAST', text="", toggle=True)
 
+            
             
             '''
             b = context.tool_settings.sculpt.brush.name
@@ -351,7 +354,23 @@ class NSMUI_PT_Brushes(Panel, UnifiedPaintPanel):
                 settings = self.paint_settings(context)
                 brush = settings.brush
             
-                layout.column().template_ID_preview(settings, "brush", cols=4, rows=7, hide_buttons=True)
+                row = layout.row()
+                row.column().template_ID_preview(settings, "brush", cols=4, rows=7, hide_buttons=True)
+
+                if scn.show_brushOptionsWith:
+                    from. import preview_collections
+                    pcoll = preview_collections["main"]
+                    icon_brushAdd = pcoll["brushAdd_icon"]
+                    icon_brushReset = pcoll["brushReset_icon"]
+                    icon_brushRemove = pcoll["brushRemove_icon"]
+
+                    col = row.column(align=True)
+                    col.scale_y = 1.5
+                    col.scale_x = 1.3
+                    col.operator("brush.add", text="", icon_value=icon_brushAdd.icon_id) # DUPLICATE BRUSH
+                    col.operator("brush.reset", text="", icon_value=icon_brushReset.icon_id) # RESET BRUSH
+                    col.operator("nsmui.ht_toolheader_brush_remove", text="", icon_value=icon_brushRemove.icon_id) # DELETE BRUSH
+                    col.operator("nsmui.ht_toolheader_brush_custom_icon", text="", icon='RESTRICT_RENDER_OFF') # RENDER CUSTOM ICON
 
             if wm.toggle_pt_brushes_collapse:
                 popover_kw = {"space_type": 'VIEW_3D', "region_type": 'UI', "category": "Tool"}
@@ -426,8 +445,8 @@ class NSMUI_PT_Brushes_Favs(NSMUI_PT_Brushes):
         
 
     def draw(self, context):
-            
-            activeBrush = bpy.context.tool_settings.sculpt.brush
+            wm = context.window_manager
+            activeBrush = context.tool_settings.sculpt.brush
             # RECENT BRUSHES
             length = len(favBrushes)
 
@@ -438,28 +457,79 @@ class NSMUI_PT_Brushes_Favs(NSMUI_PT_Brushes):
             row = self.layout.row()
             # print (length)
             # print(recentBrushes)
-            k = 0   
-            i = 1
+            
             for region in context.area.regions:
                 if region.type == "UI":
                     width = region.width
                     break
             #print(width)
-            if width > 280: 
-                i = 2 
-                if width > 420: 
-                    i = 3
-            if length != 0:
-                #col = row.column() # define una fila
-                #col.separator()
+            
+            k = 0   
+            i = 1
+            if wm.toggle_pt_brushShowOnlyIcons:
+                #if length != 0:
+                
                 col = self.layout.grid_flow()
-                col.scale_y = 1.1
-                col.scale_x = 1.1
+                
+                if width > 420:
+                    i = 10
+                    colY = 1.6
+                    colX = 1.6
+                elif width > 350:
+                    i = 8
+                    colY = 1.8
+                    colX = 1.8
+                elif width > 280:
+                    i = 6
+                    colY = 2
+                    colX = 2
+                elif width > 230:
+                    i = 5
+                    colY = 2
+                    colX = 2
+                else:
+                    i = 4
+                    colY = 1.8
+                    colX = 1.8
+
+                col.scale_x = colX
+                col.scale_y = colY
+
                 for b in favBrushes:
                     if b.name == brushName:
                         act = True
                     else:
                         act = False
+                    #row.template_icon(icon_value=bpy.data.brushes[b].preview.icon_id, scale=5)
+                    # col.label(text=b, icon_value=bpy.data.brushes[b].preview.icon_id) # SOLO PREVIEW
+                    k = k + 1
+                    if k == 1:
+                        col = col.row()
+                    #col.label(text=b, icon_value=bpy.data.brushes[b].preview.icon_id) # SOLO PREVIEW
+                    col.operator('nsmui.ot_change_brush', depress=act, text="", icon_value=bpy.data.brushes[b.name].preview.icon_id).nBrush = b.name
+                    if k == i:
+                        col = self.layout.column()
+                        col.scale_x = colX
+                        col.scale_y = colY
+                        k = 0
+            else:
+                if width > 280: 
+                    i = 2 
+                if width > 420: 
+                    i = 3
+                if length != 0:
+                    #col = row.column() # define una fila
+                    #col.separator()
+                    col = self.layout.grid_flow()
+                    col.scale_y = 1.1
+                    col.scale_x = 1.1
+
+                for b in favBrushes:
+                    if b.name == brushName:
+                        act = True
+                    else:
+                        act = False
+                    #row.template_icon(icon_value=bpy.data.brushes[b].preview.icon_id, scale=5)
                     # col.label(text=b, icon_value=bpy.data.brushes[b].preview.icon_id) # SOLO PREVIEW
                     if i == 1:
                         col.operator('nsmui.ot_change_brush', depress=act, text=b.name, icon_value=bpy.data.brushes[b.name].preview.icon_id).nBrush = b.name
@@ -470,6 +540,8 @@ class NSMUI_PT_Brushes_Favs(NSMUI_PT_Brushes):
                         col.operator('nsmui.ot_change_brush', depress=act, text=b.name, icon_value=bpy.data.brushes[b.name].preview.icon_id).nBrush = b.name
                         if k == i:
                             col = self.layout.column()
+                            col.scale_y = 1.1
+                            col.scale_x = 1.1
                             k = 0
                     
 
@@ -502,7 +574,7 @@ class NSMUI_PT_Brushes_ByType(NSMUI_PT_Brushes):
     # bl_options = {'DEFAULT_CLOSED'}
 
     def draw(self, context):
-            brush = bpy.context.tool_settings.sculpt.brush
+            brush = context.tool_settings.sculpt.brush
             #sculpt = context.tool_settings.sculpt
             i = 1
             for region in context.area.regions:
@@ -538,54 +610,6 @@ class NSMUI_PT_Brushes_ByType(NSMUI_PT_Brushes):
                             col = self.layout.column()
                             k = 0
 
-
-def update_property(self, context):
-    if self:
-        self = not self
-
-def collapseBrushPanel(self, context):
-    wm = context.window_manager
-    if self:
-        self = not self
-    if wm.toggle_pt_brushes_collapse == True:
-        NSMUI_PT_Brushes_Favs.bl_context = ".paint_common"
-        
-        NSMUI_PT_Brushes_ByType.bl_context = ".paint_common"
-    else:
-        NSMUI_PT_Brushes_Favs.bl_context = "NONE"
-        NSMUI_PT_Brushes_ByType.bl_context = "NONE"
-
-
-def register():
-    bpy.types.Scene.show_brushes_fav = bpy.props.BoolProperty(description='Un/Fold Favorite Brushes.', default=True)
-    bpy.types.Scene.show_brushes_type = bpy.props.BoolProperty(description='Un/Fold Per Type Brushes.', default=True)
-    bpy.types.Scene.show_brushes_temp = bpy.props.BoolProperty(description='Un/Fold Recent Brushes.', default=False)
-    bpy.types.Scene.recentBrushes_stayInPlace = bpy.props.BoolProperty(description='Stay Brushes in Place when selecting a Brush that is already on the List.', default=False)
-
-    wm = bpy.types.WindowManager
-    wm.toggle_pt_brushes_collapse = bpy.props.BoolProperty(
-        default=False, 
-        update=collapseBrushPanel,
-        name="Collapse Brushes",
-        description="Hide brush sub-panels and shows dropdown menus for adjust the actual brush.")
-
-    wm.toggle_pt_brushPreview = bpy.props.BoolProperty(default=True, update=update_property, description="Show Brush Preview.")
-    wm.toggle_pt_brushFavs = bpy.props.BoolProperty(default=True, update=update_property, description="Show Favourite Brushes.")
-    wm.toggle_pt_brushType = bpy.props.BoolProperty(default=True, update=update_property, description="Show Brushes per Type (based on active brush).")
-    wm.toggle_pt_brushRecents = bpy.props.BoolProperty(default=True, update=update_property, description="Show Recent Brushes")
-
-def unregister():
-    del bpy.types.Scene.show_brushes_fav
-    del bpy.types.Scene.show_brushes_type
-    del bpy.types.Scene.show_brushes_temp
-    del bpy.types.Scene.recentBrushes_stayInPlace
-
-    wm = bpy.types.WindowManager
-    del wm.toggle_pt_brushes_collapse
-    del wm.toggle_pt_brushPreview
-    del wm.toggle_pt_brushFavs
-    del wm.toggle_pt_brushType
-    del wm.toggle_pt_brushRecents
 
 # PREVIEWS CUSTOM ICONS # NOT USED NOW
 '''

@@ -183,21 +183,22 @@ def draw_callback_px(self, context):
     if self.text != 'NONE' and self.doingstr:
         showText = "Strength: "
         if self.text == 'MEDIUM':
-            fontsize = 11
+            fontsize = 16
         elif self.text == 'LARGE':
             fontsize = 22
         else:
-            fontsize = 8
+            fontsize = 12
 
         blf.size(font_id, fontsize, 72)
         # Fonts with Shadow
         #blf.shadow(font_id, 0, 0.0, 0.0, 0.0, 1.0)
         #blf.enable(font_id, blf.SHADOW)
 
-        if strength < 0.001:
-            text = "0"
-        else:
-            text = str(strength)[0:4]
+        #if strength < 0.001:
+        #    text = "0"
+        #else:
+        text = str(strength)[0:4]
+
         textsize = blf.dimensions(font_id, text)
 
         xpos = self.start[0] - self.offset[0] - 150
@@ -220,11 +221,11 @@ def draw_callback_px(self, context):
     if self.textSize != 'NONE' and self.doingrad:
         showText = "Size: "
         if self.text == 'MEDIUM':
-            fontsize = 11
+            fontsize = 16
         elif self.text == 'LARGE':
             fontsize = 22
         else:
-            fontsize = 8
+            fontsize = 12
 
         blf.size(font_id_Size, fontsize, 72)
         # Fonts with Shadow
@@ -252,10 +253,10 @@ def draw_callback_px(self, context):
         ))
 
         do_textSize = True
-
+    '''
     # STRENGTH
     if self.slider != 'NONE' and self.doingstr:
-        xpos = self.start[0] + self.offset[0] - self.sliderwidth - (32 if self.text == 'MEDIUM' else 64 if self.text == 'LARGE' else 23)
+        xpos = self.start[0] + self.offset[0] - self.sliderwidth - (48 if self.text == 'MEDIUM' else 64 if self.text == 'LARGE' else 32)
         ypos = self.start[1] + self.offset[1] - self.sliderheight # + (1 if self.slider != 'SMALL' else 0)
 
         if strength < 1.0:
@@ -286,6 +287,7 @@ def draw_callback_px(self, context):
         indices.extend((
             (starti, starti+1, starti+2), (starti+2, starti, starti+3)
         ))
+    '''
 
     shader = gpu.types.GPUShader(vertex_shader, fragment_shader)
     batch = batch_for_shader(shader, 'TRIS', {"pos":vertices, "color":colors}, indices=indices)
@@ -306,20 +308,22 @@ def draw_callback_px(self, context):
 def applyChanges(self):
     unify_settings = bpy.context.tool_settings.unified_paint_settings
     
-
     if self.doingstr:
         if self.uni_str:
             modrate = self.strmod * 0.0025
             newval  = unify_settings.strength + modrate
-            if 10.0 > newval > 0.0:
+            if 10.0 > newval > -0.1:
                 unify_settings.strength = newval
                 self.strmod_total += modrate
+            
+            
         else:
             modrate = self.strmod * 0.0025
             newval  = self.brush.strength + modrate
-            if 10.0 > newval > 0.0:
+            if 10.0 > newval > -0.1:
                 self.brush.strength = newval
                 self.strmod_total += modrate
+            
 
     if self.doingrad:
         if self.uni_size:
@@ -429,7 +433,7 @@ class PAINT_OT_brush_modal_quickset(bpy.types.Operator):
         scn = context.scene
         self.deadzone = scn.deadzone_prop
         self.sens = scn.sens_prop
-        self.slider = scn.textDisplaySize
+        #self.slider = scn.textDisplaySize
         self.text = scn.textDisplaySize
         self.textSize = scn.textDisplaySize
         if scn.invertAxis:
@@ -571,7 +575,7 @@ class PAINT_OT_brush_modal_quickset(bpy.types.Operator):
             self.offset = (30, -37)
 
             self.backcolor = Color((1.0, 1.0, 1.0)) - context.preferences.themes['Default'].view_3d.space.text_hi
-
+        
         if self.slider != 'NONE':
             if not hasattr(self, '_handle'):
                 self._handle = context.space_data.draw_handler_add(draw_callback_px, (self, context), 'WINDOW', 'POST_PIXEL')
@@ -593,7 +597,7 @@ class PAINT_OT_brush_modal_quickset(bpy.types.Operator):
                 self.backcolor = Color((1.0, 1.0, 1.0)) - context.preferences.themes['Default'].view_3d.space.text_hi
 
             self.frontcolor = context.preferences.themes['Default'].view_3d.space.text_hi
-
+        
         # enter modal operation
         context.window_manager.modal_handler_add(self)
         return {'RUNNING_MODAL'}
@@ -628,11 +632,11 @@ def draw_callback_px_2(self, context):
     # SMOOTH
     if self.textSmooth != 'NONE' and self.doingsmooth:
         if self.textSmooth == 'MEDIUM':
-            fontsize = 11
+            fontsize = 16
         elif self.textSmooth == 'LARGE':
             fontsize = 22
         else:
-            fontsize = 8
+            fontsize = 12
 
         blf.size(font_id, fontsize, 72)
         # Font shadow
@@ -663,18 +667,11 @@ def draw_callback_px_2(self, context):
     
     # SMOOTH
     if self.slider != 'NONE' and self.doingsmooth:
-        xpos = self.start[0] + self.offset[0] - self.sliderwidth + (32 if self.textSmooth == 'MEDIUM' else 50 if self.textSmooth == 'LARGE' else 23)
+        xpos = self.start[0] + self.offset[0] - self.sliderwidth + (44 if self.textSmooth == 'MEDIUM' else 64 if self.textSmooth == 'LARGE' else 24)
         #ypos = self.start[1] + self.offset[1] - self.sliderheight # + (1 if self.slider != 'SMALL' else 0)
         ypos = self.start[1] - self.sliderheight
 
-        if smooth < 1.01:
-            sliderscale = smooth
-        elif smooth > 5.0:
-            sliderscale = smooth / 10
-        elif smooth > 2.0:
-            sliderscale = smooth / 5
-        else:
-            sliderscale = smooth / 2
+        sliderscale = smooth
 
         # slider back rect
         starti = len(vertices)

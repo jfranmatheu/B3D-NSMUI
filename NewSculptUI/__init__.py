@@ -16,7 +16,7 @@ bl_info = {
     "author" : "JFranMatheu",
     "description" : "New UI for Sculpt Mode! :D",
     "blender" : (2, 80, 0),
-    "version" : (0, 4, 3),
+    "version" : (0, 4, 4),
     "location" : "View3D > Tool Header // View3D > 'N' Panel: Sculpt)",
     "warning" : "This version is still in development. ;)",
     "category" : "Generic"
@@ -765,7 +765,7 @@ class NSMUI_PT_brush_optionsMenu(Panel):
     def draw(self, context):
         pcoll = preview_collections["main"]
         #wm = context.window_manager
-        brush = bpy.context.tool_settings.sculpt.brush
+        brush = context.tool_settings.sculpt.brush
         icon_brushAdd = pcoll["brushAdd_icon"]
         icon_brushReset = pcoll["brushReset_icon"]
         icon_brushRemove = pcoll["brushRemove_icon"]
@@ -903,21 +903,25 @@ def strokeMethod_icon(method, pcoll):
 from . import auto_load
 auto_load.init()
 
+
 def register():
+    print('Hello addon!!')
+    
+    
     # UNREGISTER ORIGINAL TOOL HEADER # changed - antes al inicio del script
     try:
         bpy.utils.unregister_class(VIEW3D_HT_tool_header)
     except:
         pass
 
+    # AutoLoad Exterior Classes
+    auto_load.register()
+
     # Register Classes
     register_class(NSMUI_HT_toolHeader_sculpt) # TOOL HEADER - SCULPT MODE
     register_class(NSMUI_HT_header_sculpt)     # HEADER      - SCULPT MODE
     register_class(NSMUI_PT_dyntopo_stages)
     register_class(NSMUI_PT_brush_optionsMenu)
-
-    # AutoLoad Exterior Classes
-    auto_load.register()
 
     # Register Collections (ICONS)
     pcoll = bpy.utils.previews.new()
@@ -988,6 +992,23 @@ def register():
     scn.depress_dyntopo_lvl_5 = bpy.props.BoolProperty(default=False, description="Level 5 of detail. The more level the more detail !")
     scn.depress_dyntopo_lvl_6 = bpy.props.BoolProperty(default=False, description="Level 6 of detail, the greater one. The more level the more detail !")
 
+    #   BRUSHES PANEL PROPS
+    scn.show_brushes_fav = bpy.props.BoolProperty(description='Un/Fold Favorite Brushes.', default=True)
+    scn.show_brushes_type = bpy.props.BoolProperty(description='Un/Fold Per Type Brushes.', default=True)
+    scn.show_brushes_temp = bpy.props.BoolProperty(description='Un/Fold Recent Brushes.', default=False)
+    scn.show_brushOptionsWith = bpy.props.BoolProperty(description='Show Brush Options in "Brushes" Panel', default=True)
+    scn.recentBrushes_stayInPlace = bpy.props.BoolProperty(description='Stay Brushes in Place when selecting a Brush that is already on the List.', default=False)
+    wm.toggle_pt_brushPreview = bpy.props.BoolProperty(default=True, update=update_property, description="Show Brush Preview.")
+    wm.toggle_pt_brushFavs = bpy.props.BoolProperty(default=True, update=update_property, description="Show Favourite Brushes.")
+    wm.toggle_pt_brushType = bpy.props.BoolProperty(default=True, update=update_property, description="Show Brushes per Type (based on active brush).")
+    wm.toggle_pt_brushRecents = bpy.props.BoolProperty(default=True, update=update_property, description="Show Recent Brushes")
+    wm.toggle_pt_brushShowOnlyIcons = bpy.props.BoolProperty(default=False, update=update_property, description="Show Only The Icons of the Brushes")
+    wm.toggle_pt_brushes_collapse = bpy.props.BoolProperty(
+        default=False, 
+        update=update_property,
+        name="Collapse Brushes",
+        description="Hide brush sub-panels and shows dropdown menus for adjust the actual brush."
+    )
 
     # REGISTER ORIGINAL TOOL HEADER # changed - antes al final del código de la clase del tool header
     try:
@@ -1058,6 +1079,19 @@ def unregister():
     del scn.depress_dyntopo_lvl_4
     del scn.depress_dyntopo_lvl_5
     del scn.depress_dyntopo_lvl_6
+
+    #   BRUSHES PANEL PROPS
+    del scn.show_brushes_fav
+    del scn.show_brushes_type
+    del scn.show_brushes_temp
+    del scn.recentBrushes_stayInPlace
+    del scn.show_brushOptionsWith
+    del wm.toggle_pt_brushes_collapse
+    del wm.toggle_pt_brushPreview
+    del wm.toggle_pt_brushFavs
+    del wm.toggle_pt_brushType
+    del wm.toggle_pt_brushRecents
+    del wm.toggle_pt_brushShowOnlyIcons
 
     print("Unregistered New Sculpt Mode UI")
 

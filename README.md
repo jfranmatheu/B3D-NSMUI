@@ -4,7 +4,9 @@ New Sculpt Mode UI for Blender 2.80
 - Download **NewSculptUI.zip** For original Blender 2.80 version: https://github.com/jfranmatheu/Blender_NewSMUI/raw/master/NewSculptUI.zip
 
 
-- [Not updated] Download **NewSculptUI_SculptFeatures.zip** For support with Experimental Sculpt Branch of Pablo Dobarro: https://github.com/jfranmatheu/Blender_NewSMUI/raw/master/NewSculptUI_SculptFeatures.zip
+- [Not updated / Just ignore] Download **NewSculptUI_SculptFeatures.zip** For support with Experimental Sculpt Branch of Pablo Dobarro: https://github.com/jfranmatheu/Blender_NewSMUI/raw/master/NewSculptUI_SculptFeatures.zip
+
+[![Paypal](https://raw.githubusercontent.com/stefan-niedermann/paypal-donate-button/master/paypal-donate-button.png)](https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=johnnymathgar%40gmail.com&item_name=Soporte+para+el+desarrollo+continuado+de+addons+gratuitos.&currency_code=EUR&source=url)
 
 Nueva UI para el modo Sculpt. Modifica principalmente el Tool Header del sculpt mode.
 
@@ -13,7 +15,7 @@ Nueva UI para el modo Sculpt. Modifica principalmente el Tool Header del sculpt 
 QUICK TEXTURE CREATION AND SELECTION
 ---
 **1ST.** BRUSH HASN'T A TEXTURE -
-- If you don't have textures imported, click at '5' and import one
+- If you don't have textures imported, click at '5' so you create a new empty texture
 - Else -> Click at '4' and select one
 
 ![alt text](http://4.bp.blogspot.com/-IGoDgT9mGJQ/XOgZi-lan7I/AAAAAAAAAe0/v3FrLAScZK8nbzplJuS04rvxjSAma5ZUwCK4BGAYYCw/s400/NewSMUI_1.png "Texture Section 1")
@@ -44,13 +46,13 @@ QUICK TEXTURE CREATION AND SELECTION
 Differences between buttons 2/5 and 3/7:
 - While '2' creates an empty texture
 - '5' Create one and assign it to the active brush
-- While '3' imports an image
+- While '3' imports an image/multiple images
 - '7' Imports one and assigns it to the active or selected texture
 ---
 
 RENDER YOUR CUSTOM BRUSH ICONS! WITH JUST ONE CLICK!!!!!
 ---
-1. Toggle "Render Custom Brush Icon" in the addon's tab "Sculpt" over the 'N' sidebar panel. (by default isn't active)
+1. Toggle "Render Custom Brush Icon" (now it's in the "eye icon" drop down menu of the tool header)
 2. Pick your custom brush, make some strokes and zoom in and center the mesh to be ready for the shoot
 3. Click at the very first icon (camera icon) of the tool header, BOOM, now you have a custom icon for your brush
 - NOTE: this is a very new feature so feedback and bug reports are needed to improve this powefull feature!

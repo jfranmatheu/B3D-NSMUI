@@ -15,7 +15,7 @@
 - Consider giving me support to continue working on this addon for its continuous development and for the future development of new tools!
 - Feedback is also needed to improve this addon! :-) I have many ideas for future and to close things well, feedback from other Blender users and community is so needed! ♥
 
-
+---
 # FEATURES
 ---
 QUICK TEXTURE CREATION AND SELECTION

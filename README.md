@@ -112,13 +112,13 @@ Brush Settings / Stroke Settings / Curves
 ---
 ![alt text](http://3.bp.blogspot.com/-VMm2vj-sXSE/XOgZiymhfnI/AAAAAAAAAfI/opiTVUUTAY8EPwCeoN6Vxy3lzulD4cwdACK4BGAYYCw/s320/NewSMUI_settings.png "Settings")
 
-- Stroke Method
+- Stroke Method, Now they have their own icons!
 
-![alt text](http://3.bp.blogspot.com/-mBfSnCKoZLk/XPzmULIsYyI/AAAAAAAAAkw/uYMStMA4bYEyEvDBYPQIx8r7DrmS1xYUgCK4BGAYYCw/s400/stroke_method.png "Stroke Method")
+![alt text](http://3.bp.blogspot.com/-OLauVc4SGNE/XR47r_VHZMI/AAAAAAAAA0w/_kwNj-y3kS4WBJCEES_4XKgClsyZAwjeACK4BGAYYCw/s400/strokemethoddots.png "Stroke Method")
 
-- Curve Presets
+- Curve Presets! Now they are toggles so you know which one is active!!
 
-![alt text](http://2.bp.blogspot.com/-xDDbk3kxQtg/XPzmUGdXGQI/AAAAAAAAAks/PypOGIbdSiEVo1uUhaBEOorGyarBMeibQCK4BGAYYCw/s400/curve%2Bpresets.png "Curve Presets")
+![alt text](http://4.bp.blogspot.com/-WBZ4wA9vmco/XR47N39UfII/AAAAAAAAA0g/Uxol381Mee4xa0HswLCJ412n9ZM_www-ACK4BGAYYCw/s400/curvestoggles.png "Curve Presets")
 
 ---
 MASKING

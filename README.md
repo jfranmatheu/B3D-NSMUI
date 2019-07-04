@@ -59,9 +59,8 @@ RENDER YOUR CUSTOM BRUSH ICONS! WITH JUST ONE CLICK!!!!!
 - NOTE: this is a very new feature so feedback and bug reports are needed to improve this powefull feature!
 - If you want a custom icon with alpha (no background) you should go to layout workspace or any other because in Sculpting workspace this is not working well as expected
 
-![alt text](http://1.bp.blogspot.com/-Owg9jgXh-70/XPzbvlBIlOI/AAAAAAAAAj8/514iqEJ5KNs9ccagtUiMjVBBFzkSaPvkwCK4BGAYYCw/s400/togglecustomicon.png "Toggle Render Custom Brush Icon")
-![alt text](http://4.bp.blogspot.com/--oLt_7tWMq4/XPzbvucr4HI/AAAAAAAAAkA/DUcOYBjvGPEM_EzVt79CdFLgUl0nwa4ywCK4BGAYYCw/s400/shooticonbrushicon.png "Render Custom Brush Icon")
-![alt text](http://3.bp.blogspot.com/-D42C0JvgY3o/XPzbw_sNRjI/AAAAAAAAAkI/HDyVqbFZHboosrEZPi2F2FsNm8lU81FzQCK4BGAYYCw/s640/previewiconscene.png "New Custom Brush Icon!")
+- GIF EXAMPLE - Activate Render Icon and Render icon (3 alternatives)
+![alt text](https://1.bp.blogspot.com/-77lFR3HDL08/XR5AXe19blI/AAAAAAAAA1A/C486t8jLwy8ntnATPqEV3iBDcdW11TdowCLcBGAs/s640/ezgif.com-optimize.gif "Toggle Render Custom Brush Icon")
 
 - GIF EXAMPLE - (by gen.es)
 

@@ -55,7 +55,7 @@ RENDER YOUR CUSTOM BRUSH ICONS! WITH JUST ONE CLICK!!!!!
 ### The process is just an instant but due to some changes in Blender internal, the icon preview may update in a couple of seconds... But not if you use the render button from collapse menu (which is active by default). So you dont have to wait til see the icon updated.
 1. Toggle "Render Custom Brush Icon" (now it's in the "eye icon" drop down menu of the tool header) or toggle "collapse" option to access it from the dropdown menu near the brush selector over the tool header or toggle ''brush options'' in gear icon of the tool header (to access from the side "brushes" panel)
 2. Pick your custom brush, make some strokes and zoom in and center the mesh to be ready for the shoot
-3. Click at the very first icon (camera icon) of the tool header, BOOM, now you have a custom icon for your brush
+3. Click at the camera icon of the tool header/panel (depends of [1.]), BOOM, now you have a custom icon for your brush
 - NOTE: this is a very new feature so feedback and bug reports are needed to improve this powefull feature!
 - If you want a custom icon with alpha (no background) you should go to layout workspace or any other because in Sculpting workspace this is not working well as expected
 

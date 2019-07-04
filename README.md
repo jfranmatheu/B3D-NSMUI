@@ -8,7 +8,8 @@
 
 [![Paypal](https://raw.githubusercontent.com/stefan-niedermann/paypal-donate-button/master/paypal-donate-button.png)](https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=johnnymathgar%40gmail.com&item_name=Soporte+para+el+desarrollo+continuado+de+addons+gratuitos.&currency_code=EUR&source=url)
 
-Nueva UI para el modo Sculpt. Modifica principalmente el Tool Header del sculpt mode.
+Consider giving me support to continue working on this addon for its continuous development and for the future development of new tools
+
 
 # FEATURES
 ---

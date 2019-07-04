@@ -131,24 +131,20 @@ BRUSH SLIDERS (they all are activatable)
 ![alt text](http://2.bp.blogspot.com/-WZH5SsT3BC8/XPzlLbCKbrI/AAAAAAAAAkc/QDWwk8mxKvIOURQ-dbgsbkkUquC321MJgCK4BGAYYCw/s400/slider_spacing.png "Spacing")
 
 ---
-CUSTOMIZE THE UI!!! :D
+CUSTOMIZE THE UI!!! :D  + PRESETS !! (CUSTOM PRESETS FOR FUTURE)
 ---
 - Toggle UI Element, have only the UI elements that you really want!!!
 - There are so much tools that are not showed by default but you can activate them with just only click :-)
 - I recommend you to try "Render Custom Brush Icon", "Stroke Method" and "Curve Presets", also feedback for the UI is needed in order to have actived by default the most useful features.
 
-![alt text](https://4.bp.blogspot.com/-ihNMglxkB1E/XPz0zjDv04I/AAAAAAAAAlM/vztxm_9byks_KwwlcouapCfIJIYY7JFdACK4BGAYYCw/s1600/toggleui.png "Toggle UI Elements")
+![alt text](http://3.bp.blogspot.com/-wswIcW7wQDg/XR43DoHcIfI/AAAAAAAAA0E/fbU_tYLkM3cfoMbwgTM1xkFK2d8i3npSgCK4BGAYYCw/s1600/toggleUIElementss.png "Toggle UI Elements")
 
 ![alt text](http://1.bp.blogspot.com/--dwa0-Ue-tw/XRKRSJFot3I/AAAAAAAAAzQ/-hGAKQGyvaYJbJHaKaCux0ZshsUVPgYfgCK4BGAYYCw/s640/allfeaturestoolheader.png "All Features Tool Header")
 
 ---
-QUICK PREFERENCES
+QUICK PREFERENCES (ADDON CONFIG AND BLENDER PREFS)
 ---
-![alt text](http://3.bp.blogspot.com/-5zBBfdoxVj8/XPrRkc254hI/AAAAAAAAAhk/gK9GCNfbUxoa7PnAHDHm3TUtSifP1QHAgCK4BGAYYCw/s400/preferences.png "Preferences")
-
-- Also there are dropdown menus available at the end of the tool header:
-
-![alt text](http://2.bp.blogspot.com/-wQ6qvSWHf8w/XPz1M71AA7I/AAAAAAAAAlY/Xdx6JIg4r8QVH8wNpOlRGHCLp__3HUnJQCK4BGAYYCw/s400/dropdownmenusettings.png "Dropdown menu settings")
+![alt text](http://4.bp.blogspot.com/-dvZjOYxG-RQ/XR43D-qYGmI/AAAAAAAAA0I/TSnNv6u3Z8UWmpDPU1Y9AeV6rhrV4WpQACK4BGAYYCw/s1600/preferencesaddon.png "Preferences")
 
 ---
 BRUSH SIZE, STRENGTH AND SMOOTH VALUE SHORTCUTS
@@ -183,8 +179,8 @@ FUTUROS CAMBIOS E IDEAS LOCAS
 - [x] Icono personalizados para la brocha seleccionada con solo un click, basado en la vista actual con un render.
 - [ ] Insertar primitivas sin salir de sculpt, usando el 3dcursor con snap de superficie o de volumen y la normal de este para posicionarlo. SHIF + RMB
 - [ ] Filtros para las texturas.
-- [ ] Sets de brochas: 1, Recientemente usadas. 2, Por tipo según la brocha activa. 3, Favoritas.
-- [x] Nuevos y mejores atajos de teclado. Gracias al addon de Jean Ayer que he integrado podemos usar click derecho y arrastrar en uno de los axis (horizontal y vertical) para cambiar el tamaño o la fuerza de la brocha de forma fácil.
+- [x] Sets de brochas: 1, Recientemente usadas. 2, Por tipo según la brocha activa. 3, Favoritas.
+- [x] Nuevos y mejores atajos de teclado. Gracias al addon de Jean Ayer que he integrado podemos usar click derecho y arrastrar en uno de los axis (horizontal y vertical) para cambiar el tamaño o la fuerza de la brocha de forma fácil. Este ha sido mejorado, extendido y personalizado bastante especialmente para este addon.
 - [x] Reestructuración en el código para hacerlo más limpio y además MODULAR.
 - [x] Poder desactivar y activar diferentes elementos de la UI para un mayor nivel de personalización. Esto se hace desde el panel de la 'N' llamado "Sculpt".
 - [ ] Manager para brochas.

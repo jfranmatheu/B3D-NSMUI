@@ -1,4 +1,4 @@
-New Sculpt Mode UI for Blender 2.80
+## New Sculpt Mode UI for Blender 2.80
 
 # Downloads
 - Download **NewSculptUI.zip** For original Blender 2.80 version: https://github.com/jfranmatheu/Blender_NewSMUI/raw/master/NewSculptUI.zip

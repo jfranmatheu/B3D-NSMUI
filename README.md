@@ -12,8 +12,21 @@
 
 [![Paypal](https://raw.githubusercontent.com/stefan-niedermann/paypal-donate-button/master/paypal-donate-button.png)](https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=johnnymathgar%40gmail.com&item_name=Soporte+para+el+desarrollo+continuado+de+addons+gratuitos.&currency_code=EUR&source=url)
 
-- Consider giving me support to continue working on this addon for its continuous development and for the future development of new tools!
+- Consider giving me support to continue working on this addon for its continuous development and for the future development of new tools! This addon is FREE and will be FREE forever as Blender is but supporting it makes possible to continue its development so any kind of aportation is really welcome :D
 - Feedback is also needed to improve this addon! :-) I have many ideas for future and to close things well, feedback from other Blender users and community is so needed! ♥
+
+### Future and On going projects !
+---
+
+- New reference system integrated in Blender within the 3dviewport, you can expect features like pureref has and even more blendcool! The basic reference manager is done. Remains the hard part of handle the images around the 3dviewport, but one of the most difficult challenges will be to make it transparent compatible (so any help with it is welcome).
+- Texture preview in the 3dviewport for the brush you are using also if you change the texture you can preview it in bigger size.
+- Brush manager!!! I won't tell so much about it (no spoilers) but if I make all I have in mind for real I can say it will be amazing :)
+- Automate basemesh generation for sculpt + rigging
+- Self-intersection solver for dyntopo workflow replacing slow and non-convenient remeshers (or changing to edit mode to fix it)
+- Custom Presets and custom values for the already new dyntopo system that I introduced (by levels and by stages)
+- Remeshers!
+- Integration with new sculpt features of Pablo Dobarro when they'll be ready
+- What to say... Anything you can imagine!
 
 ---
 # FEATURES

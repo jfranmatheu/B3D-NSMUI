@@ -14,6 +14,7 @@
 
 - Consider giving me support to continue working on this addon for its continuous development and for the future development of new tools! This addon is FREE and will be FREE forever as Blender is but supporting it makes possible to continue its development so any kind of aportation is really welcome :D
 - Feedback is also needed to improve this addon! :-) I have many ideas for future and to close things well, feedback from other Blender users and community is so needed! ♥
+PD. No tenía otra imagen más pequeña!!
 
 ### Future and On going projects !
 ---

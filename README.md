@@ -76,8 +76,11 @@ RENDER YOUR CUSTOM BRUSH ICONS! WITH JUST ONE CLICK!!!!!
 1. Toggle "Render Custom Brush Icon" (now it's in the "eye icon" drop down menu of the tool header) or toggle "collapse" option to access it from the dropdown menu near the brush selector over the tool header or toggle ''brush options'' in gear icon of the tool header (to access from the side "brushes" panel)
 2. Pick your custom brush, make some strokes and zoom in and center the mesh to be ready for the shoot
 3. Click at the camera icon of the tool header/panel (depends of [1.]), BOOM, now you have a custom icon for your brush
-- NOTE: this is a very new feature so feedback and bug reports are needed to improve this powefull feature!
-- If you want a custom icon with alpha (no background) you should go to layout workspace or any other because in Sculpting workspace this is not working well as expected
+
+![alt text](http://2.bp.blogspot.com/-O9D64ARWv0Q/XTTfsIaPiAI/AAAAAAAAA1s/nxMnWlhr2Qkh08741R5tHoWuMfSvxGhjACK4BGAYYCw/s320/Anotaci%25C3%25B3n%2B2019-07-21%2B234246.png "Render Custom Brush Icon. Brush Options Menu.")
+- You can switch between using alpha or not
+- Also you can select a color to change background color of the icon, this will help you so much to organize your brushes and locate them more easily
+- If you want a custom icon with alpha (no background) you should go to layout workspace or any other because in Sculpting workspace this is not working well as expected.
 
 - GIF EXAMPLE - Activate Render Icon and Render icon (3 alternatives)
 
@@ -99,6 +102,10 @@ DYNTOPO + QUICK 'DETAIL SIZE' SELECTOR [DEFAULT MODE]
 DYNTOPO NEW "STAGE" CONCEPT + NEW MENU [STAGE MODE]
 ---
 ![alt text](http://1.bp.blogspot.com/-tCsMLruKp7M/XPzYDNUOxRI/AAAAAAAAAjg/pxjg7LVn1AI0U0Z0-dWQhN0pQaPcIYTTACK4BGAYYCw/s400/dyntopo_stages.png "Dyntopo Stages")
+
+- Now you can change the values!! CUSTOM VALUES! They are stored in preferences so is shared across all your files! :-) Also make sure you save your preferences or have autosave turned on to save values. Clicking at Edit Values will make you use custom values instead of defaults and when creating or loading new file will load custom values.
+
+![alt text](http://4.bp.blogspot.com/-8o-GdntFRN8/XTTfrjvTDDI/AAAAAAAAA1k/4EfLXfdXx1sAlB_MfgeZprPEghD5X1AKACK4BGAYYCw/s400/dyntopostageseditvalues.png "Dyntopo Stages")
 
 ---
 NEW BRUSH SET PANELS !!!

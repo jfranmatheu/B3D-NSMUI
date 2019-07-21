@@ -16,12 +16,16 @@ bl_info = {
     "author" : "JFranMatheu",
     "description" : "New UI for Sculpt Mode! :D",
     "blender" : (2, 80, 0),
-    "version" : (0, 4, 4),
-    "location" : "View3D > Tool Header // View3D > 'N' Panel: Sculpt)",
+    "version" : (0, 5, 0),
+    "location" : "View3D > Tool Header // View3D > 'N' Panel: Brushes)",
     "warning" : "This version is still in development. ;)",
     "category" : "Generic"
 }
-
+#import gpu
+#import bgl
+#from gpu_extras.batch import batch_for_shader
+from gpu_extras.presets import draw_circle_2d, draw_texture_2d
+#import functools
 # IMPORTS # NECESITA LIMPIEZA!!!
 import sys
 import os
@@ -39,9 +43,161 @@ from bl_ui.properties_paint_common import (
         brush_mask_texture_settings,
         brush_basic_sculpt_settings
         )
-from bpy.props import StringProperty, IntProperty, FloatProperty
+from bpy.props import StringProperty, IntProperty, FloatProperty, BoolProperty, FloatVectorProperty
 from bpy.utils import register_class, unregister_class
 from bl_ui.space_view3d import VIEW3D_HT_tool_header
+
+
+# ----------------------------------------------------------------- #
+#   ADDON PREFERENCES                                     #
+# ----------------------------------------------------------------- #
+
+class NSMUI_AddonPreferences(AddonPreferences):
+    # this must match the add-on name, use '__package__'
+    # when defining this in a submodule of a python package.
+    bl_idname = "NewSculptUI"
+    '''
+    filepath: StringProperty(
+        name="Example File Path",
+        subtype='FILE_PATH',
+    )
+    '''
+
+        #########################################################
+    #   UPDATE VALUES FROM PREFERENCES TO DYNTOPO STAGES    #
+    #########################################################
+    # Relative
+    def update_relativeLow(self, context):
+        dyntopoStages[0].relative_Values = self.relative_Low
+    def update_relativeMid(self, context):
+        dyntopoStages[1].relative_Values = self.relative_Mid
+    def update_relativeHigh(self, context):
+        dyntopoStages[2].relative_Values = self.relative_High
+    # Constant
+    def update_constantLow(self, context):
+        dyntopoStages[0].constant_Values = self.constant_Low
+    def update_constantMid(self, context):
+        dyntopoStages[1].constant_Values = self.constant_Mid
+    def update_constantHigh(self, context):
+        dyntopoStages[2].constant_Values = self.constant_High
+    # Brush
+    def update_brushLow(self, context):
+        dyntopoStages[0].brush_Values = self.brush_Low
+    def update_brushMid(self, context):
+        dyntopoStages[1].brush_Values = self.brush_Mid
+    def update_brushHigh(self, context):
+        dyntopoStages[2].brush_Values = self.brush_High
+
+    # USE CUSTOM DYNTOPO VALUES
+    dyntopo_UseCustomValues: BoolProperty(
+        name="Custom Values",
+        description="Use Custom Values for Dyntopo's new system by levels and stages",
+        default=False,
+    )
+    # RELATIVE VALUES
+    relative_Low : FloatVectorProperty(
+        name="Relative Low Value", description="",
+        subtype='NONE', default=[14, 12, 10], soft_min=10, soft_max=20,
+        size=3, step=1, precision=0 ,update=update_relativeLow
+    )
+    relative_Mid : FloatVectorProperty(
+        name="Relative Mid Value", description="",
+        subtype='NONE', default=[8, 6, 4], soft_min=4, soft_max=10,
+        size=3, step=1, precision=0 ,update=update_relativeMid
+    )
+    relative_High : FloatVectorProperty(
+        name="Relative High Value", description="",
+        subtype='NONE', default=[3, 2, 1], soft_min=0.1, soft_max=4,
+        size=3, precision=1 ,update=update_relativeHigh
+    )
+    # CONSTANT VALUES
+    constant_Low : FloatVectorProperty(
+        name="Constant Low Value", description="",
+        subtype='NONE', default=[20, 30, 40], soft_min=0.1, soft_max=50,
+        size=3, precision=1 ,update=update_constantLow
+    )
+    constant_Mid : FloatVectorProperty(
+        name="Constant Mid Value", description="",
+        subtype='NONE', default=[55, 65, 75], soft_min=50, soft_max=95,
+        size=3, step=1, precision=0 ,update=update_constantMid
+    )
+    constant_High : FloatVectorProperty(
+        name="Constant High Value", description="",
+        subtype='NONE', default=[95, 110, 125], soft_min=95, soft_max=200,
+        size=3, step=1, precision=0 ,update=update_constantHigh
+    )
+    # BRUSH VALUES
+    brush_Low : FloatVectorProperty(
+        name="Brush Low Value", description="",
+        subtype='NONE', default=[65, 55, 45], soft_min=50, soft_max=100,
+        size=3, step=1, precision=0 ,update=update_brushLow
+    )
+    brush_Mid : FloatVectorProperty(
+        name="Brush Mid Value", description="",
+        subtype='NONE', default=[35, 27, 20], soft_min=20, soft_max=50,
+        size=3, step=1, precision=0 ,update=update_brushMid
+    )
+    brush_High : FloatVectorProperty(
+        name="Brush High Value", description="",
+        subtype='NONE', default=[15, 10, 5], soft_min=0.1, soft_max=20,
+        size=3, precision=1 ,update=update_brushHigh
+    )
+
+    def draw(self, context):
+        layout = self.layout
+        layout.prop(self, "dyntopo_UseCustomValues", text="Use Custom Values for Dyntopo")
+        box = layout.box()
+        box.active = self.dyntopo_UseCustomValues
+
+        col = box.column(align=True)
+        layout.label(text="DYNTOPO: PER STAGES")
+        row = col.row(align=True)
+        row.separator(factor=6)
+        row.label(text="SKETCH")
+        row.label(text="DETAIL")
+        row.label(text="POLISH")
+
+        _col = col.split().column(align=True)
+        #col.label(text="Relative Values")
+        _row = _col.row(align=False)
+        _row.prop(self, "relative_Low", text="Relative")
+        _row.prop(self, "relative_Mid", text="")
+        _row.prop(self, "relative_High", text="")
+
+        _col = col.split().column(align=True)
+        #_col.label(text="Constant Values")
+        _row = _col.row(align=False)
+        _row.prop(self, "constant_Low", text="Constant")
+        _row.prop(self, "constant_Mid", text="")
+        _row.prop(self, "constant_High", text="")
+
+        _col = col.split().column(align=True)
+        #_col.label(text="Brush")
+        _row = _col.row(align=False)
+        _row.prop(self, "brush_Low", text="Brush")
+        _row.prop(self, "brush_Mid", text="")
+        _row.prop(self, "brush_High", text="")
+
+        #layout.separator()
+        #layout.label(text="PER LEVELS (BY DEFAULT MODE) : ")
+
+register_class(NSMUI_AddonPreferences)
+
+'''
+def updateDyntopoStages_WriteFromPrefs():
+    #Relative
+    dyntopoStages[1].relative_Values = prefs.relative_Low
+    dyntopoStages[2].relative_Values = prefs.relative_Mid
+    dyntopoStages[3].relative_Values = prefs.relative_High
+    # Constant
+    dyntopoStages[1].constant_Values = prefs.constant_Low
+    dyntopoStages[2].constant_Values = prefs.constant_Mid
+    dyntopoStages[3].constant_Values = prefs.constant_High
+    # Brush
+    dyntopoStages[1].brush_Values = prefs.brush_Low
+    dyntopoStages[2].brush_Values = prefs.brush_Mid
+    dyntopoStages[3].brush_Values = prefs.brush_High
+'''
 
 # ----------------------------------------------------------------- #
 #   DYNTOPO SETUP                                                   #
@@ -53,9 +209,9 @@ relative_Low = [14,12,10]
 relative_Mid = [8,6,4]
 relative_High = [3,2,1]
 # CONSTANT --> a mayor valor, mayor detalle. Valor fixed. (Aquí los valores están invertidos)
-constant_Low = [95, 110, 125]
+constant_Low = [20, 30, 40]
 constant_Mid = [55, 65, 75]
-constant_High = [20, 30, 40]
+constant_High = [95, 110, 125]
 # BRUSH --> a menor, mayor detalle. Valor en % de detalle.
 brush_Low = [65, 55, 45]
 brush_Mid = [35, 27, 20]
@@ -66,6 +222,21 @@ brush_High = [15, 10, 5]
 # polish_Values = [relative_High, constant_High, brush_High]
 # STRUCT CLASS
 class DyntopoStage:
+
+    # BRUSH VALUES
+    relative_Values : FloatVectorProperty(
+        subtype='NONE', default=[0, 0, 0],
+        size=3,
+    )
+    constant_Values : FloatVectorProperty(
+        subtype='NONE', default=[0, 0, 0],
+        size=3,
+    )
+    brush_Values : FloatVectorProperty(
+        subtype='NONE', default=[0, 0, 0],
+        size=3,
+    )
+    
     def __init__(self, stage_Name, relative_Values = [], constant_Values =[], brush_Values = []):
         self.stage_Name = stage_Name
         self.relative_Values = relative_Values
@@ -75,31 +246,39 @@ class DyntopoStage:
     def __repr__(self):
         return "DyntopoStage[%s, %i[], %i[], %i[]]" % (self.stage_Name, self.relative_Values, self.constant_Values, self.brush_Values)
 # Dyntopo Stages - Construct vars
-dynStage_Low = DyntopoStage("SKETCH", relative_Low, constant_High, brush_Low) # (por un fallo están al revés los HIGH/LOW)
-dynStage_Mid = DyntopoStage("DETAILS", relative_Mid, constant_Mid, brush_Mid)
-dynStage_High = DyntopoStage("POLISH", relative_High, constant_Low, brush_High)
-dyntopoStages = [dynStage_Low, dynStage_Mid, dynStage_High]
+
 # GLOBAL VARS
 dynStage_Active = 0 # 1 = SKETCH; 2 = DETAIL; 3 = POLISH; 0 = "NONE" # Por defecto ningún 'stage' está activado
 dynMethod_Active = "NONE"
-dynValues_ui = [3,6,9] # valores mostrados en la UI # DEFECTO # Cambiarán al cambiar de stage o detailing (method aquí)
+dynValues_ui = [] # valores mostrados en la UI # DEFECTO # Cambiarán al cambiar de stage o detailing (method aquí)
 
-
-# ----------------------------------------------------------------- #
-#   SETTINGS FOR TOOL HEADER UI                                     #
-# ----------------------------------------------------------------- #
-
-def get_platform():
-    platforms = {
-        'linux1' : 'Linux',
-        'linux2' : 'Linux',
-        'darwin' : 'OS X',
-        'win32' : 'Windows'
-    }
-    if sys.platform not in platforms:
-        return sys.platform
+# IN LOAD / IF USE CUSTOM VALUES IS CHECKED, GO CREATE DYNSTAGES VALUES WITH PREFS VALUES
+prefs = bpy.context.preferences.addons["NewSculptUI"].preferences
+if prefs.dyntopo_UseCustomValues:
+    rL = [prefs.relative_Low[0], prefs.relative_Low[1], prefs.relative_Low[2]]
+    rM = [prefs.relative_Mid[0], prefs.relative_Mid[1], prefs.relative_Mid[2]]
+    rH = [prefs.relative_High[0], prefs.relative_High[1], prefs.relative_High[2]]
+    cL = [prefs.constant_Low[0], prefs.constant_Low[1], prefs.constant_Low[2]]
+    cM = [prefs.constant_Mid[0], prefs.constant_Mid[1], prefs.constant_Mid[2]]
+    cH = [prefs.constant_High[0], prefs.constant_High[1], prefs.constant_High[2]]
+    bL = [prefs.brush_Low[0], prefs.brush_Low[1], prefs.brush_Low[2]]
+    bM = [prefs.brush_Mid[0], prefs.brush_Mid[1], prefs.brush_Mid[2]]
+    bH = [prefs.brush_High[0], prefs.brush_High[1], prefs.brush_High[2]]
+    dynStage_Low = DyntopoStage("SKETCH", rL, cL, bL)
+    dynStage_Mid = DyntopoStage("DETAILS", rM, cM, bM)
+    dynStage_High = DyntopoStage("POLISH", rH, cH, bH)
+# IF NOT, GO CREATE DYNSTAGES VALUES WITH DEFAULT VALUES
+else:
+    dynStage_Low = DyntopoStage("SKETCH", relative_Low, constant_Low, brush_Low)
+    dynStage_Mid = DyntopoStage("DETAILS", relative_Mid, constant_Mid, brush_Mid)
+    dynStage_High = DyntopoStage("POLISH", relative_High, constant_High, brush_High)
     
-    return platforms[sys.platform]
+dyntopoStages = [dynStage_Low, dynStage_Mid, dynStage_High]
+
+print(relative_Low)
+print(prefs.relative_Low)
+print(rL)
+
 
 # ----------------------------------------------------------------- #
 # ICONS // PREVIEW COLLECTION
@@ -141,7 +320,7 @@ icons = {"mirror_icon" : "mirror_icon.png",
          "mask_icon"  : "mask_icon.png",
          "maskInvert_icon"  : "maskInvert_icon.png",
          "maskClear_icon"  : "maskClear_icon.png",
-            }
+        }
 
 # ----------------------------------------------------------------- #
 # PATHS // CHECKER ADDON PATH
@@ -159,35 +338,10 @@ if addonName != "NewSculptUI": # CHANGE THIS
     raise Exception(message)
 
 
-
-'''
-# AUTO-CONFIGURE THE UI
-# CHECK OPERATIVE SYSTEM
-platform = get_platform()
-# CHECK SCREEN RESOLUTION
-if platform == 'Linux': # IF LINUX
-    import Xlib.display
-    resolution = Xlib.display.Display().screen().root.get_geometry()
-    width_px = resolution.width
-    height_px = resolution.height
-elif platform == 'Windows': # IF WINDOWS
-    from win32api import GetSystemMetrics
-    width_px = GetSystemMetrics(0)
-    height_px = GetSystemMetrics(1)
-elif  platform == 'OS X': # IF MAC OS
-    import AppKit 
-    for screen in AppKit.NSScreen.screens():
-        width_px = screen.frame().size.width
-        height_px = screen.frame().size.height
-        break
-# CHECK VALUES
-print("Width =", width_px)
-print("Height =", height_px)
-'''
-
 # --------------------------------------------- #
 # TOOL HEADER - UI - SCULPT MODE
 # --------------------------------------------- #
+
 class NSMUI_HT_toolHeader_sculpt(Header, UnifiedPaintPanel):
     bl_idname = "NSMUI_HT_ToolHeader_Sculpt"
     bl_label = "Header Toolbar"
@@ -196,10 +350,54 @@ class NSMUI_HT_toolHeader_sculpt(Header, UnifiedPaintPanel):
     bl_context = ".paint_common"
     bl_options = {'REGISTER', 'UNDO'}
 
+    hasStartedToHandle : bpy.props.BoolProperty(default = False)
+        
+    def drawTexture(self, context, x):
+
+        if(context.mode == "SCULPT"):
+            settings = self.paint_settings(context)
+
+            if not context.scene.drawBrushTexture:
+                return
+
+            if(settings.brush.texture != None):
+                texture = settings.brush.texture
+
+                try:
+                    image = texture.image
+
+                    if (not hasattr(self, "oldTexture")) or (self.oldTexture != image):
+                        self.oldTexture = image
+                        self.canDraw = True
+                        texture.use_alpha = True
+                        texture.use_calculate_alpha = True
+                        image.alpha_mode = 'PREMUL'
+                        #bpy.app.timers.register(functools.partial(self.fadeOut, False), first_interval=3.0)
+                        
+                    #elif self.oldTexture != image:
+                    #    self.oldTexture = image
+                    #    self.canDraw = True
+                    #    texture.use_alpha = True
+                    #    texture.use_calculate_alpha = True
+                    #    image.alpha_mode = 'PREMUL'
+                        #if bpy.app.timers.is_registered(self.fadeOut):
+                        #    bpy.app.timers.unregister(self.fadeOut)
+                        #bpy.app.timers.register(functools.partial(self.fadeOut, False), first_interval=3.0)
+                        
+                    if self.canDraw == True:
+                        self.oldTexture = image
+                        draw_brush_texture(image)
+
+                except:
+                    print("Cant Draw Image Texture! No Image asigned to the active texture!")
+
+    def fadeOut(self, fadeOut):
+        self.canDraw = fadeOut
+
     def redraw():
         try:
             bpy.utils.unregister_class(VIEW3D_HT_tool_header)
-            bpy.utils.usnregister_class(NSMUI_HT_toolHeader_sculpt)
+            bpy.utils.unregister_class(NSMUI_HT_toolHeader_sculpt)
         except:
             pass
         bpy.utils.register_class(NSMUI_HT_toolHeader_sculpt)
@@ -220,13 +418,26 @@ class NSMUI_HT_toolHeader_sculpt(Header, UnifiedPaintPanel):
             ups = toolsettings.unified_paint_settings
             wm = context.window_manager
             brush = settings.brush
+
+            # CALLBACK HANDLER DRAW TEXTURE OF BRUSH IF THERE IS
+            # BRUSH TEXTURE PREVIEW
+            if context.scene.drawBrushTexture:
+                if self.hasStartedToHandle == False:
+                    self.hasStartedToHandle = True
+                    bpy.types.SpaceView3D.draw_handler_add(self.drawTexture, (context, None), 'WINDOW', 'POST_PIXEL')
+            else:
+                if self.hasStartedToHandle == True:
+                    bpy.types.SpaceView3D.draw_handler_remove(self.drawTexture, (context, None), 'WINDOW', 'POST_PIXEL')
+                    self.hasStartedToHandle = False
+
+            
             
             # IF THERE'S NO BRUSH, JUST STOP DRAWING
             
             if brush is None:
                 return
 
-            if wm.toggle_brush_customIcon and (not wm.toggle_brush_menu): 
+            if wm.toggle_brush_customIcon and (not wm.toggle_brush_menu):
                 toolHeader.draw_brush_customIcon(self)
                 
             toolHeader.draw_brushManager(self, sculpt, wm, wm.toggle_brush_menu,
@@ -234,6 +445,10 @@ class NSMUI_HT_toolHeader_sculpt(Header, UnifiedPaintPanel):
                 #pcoll["brushSave_icon"], wm.toggle_brushSave,
                 pcoll["brushReset_icon"], wm.toggle_brushReset, # bpy.types.Scene.resetBrush_Active
                 pcoll["brushRemove_icon"], wm.toggle_brushRemove) #bpy.types.Scene.removeBrush_Active
+
+            # IF BRUSH IS MASK BRUSH
+            if brush.sculpt_tool == 'MASK':
+                self.layout.column().prop(brush, "mask_tool")
             
             toolHeader.draw_separator(self, pcoll)
 
@@ -242,6 +457,8 @@ class NSMUI_HT_toolHeader_sculpt(Header, UnifiedPaintPanel):
                 if wm.toggle_slider_brushStrength: toolHeader.draw_slider_brushStrength(self, toolsettings, brush, ups)       
                 if wm.toggle_slider_brushSmooth: toolHeader.draw_slider_brushSmooth(self, brush, capabilities)
                 if wm.toggle_slider_spacing: toolHeader.draw_slider_spacing(self, brush)
+                if wm.toggle_slider_topoRake: toolHeader.draw_slider_topoRake(self, context, brush, capabilities)
+                if wm.toggle_slider_specificBrushType: toolHeader.draw_slider_specificBrushType(self, context, brush, capabilities)
                 toolHeader.draw_separator(self, pcoll)
 
             if wm.toggle_brush_settings: toolHeader.draw_brushSettings(self, pcoll["brush_icon"])
@@ -258,7 +475,7 @@ class NSMUI_HT_toolHeader_sculpt(Header, UnifiedPaintPanel):
 
             toolHeader.draw_separator(self, pcoll)
 
-            if wm.toggle_dyntopo: 
+            if wm.toggle_dyntopo and brush.sculpt_tool != 'MASK':
                 toolHeader.draw_topologySettings(self, context, sculpt, pcoll)
                 toolHeader.draw_separator(self, pcoll)
 
@@ -341,12 +558,12 @@ class NSMUI_HT_toolHeader_sculpt_tools(NSMUI_HT_toolHeader_sculpt):
         split = layout.split()
         col = split.column()
         row = col.row(align=True)
-        row.ui_units_x = 4.4
+        row.ui_units_x = 4.5
         # row.prop(ups, "use_unified_size", text="Size") # CHECKBOX PARA MARCAR EL UNIFIED SIZE
         if(toolsettings.unified_paint_settings.use_unified_size):
-            row.prop(ups, "size", slider=True, text="S") # Size
+            row.prop(ups, "size", slider=True, text="R") # Size
         else:
-            row.prop(brush, "size", slider=True, text="S") # Size
+            row.prop(brush, "size", slider=True, text="R") # Size
         row.prop(brush, "use_pressure_size", toggle=True, text="")
 
 #   BRUSH STRENTH
@@ -357,9 +574,9 @@ class NSMUI_HT_toolHeader_sculpt_tools(NSMUI_HT_toolHeader_sculpt):
         row = col.row(align=True)
         row.ui_units_x = 4.3
         if(toolsettings.unified_paint_settings.use_unified_strength): 
-            row.prop(ups, "strength", slider=True, text="H") # Hardness
+            row.prop(ups, "strength", slider=True, text="S") # Hardness
         else:
-            row.prop(brush, "strength", slider=True, text="H") # Hardness
+            row.prop(brush, "strength", slider=True, text="S") # Hardness
         row.prop(brush, "use_pressure_strength", toggle=True, text="")
 
 #   BRUSH AUTOSMOOTH SLIDER
@@ -389,6 +606,73 @@ class NSMUI_HT_toolHeader_sculpt_tools(NSMUI_HT_toolHeader_sculpt):
         if brush.use_line or brush.use_curve:
             row = col.row(align=True)
             row.prop(brush, "spacing", text="Spacing")
+
+#   SLIDER FOR TOPOLOGY RAKE
+    def draw_slider_topoRake(self, context, brush, capabilities):
+        if (capabilities.has_topology_rake and context.sculpt_object.use_dynamic_topology_sculpting):
+            col = self.layout.column()
+            col.ui_units_x = 6
+            row = col.row()
+            row.prop(brush, "topology_rake_factor", slider=True)
+
+#   SLIDERS SPECIFICALLY PER EACH BRUSH TYPE  
+    def draw_slider_specificBrushType(self, context, brush, capabilities):
+        col = self.layout.column()
+        col.ui_units_x = 6
+        # normal_weight
+        if capabilities.has_normal_weight:
+            row = col.row(align=True)
+            row.prop(brush, "normal_weight", slider=True)
+
+        # crease_pinch_factor
+        if capabilities.has_pinch_factor:
+            row = col.row(align=True)
+            row.prop(brush, "crease_pinch_factor", slider=True, text="Pinch")
+
+        # rake_factor
+        if capabilities.has_rake_factor:
+            row = col.row(align=True)
+            row.prop(brush, "rake_factor", slider=True)
+
+        if brush.sculpt_tool == 'MASK':
+            col.prop(brush, "mask_tool")
+
+        # plane_offset, use_offset_pressure, use_plane_trim, plane_trim
+        if capabilities.has_plane_offset:
+            col.ui_units_x = 5
+            row = col.row(align=True)
+            row.prop(brush, "plane_offset", slider=True, text="Offset")
+            row.prop(brush, "use_offset_pressure", text="")
+            row2 = self.layout.column().row()
+            row2.ui_units_x = 2.7
+            row2.prop(brush, "use_plane_trim", text="Trim")
+            if brush.use_plane_trim:
+                _col = self.layout.column()
+                _col.ui_units_x = 4.5
+                _row = _col.row()
+                #_row.active = brush.use_plane_trim
+                _row.prop(brush, "plane_trim", slider=True, text="Dist")
+
+        # height
+        if capabilities.has_height:
+            row = col.row()
+            row.prop(brush, "height", slider=True, text="Height")
+
+        # use_persistent, set_persistent_base
+        if capabilities.has_persistence:
+            ob = context.sculpt_object
+            do_persistent = True
+
+            # not supported yet for this case
+            for md in ob.modifiers:
+                if md.type == 'MULTIRES':
+                    do_persistent = False
+                    break
+
+            if do_persistent:
+                row = col.row(align=True)
+                row.prop(brush, "use_persistent")
+                row.operator("sculpt.set_persistent_base")
 
 #   BRUSH SETTINGS (DROPDOWN)
     def draw_brushSettings(self, icon):
@@ -548,6 +832,7 @@ class NSMUI_HT_toolHeader_sculpt_tools(NSMUI_HT_toolHeader_sculpt):
                     elif(dynMethod_Active == "MANUAL"):
                         dynValues_ui = dyntopoStages[n].relative_Values
                         icon = pcoll["dyntopoManual_icon"]
+                    #print(dynValues_ui) # debug de valores
                 # PANEL DESPLEGABLE
                     sub.popover(panel="NSMUI_PT_dyntopo_stages", text="", icon_value=icon.icon_id)
                     col = self.layout.column()
@@ -754,6 +1039,47 @@ class NSMUI_PT_dyntopo_stages(Panel):
                 else:
                     row.label(text="NONE! Select a Stage!")
 
+                self.layout.separator()
+                
+                prefs = context.preferences.addons["NewSculptUI"].preferences
+                _col = self.layout.column(align=True)
+                _col.prop(prefs, "dyntopo_UseCustomValues", toggle=True, icon="GREASEPENCIL", text="Edit Values") # OUTLINER_DATA_GP_LAYER
+                if prefs.dyntopo_UseCustomValues:
+                    layout = self.layout
+                    box = _col.box()
+                    _row = box.row(align=True)
+
+                    stage = wm.toggle_dyntopo_stage
+                    if method == 'CONSTANT':
+                        if stage == '3': # "Polish":
+                            _row.prop(prefs, "constant_High", text="")
+                        elif stage == '2': # "Details":
+                            _row.prop(prefs, "constant_Mid", text="")
+                        elif stage == '1': #  "Sketch":
+                            _row.prop(prefs, "constant_Low", text="")
+
+                    elif method == 'RELATIVE': # RELATIVE OR MANUAL
+                        if stage == '3': # "Polish":
+                            _row.prop(prefs, "relative_High", text="")
+                        elif stage == '2': #  "Details":
+                            _row.prop(prefs, "relative_Mid", text="")
+                        elif stage == '1': #  "Sketch":
+                            _row.prop(prefs, "relative_Low", text="")
+
+                    elif method == 'BRUSH':
+                        if stage == '3': #  "Polish":
+                            _row.prop(prefs, "brush_High", text="")
+                        elif stage == '2': #  "Details":
+                            _row.prop(prefs, "brush_Mid", text="")
+                        elif stage == '1': #  "Sketch":
+                            _row.prop(prefs, "brush_Low", text="")
+                    
+
+                    
+                    
+                    
+            
+
 class NSMUI_PT_brush_optionsMenu(Panel):
     bl_label = "Brush Options"
     bl_space_type = "VIEW_3D"
@@ -762,7 +1088,15 @@ class NSMUI_PT_brush_optionsMenu(Panel):
     bl_category = 'Sculpt'
     bl_description = "Dropdown Menu for Brush Options! You can create/remove/reset/create custom icon (all based in active brush)"
     #   BRUSH OPTIONS
+    
     def draw(self, context):
+        scn = context.scene
+        ups = context.tool_settings.unified_paint_settings
+        brush = context.tool_settings.sculpt.brush
+        #pressureSize = ups.use_unified_size.use_pressure_size
+        #pressureStrength = ups.use_unified_strength.use_pressure_strength
+        #pressureSpacing = ups.use_unified_spacing.use_pressure_spacing
+
         pcoll = preview_collections["main"]
         #wm = context.window_manager
         brush = context.tool_settings.sculpt.brush
@@ -792,18 +1126,26 @@ class NSMUI_PT_brush_optionsMenu(Panel):
         col.separator()
 
         # 4TH ROW
-        col.separator()
+        #col.separator()
         row = col.row(align=True)
+        row.scale_y = 1.2
+        row.prop(scn, "renderCustomIcon_Alpha", text="Use Alpha", toggle=True)
+        _active = not scn.renderCustomIcon_Alpha
+        _row = row.column(align=True)#.row(align=True)
+        _row.active = _active
+        #text = color
+        _row.prop(scn, "renderCustomIcon_Color", text="")
+
+        #row.prop(scn, 'pressureSize', text="Pressure Size", toggle=True)
+        #col.separator()
         # FUTURE
-        # 1. Save Brush
+        # 1. Save Brush State
         # 2. Import/Export
-        # 3. Toggle Aplha
-        # 4. Change BG color
+        # 3. Toggle Aplha - DONE
+        # 4. Change BG color - DONE
 
         # LOAD BRUSHES / IMPORT FROM JSON DATABASE
         # row.operator("nsmui.ot_read_json_data", text="Import All Brushes")
-
-
 
 # --------------------------------------------- #
 # PROPERTIES // UPDATERS                        #
@@ -895,6 +1237,47 @@ def strokeMethod_icon(method, pcoll):
     elif method == 'CURVE':
         return pcoll["strokeCurve_icon"]
 
+# draw active brush texture
+def draw_brush_texture(image):
+    try:
+        if image.gl_load():
+            raise Exception()
+    except:
+        pass
+    try:
+        position = [100, 100]
+        #size = image.size
+        #if image.size[0] > image.size[1]:
+        #    if(image.size[0] > 250):
+        #        width = 250
+        #        height = image.size[0]*250/image.size[1]
+        #else:
+        #    if(image.size[1] > 250):
+        #        height = 250
+        #        width = image.size[1]*250/image.size[0]
+        #width, height = clampImageSize(width, height)
+        #print(width)
+        #print(height)
+        draw_texture_2d(image.bindcode, position, 150, 150)
+    except:
+        pass
+
+
+def clampImageSize(width, height):
+    maxWidth = 250
+    maxHeight = 250
+
+    if(width > height): # is landscape?
+        if(width > maxWidth): # is overWidth?
+            height = height * maxWidth / width # makes height proportional to new clamped width
+            width = maxWidth # clamps width to max
+
+    else: # or is portrait?
+        if(height > maxHeight): # is overHeight?
+            width = width * maxHeight / height # makes width proportional to new clamped height
+            height = maxHeight # clamps height to max
+    return width, height
+             
 
 #################################################
 #   REGISTRATION !!!!                      #
@@ -910,6 +1293,7 @@ def register():
     
     # UNREGISTER ORIGINAL TOOL HEADER # changed - antes al inicio del script
     try:
+        register_class(NSMUI_AddonPreferences)
         bpy.utils.unregister_class(VIEW3D_HT_tool_header)
     except:
         pass
@@ -918,6 +1302,7 @@ def register():
     auto_load.register()
 
     # Register Classes
+    
     register_class(NSMUI_HT_toolHeader_sculpt) # TOOL HEADER - SCULPT MODE
     register_class(NSMUI_HT_header_sculpt)     # HEADER      - SCULPT MODE
     register_class(NSMUI_PT_dyntopo_stages)
@@ -933,30 +1318,34 @@ def register():
     wm = bpy.types.WindowManager
     
 
-    wm.toggle_brush_menu = bpy.props.BoolProperty(default=True, update=update_property)
-    wm.toggle_UI_elements = bpy.props.BoolProperty(default=True, update=update_property)
-    wm.toggle_prefs = bpy.props.BoolProperty(default=True, update=update_property)
-    wm.toggle_brush_customIcon = bpy.props.BoolProperty(default=False, update=update_property)
+    wm.toggle_brush_menu = bpy.props.BoolProperty(default=True, update=update_property, description="Collapse all brush options above to a menu.")
+    wm.toggle_UI_elements = bpy.props.BoolProperty(default=True, update=update_property, description="Deprecated")
+    wm.toggle_prefs = bpy.props.BoolProperty(default=True, update=update_property, description="Deprecated")
+    wm.toggle_brush_customIcon = bpy.props.BoolProperty(default=True, update=update_property, description="Show button to render custom icon for the active brush based on the 3dviewport. The icon may refresh (up to) in 2 seconds in most cases due to changes in Blender internal.")
     wm.toggle_stages = bpy.props.BoolProperty(default=True, update=update_property, description="Switch between Stage Mode (per Stages) and Default Mode (per Levels [1-6]).")
     wm.toggle_brush_settings = bpy.props.BoolProperty(default=True, update=update_property)
-    wm.toggle_brushAdd = bpy.props.BoolProperty(default=True, update=update_property)
+    wm.toggle_brushAdd = bpy.props.BoolProperty(default=True, update=update_property, description="Toggle 'Add brush' button to create a new brush as a duplicate of the active brush")
     #wm.toggle_brushSave = bpy.props.BoolProperty(default=False, update=update_property)
-    wm.toggle_brushRemove = bpy.props.BoolProperty(default=False, update=update_property)
-    wm.toggle_brushReset = bpy.props.BoolProperty(default=False, update=update_property)
-    wm.toggle_stroke_settings = bpy.props.BoolProperty(default=True, update=update_property)
-    wm.toggle_stroke_method = bpy.props.BoolProperty(default=False, update=update_property)
-    wm.toggle_falloff = bpy.props.BoolProperty(default=True, update=update_property)
-    wm.toggle_falloff_curvePresets = bpy.props.BoolProperty(default=False, update=update_property)
-    wm.toggle_sliders = bpy.props.BoolProperty(default=True, update=update_property)
-    wm.toggle_slider_brushSize = bpy.props.BoolProperty(default=True, update=update_property)
-    wm.toggle_slider_brushStrength = bpy.props.BoolProperty(default=True, update=update_property)
-    wm.toggle_slider_brushSmooth = bpy.props.BoolProperty(default=True, update=update_property)
-    wm.toggle_slider_spacing = bpy.props.BoolProperty(default=False, update=update_property)
-    wm.toggle_dyntopo = bpy.props.BoolProperty(default=True, update=update_property)
-    wm.toggle_mask = bpy.props.BoolProperty(default=False, update=update_property)
-    wm.toggle_symmetry = bpy.props.BoolProperty(default=True, update=update_property)
-    wm.toggle_texture_new = bpy.props.BoolProperty(default=True, update=update_property)
-    wm.toggle_texture_open = bpy.props.BoolProperty(default=True, update=update_property)
+    wm.toggle_brushRemove = bpy.props.BoolProperty(default=False, update=update_property, description="Toggle 'Remove Brush' to remove the active brush")
+    wm.toggle_brushReset = bpy.props.BoolProperty(default=False, update=update_property, description="Toggle 'Reset Brush' to reset the active brush to it's original state")
+    wm.toggle_stroke_settings = bpy.props.BoolProperty(default=True, update=update_property, description="Toggle Stroke Settings menu in the tool header")
+    wm.toggle_stroke_method = bpy.props.BoolProperty(default=True, update=update_property, description="Toggle Quick Stroke Method Switcher in the Tool Header")
+    wm.toggle_falloff = bpy.props.BoolProperty(default=False, update=update_property, description="Toggle Falloff/Curves menu in the tool header")
+    wm.toggle_falloff_curvePresets = bpy.props.BoolProperty(default=True, update=update_property, description="Show quick curve presets row in the tool header")
+
+    wm.toggle_sliders = bpy.props.BoolProperty(default=True, update=update_property, description="Hide All Sliders that are active from the tool header. (Also from this menu)")
+    wm.toggle_slider_brushSize = bpy.props.BoolProperty(default=False, update=update_property, description="Toggle Brush Size/Radious Slider in the Tool Header")
+    wm.toggle_slider_brushStrength = bpy.props.BoolProperty(default=False, update=update_property, description="Toggle Brush Strength Slider in the Tool Header")
+    wm.toggle_slider_brushSmooth = bpy.props.BoolProperty(default=False, update=update_property, description="Toggle Brush Autosmooth Slider in the Tool Header")
+    wm.toggle_slider_spacing = bpy.props.BoolProperty(default=False, update=update_property, description="Toggle Brush Spacing Slider in the Tool Header if it's available")
+    wm.toggle_slider_topoRake = bpy.props.BoolProperty(default=False, update=update_property, description="Toggle Brush Topology Rake Slider in the Tool Header if it's availbale")
+    wm.toggle_slider_specificBrushType = bpy.props.BoolProperty(default=True, update=update_property, description="Toggle Brush Type Specific Sliders in the Tool Header if they're available for the active brush")
+
+    wm.toggle_dyntopo = bpy.props.BoolProperty(default=True, update=update_property, description="Toggle Dyntopo Section in the tool header")
+    wm.toggle_mask = bpy.props.BoolProperty(default=False, update=update_property, description="Toggle Mask Menu in the tool header")
+    wm.toggle_symmetry = bpy.props.BoolProperty(default=True, update=update_property, description="Toggle Quick Symmetry in the tool header")
+    wm.toggle_texture_new = bpy.props.BoolProperty(default=True, update=update_property, description="Toggle 'New Texture' Button for creating a new texture in the tool header")
+    wm.toggle_texture_open = bpy.props.BoolProperty(default=True, update=update_property, description="Toggle 'Open Image' Button for opening images in the tool header")
     wm.toggle_dyntopo_detailing = bpy.props.EnumProperty(
         items=(
             ('RELATIVE', "Relative", ""),
@@ -992,12 +1381,18 @@ def register():
     scn.depress_dyntopo_lvl_5 = bpy.props.BoolProperty(default=False, description="Level 5 of detail. The more level the more detail !")
     scn.depress_dyntopo_lvl_6 = bpy.props.BoolProperty(default=False, description="Level 6 of detail, the greater one. The more level the more detail !")
 
+    scn.drawBrushTexture = bpy.props.BoolProperty(default=False, description="Show Brush Texture Preview in the 3d Viewport")
+
+    scn.renderCustomIcon_Alpha = bpy.props.BoolProperty(default=False, description="Toggle alpha for rendering the custom brush icon. NOTE: Not working in 'Sculpting' Workspace!")
+    scn.renderCustomIcon_Color = FloatVectorProperty(name="Background Color for Custom Icon", subtype='COLOR', default=[0.0,0.0,0.0], min=0, max=1, description="Change Color of the background for rendering the custom brush icon")
+
     #   BRUSHES PANEL PROPS
     scn.show_brushes_fav = bpy.props.BoolProperty(description='Un/Fold Favorite Brushes.', default=True)
     scn.show_brushes_type = bpy.props.BoolProperty(description='Un/Fold Per Type Brushes.', default=True)
     scn.show_brushes_temp = bpy.props.BoolProperty(description='Un/Fold Recent Brushes.', default=False)
     scn.show_brushOptionsWith = bpy.props.BoolProperty(description='Show Brush Options in "Brushes" Panel', default=True)
     scn.recentBrushes_stayInPlace = bpy.props.BoolProperty(description='Stay Brushes in Place when selecting a Brush that is already on the List.', default=False)
+    
     wm.toggle_pt_brushPreview = bpy.props.BoolProperty(default=True, update=update_property, description="Show Brush Preview.")
     wm.toggle_pt_brushFavs = bpy.props.BoolProperty(default=True, update=update_property, description="Show Favourite Brushes.")
     wm.toggle_pt_brushType = bpy.props.BoolProperty(default=True, update=update_property, description="Show Brushes per Type (based on active brush).")
@@ -1009,6 +1404,11 @@ def register():
         name="Collapse Brushes",
         description="Hide brush sub-panels and shows dropdown menus for adjust the actual brush."
     )
+
+    # REFERENCES PANEL PROPS
+    # (Import Scene and Image just so the line is shorter)
+    from bpy.types import Image
+    scn.refImage = bpy.props.PointerProperty(name="Image", type=Image)
 
     # REGISTER ORIGINAL TOOL HEADER # changed - antes al final del código de la clase del tool header
     try:
@@ -1026,6 +1426,7 @@ def unregister():
     unregister_class(NSMUI_HT_header_sculpt)     # HEADER      - SCULPT MODE
     unregister_class(NSMUI_PT_dyntopo_stages)
     unregister_class(NSMUI_PT_brush_optionsMenu)
+    unregister_class(NSMUI_AddonPreferences)
 
     # AutoLoad Exterior Classes
     auto_load.unregister()
@@ -1041,11 +1442,15 @@ def unregister():
     del wm.toggle_brush_menu
     del wm.toggle_UI_elements
     del wm.toggle_brush_customIcon
+
     del wm.toggle_sliders
     del wm.toggle_slider_brushSize
     del wm.toggle_slider_brushStrength
     del wm.toggle_slider_brushSmooth
     del wm.toggle_slider_spacing
+    del wm.toggle_slider_topoRake
+    del wm.toggle_slider_specificBrushType
+
     del wm.toggle_brush_settings
     del wm.toggle_brushAdd
     #del wm.toggle_brushSave
@@ -1079,6 +1484,11 @@ def unregister():
     del scn.depress_dyntopo_lvl_4
     del scn.depress_dyntopo_lvl_5
     del scn.depress_dyntopo_lvl_6
+
+    del scn.drawBrushTexture
+
+    del scn.renderCustomIcon_Alpha
+    del scn.renderCustomIcon_Color
 
     #   BRUSHES PANEL PROPS
     del scn.show_brushes_fav

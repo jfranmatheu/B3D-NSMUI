@@ -10,3 +10,28 @@ NewSculptUI/.vscode/launch.json
 NewSculptUI/__pycache__/ht_ui_toolHeader.cpython-37.pyc
 NewSculptUI/__pycache__/brush_quickset.cpython-37.pyc
 NewSculptUI/__pycache__/brush_io_manager.cpython-37.pyc
+NewSculptUI/Sculpt_Brushes/test_brush_set_001.json
+NewSculptUI/Sculpt_Brushes/test_brush_set.json
+NewSculptUI/Sculpt_Brushes/icons/wrinkle_icon.png
+NewSculptUI/Sculpt_Brushes/icons/SculptDraw_icon.png
+NewSculptUI/Sculpt_Brushes/icons/SculptDraw.003_icon.png
+NewSculptUI/Sculpt_Brushes/icons/SculptDraw.002_icon.png
+NewSculptUI/Sculpt_Brushes/icons/SculptDraw.001_icon.png
+NewSculptUI/Sculpt_Brushes/icons/custom brush_icon.png
+NewSculptUI/Sculpt_Brushes/icons/Custom Brush.002_icon.png
+NewSculptUI/Sculpt_Brushes/icons/Custom Brush.001_icon.png
+NewSculptUI/Sculpt_Brushes/icons/Crease_icon.png
+NewSculptUI/Sculpt_Brushes/icons/Crease.006_icon.png
+NewSculptUI/Sculpt_Brushes/icons/Crease.004_icon.png
+NewSculptUI/Sculpt_Brushes/icons/Crease.003_icon.png
+NewSculptUI/Sculpt_Brushes/icons/Crease.002_icon.png
+NewSculptUI/Sculpt_Brushes/icons/Crease.001_icon.png
+NewSculptUI/Sculpt_Brushes/icons/Button 1_icon.png
+NewSculptUI/Sculpt_Brushes/icons/Anything_icon.png
+NewSculptUI/Sculpt_Brushes/icons/Crease.005_icon.png
+NewSculptUI/__pycache__/imageReferences_manager.cpython-37.pyc
+NewSculptUI/__pycache__/brush_quick_shortcuts.cpython-37.pyc
+NewSculptUI/__pycache__/brush_pointer.cpython-37.pyc
+NewSculptUI/brush_pointer
+NewSculptUI/Sculpt_Brushes/test_brush_set_001.json
+NewSculptUI/Sculpt_Brushes/test_brush_set_001.json

@@ -3,7 +3,8 @@ import bpy
 from bpy import context, types
 from bpy.types import (
     Brush,
-    Texture
+    Texture,
+    SpaceView3D
 )
 
 def toggle_off_curves():
@@ -58,13 +59,13 @@ class NSMUI_OT_toolHeader_brushRemove(bpy.types.Operator):
         bpy.data.brushes.remove(brush, do_unlink=True)
         # Seleccionar automaticamente una brocha del mismo tipo
         for b in bpy.data.brushes:
-            if b.sculpt_tool == st and (not b.use_paint_vertex):
-                context.brush = b
+            if b.sculpt_tool == st and b.use_paint_sculpt:
+                bpy.context.tool_settings.sculpt.brush = b
                 return {'FINISHED'}
         # Sino hay ninguna del mismo tipo entonces se cogerá la primera en buscar
         for b in bpy.data.brushes:
-            if not b.use_paint_vertex:
-                context.brush = b
+            if b.use_paint_sculpt:
+                bpy.context.tool_settings.sculpt.brush = b
                 return {'FINISHED'}
         return {'FINISHED'}
 '''
@@ -271,13 +272,15 @@ class NSMUI_OT_toolHeader_dyntopo_any_h(bpy.types.Operator):
 def foo():
     print (time.ctime())
 
-class NSMUI_OT_toolHeader_brush_custom_icon(bpy.types.Operator):
+class NSMUI_OT_toolHeader_brush_custom_icon(bpy.types.Operator, SpaceView3D):
     bl_idname = "nsmui.ht_toolheader_brush_custom_icon"
     bl_label = "Create Custom Icon"
     bl_description = "Create a Custom Icon for the Actual Brush based on the Viewport"
     def execute(self, context):
         scene = context.scene
+        space = context.space_data
         brush = bpy.context.tool_settings.sculpt.brush # Get active brush
+        workspaceName = bpy.context.window.workspace.name #context.screen
         brush.use_custom_icon = True # Mark to use custom icon
         # active = context.active_object
 
@@ -289,6 +292,10 @@ class NSMUI_OT_toolHeader_brush_custom_icon(bpy.types.Operator):
         displayMode = scene.render.display_mode
         oldpath = scene.render.filepath
         lens = context.space_data.lens
+
+        withAlpha = scene.renderCustomIcon_Alpha
+        bgColor = space.shading.background_color # bpy.data.screens[workspaceName].shading.background_color
+        shadingBgType = space.shading.background_type # bpy.data.screens[workspaceName].shading.background_type
         film = scene.render.film_transparent
 
         # PRIMEROS PREPARATIVOS :)
@@ -297,8 +304,16 @@ class NSMUI_OT_toolHeader_brush_custom_icon(bpy.types.Operator):
         context.space_data.show_gizmo = False
         scene.render.resolution_x = 256
         scene.render.resolution_y = 256
-        context.space_data.lens = 80
-        scene.render.film_transparent = True
+        if context.space_data.lens < 80:
+            context.space_data.lens = 80
+        if withAlpha:
+            scene.render.film_transparent = True
+        else:
+            scene.render.film_transparent = False
+            space.shading.background_type = 'VIEWPORT'
+            space.shading.background_color = scene.renderCustomIcon_Color
+            #bpy.data.screens[workspaceName].shading.background_type = 'VIEWPORT'
+            #bpy.data.screens[workspaceName].shading.background_color = scene.renderCustomIcon_Color
 
         # RANDOM GENERATION / NOW IS NOT NECESARY
         # import random
@@ -335,8 +350,15 @@ class NSMUI_OT_toolHeader_brush_custom_icon(bpy.types.Operator):
         context.space_data.show_gizmo = gizmo_state
         scene.render.display_mode = displayMode
         scene.render.filepath = oldpath
-        context.space_data.lens = lens
+        context.space_data.lens = lens     
+
         scene.render.film_transparent = film
+
+        if withAlpha == False:
+            space.shading.background_color = bgColor
+            space.shading.background_type = shadingBgType
+            #bpy.data.screens[workspaceName].shading.background_color = bgColor
+            #bpy.data.screens[workspaceName].shading.background_type = shadingBgType
 
         try:
             bpy.data.images.remove(bpy.data.images[filename + ".001"])

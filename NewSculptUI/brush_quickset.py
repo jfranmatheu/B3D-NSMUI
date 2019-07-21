@@ -713,13 +713,13 @@ def applyChanges_2(self):
         if self.uni_smooth:
             modrate = self.smoothmod * 0.0025
             newval  = brush.auto_smooth_factor + modrate
-            if 10.0 > newval > 0.0:
+            if 10.0 > newval > -0.1:
                 brush.auto_smooth_factor = newval
                 self.smoothmod_total += modrate
         else:
             modrate = self.smoothmod * 0.0025
             newval  = self.brush.auto_smooth_factor + modrate
-            if 10.0 > newval > 0.0:
+            if 10.0 > newval > -0.1:
                 self.brush.auto_smooth_factor = newval
                 self.smoothmod_total += modrate
 

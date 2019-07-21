@@ -1,4 +1,4 @@
-New Sculpt Mode UI for Blender 2.80
+## New Sculpt Mode UI for Blender 2.80
 
 # Downloads
 - Download **NewSculptUI.zip** For original Blender 2.80 version: https://github.com/jfranmatheu/Blender_NewSMUI/raw/master/NewSculptUI.zip
@@ -6,10 +6,30 @@ New Sculpt Mode UI for Blender 2.80
 
 - [Not updated / Just ignore] Download **NewSculptUI_SculptFeatures.zip** For support with Experimental Sculpt Branch of Pablo Dobarro: https://github.com/jfranmatheu/Blender_NewSMUI/raw/master/NewSculptUI_SculptFeatures.zip
 
+
+### Help me to make it possible !
+---
+
 [![Paypal](https://raw.githubusercontent.com/stefan-niedermann/paypal-donate-button/master/paypal-donate-button.png)](https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=johnnymathgar%40gmail.com&item_name=Soporte+para+el+desarrollo+continuado+de+addons+gratuitos.&currency_code=EUR&source=url)
 
-Nueva UI para el modo Sculpt. Modifica principalmente el Tool Header del sculpt mode.
+- Consider giving me support to continue working on this addon for its continuous development and for the future development of new tools! This addon is FREE and will be FREE forever as Blender is but supporting it makes possible to continue its development so any kind of aportation is really welcome :D
+- Feedback is also needed to improve this addon! :-) I have many ideas for future and to close things well, feedback from other Blender users and community is so needed! ♥
+- PD. No tenía otra imagen más pequeña!! XD
 
+### Future and On going projects !
+---
+
+- New reference system integrated in Blender within the 3dviewport, you can expect features like pureref has and even more blendcool! The basic reference manager is done. Remains the hard part of handle the images around the 3dviewport, but one of the most difficult challenges will be to make it alpha compatible and turning absolute black into transparent (so any help with it is welcome).
+- Texture preview in the 3dviewport for the brush you are using also if you change the texture you can preview it in bigger size.
+- Brush manager!!! I won't tell so much about it (no spoilers) but if I make all I have in mind for real I can say it will be amazing :)
+- Automate basemesh generation for sculpt + rigging
+- Self-intersection solver for dyntopo workflow replacing slow and non-convenient remeshers (or changing to edit mode to fix it)
+- Custom Presets and custom values for the already new dyntopo system that I introduced (by levels and by stages)
+- Remeshers!
+- Integration with new sculpt features of Pablo Dobarro when they'll be ready
+- What to say... Anything you can imagine!
+
+---
 # FEATURES
 ---
 QUICK TEXTURE CREATION AND SELECTION
@@ -52,15 +72,16 @@ Differences between buttons 2/5 and 3/7:
 
 RENDER YOUR CUSTOM BRUSH ICONS! WITH JUST ONE CLICK!!!!!
 ---
-1. Toggle "Render Custom Brush Icon" (now it's in the "eye icon" drop down menu of the tool header)
+### The process is just an instant but due to some changes in Blender internal, the icon preview may update in a couple of seconds... But not that much if you use the render button from collapse menu (which is active by default). So you dont have to wait til see the icon updated.
+1. Toggle "Render Custom Brush Icon" (now it's in the "eye icon" drop down menu of the tool header) or toggle "collapse" option to access it from the dropdown menu near the brush selector over the tool header or toggle ''brush options'' in gear icon of the tool header (to access from the side "brushes" panel)
 2. Pick your custom brush, make some strokes and zoom in and center the mesh to be ready for the shoot
-3. Click at the very first icon (camera icon) of the tool header, BOOM, now you have a custom icon for your brush
+3. Click at the camera icon of the tool header/panel (depends of [1.]), BOOM, now you have a custom icon for your brush
 - NOTE: this is a very new feature so feedback and bug reports are needed to improve this powefull feature!
 - If you want a custom icon with alpha (no background) you should go to layout workspace or any other because in Sculpting workspace this is not working well as expected
 
-![alt text](http://1.bp.blogspot.com/-Owg9jgXh-70/XPzbvlBIlOI/AAAAAAAAAj8/514iqEJ5KNs9ccagtUiMjVBBFzkSaPvkwCK4BGAYYCw/s400/togglecustomicon.png "Toggle Render Custom Brush Icon")
-![alt text](http://4.bp.blogspot.com/--oLt_7tWMq4/XPzbvucr4HI/AAAAAAAAAkA/DUcOYBjvGPEM_EzVt79CdFLgUl0nwa4ywCK4BGAYYCw/s400/shooticonbrushicon.png "Render Custom Brush Icon")
-![alt text](http://3.bp.blogspot.com/-D42C0JvgY3o/XPzbw_sNRjI/AAAAAAAAAkI/HDyVqbFZHboosrEZPi2F2FsNm8lU81FzQCK4BGAYYCw/s640/previewiconscene.png "New Custom Brush Icon!")
+- GIF EXAMPLE - Activate Render Icon and Render icon (3 alternatives)
+
+![alt text](https://1.bp.blogspot.com/-77lFR3HDL08/XR5AXe19blI/AAAAAAAAA1A/C486t8jLwy8ntnATPqEV3iBDcdW11TdowCLcBGAs/s640/ezgif.com-optimize.gif "Render Custom Brush Icon")
 
 - GIF EXAMPLE - (by gen.es)
 
@@ -111,13 +132,13 @@ Brush Settings / Stroke Settings / Curves
 ---
 ![alt text](http://3.bp.blogspot.com/-VMm2vj-sXSE/XOgZiymhfnI/AAAAAAAAAfI/opiTVUUTAY8EPwCeoN6Vxy3lzulD4cwdACK4BGAYYCw/s320/NewSMUI_settings.png "Settings")
 
-- Stroke Method
+- Stroke Method, Now they have their own icons!
 
-![alt text](http://3.bp.blogspot.com/-mBfSnCKoZLk/XPzmULIsYyI/AAAAAAAAAkw/uYMStMA4bYEyEvDBYPQIx8r7DrmS1xYUgCK4BGAYYCw/s400/stroke_method.png "Stroke Method")
+![alt text](http://3.bp.blogspot.com/-OLauVc4SGNE/XR47r_VHZMI/AAAAAAAAA0w/_kwNj-y3kS4WBJCEES_4XKgClsyZAwjeACK4BGAYYCw/s400/strokemethoddots.png "Stroke Method")
 
-- Curve Presets
+- Curve Presets! Now they are toggles so you know which one is active!!
 
-![alt text](http://2.bp.blogspot.com/-xDDbk3kxQtg/XPzmUGdXGQI/AAAAAAAAAks/PypOGIbdSiEVo1uUhaBEOorGyarBMeibQCK4BGAYYCw/s400/curve%2Bpresets.png "Curve Presets")
+![alt text](http://4.bp.blogspot.com/-WBZ4wA9vmco/XR47N39UfII/AAAAAAAAA0g/Uxol381Mee4xa0HswLCJ412n9ZM_www-ACK4BGAYYCw/s400/curvestoggles.png "Curve Presets")
 
 ---
 MASKING
@@ -131,24 +152,20 @@ BRUSH SLIDERS (they all are activatable)
 ![alt text](http://2.bp.blogspot.com/-WZH5SsT3BC8/XPzlLbCKbrI/AAAAAAAAAkc/QDWwk8mxKvIOURQ-dbgsbkkUquC321MJgCK4BGAYYCw/s400/slider_spacing.png "Spacing")
 
 ---
-CUSTOMIZE THE UI!!! :D
+CUSTOMIZE THE UI!!! :D  + PRESETS !! (CUSTOM PRESETS FOR FUTURE)
 ---
 - Toggle UI Element, have only the UI elements that you really want!!!
 - There are so much tools that are not showed by default but you can activate them with just only click :-)
 - I recommend you to try "Render Custom Brush Icon", "Stroke Method" and "Curve Presets", also feedback for the UI is needed in order to have actived by default the most useful features.
 
-![alt text](https://4.bp.blogspot.com/-ihNMglxkB1E/XPz0zjDv04I/AAAAAAAAAlM/vztxm_9byks_KwwlcouapCfIJIYY7JFdACK4BGAYYCw/s1600/toggleui.png "Toggle UI Elements")
+![alt text](http://3.bp.blogspot.com/-wswIcW7wQDg/XR43DoHcIfI/AAAAAAAAA0E/fbU_tYLkM3cfoMbwgTM1xkFK2d8i3npSgCK4BGAYYCw/s1600/toggleUIElementss.png "Toggle UI Elements")
 
 ![alt text](http://1.bp.blogspot.com/--dwa0-Ue-tw/XRKRSJFot3I/AAAAAAAAAzQ/-hGAKQGyvaYJbJHaKaCux0ZshsUVPgYfgCK4BGAYYCw/s640/allfeaturestoolheader.png "All Features Tool Header")
 
 ---
-QUICK PREFERENCES
+QUICK PREFERENCES (ADDON CONFIG AND BLENDER PREFS)
 ---
-![alt text](http://3.bp.blogspot.com/-5zBBfdoxVj8/XPrRkc254hI/AAAAAAAAAhk/gK9GCNfbUxoa7PnAHDHm3TUtSifP1QHAgCK4BGAYYCw/s400/preferences.png "Preferences")
-
-- Also there are dropdown menus available at the end of the tool header:
-
-![alt text](http://2.bp.blogspot.com/-wQ6qvSWHf8w/XPz1M71AA7I/AAAAAAAAAlY/Xdx6JIg4r8QVH8wNpOlRGHCLp__3HUnJQCK4BGAYYCw/s400/dropdownmenusettings.png "Dropdown menu settings")
+![alt text](http://4.bp.blogspot.com/-dvZjOYxG-RQ/XR43D-qYGmI/AAAAAAAAA0I/TSnNv6u3Z8UWmpDPU1Y9AeV6rhrV4WpQACK4BGAYYCw/s1600/preferencesaddon.png "Preferences")
 
 ---
 BRUSH SIZE, STRENGTH AND SMOOTH VALUE SHORTCUTS
@@ -183,8 +200,8 @@ FUTUROS CAMBIOS E IDEAS LOCAS
 - [x] Icono personalizados para la brocha seleccionada con solo un click, basado en la vista actual con un render.
 - [ ] Insertar primitivas sin salir de sculpt, usando el 3dcursor con snap de superficie o de volumen y la normal de este para posicionarlo. SHIF + RMB
 - [ ] Filtros para las texturas.
-- [ ] Sets de brochas: 1, Recientemente usadas. 2, Por tipo según la brocha activa. 3, Favoritas.
-- [x] Nuevos y mejores atajos de teclado. Gracias al addon de Jean Ayer que he integrado podemos usar click derecho y arrastrar en uno de los axis (horizontal y vertical) para cambiar el tamaño o la fuerza de la brocha de forma fácil.
+- [x] Sets de brochas: 1, Recientemente usadas. 2, Por tipo según la brocha activa. 3, Favoritas.
+- [x] Nuevos y mejores atajos de teclado. Gracias al addon de Jean Ayer que he integrado podemos usar click derecho y arrastrar en uno de los axis (horizontal y vertical) para cambiar el tamaño o la fuerza de la brocha de forma fácil. Este ha sido mejorado, extendido y personalizado bastante especialmente para este addon.
 - [x] Reestructuración en el código para hacerlo más limpio y además MODULAR.
 - [x] Poder desactivar y activar diferentes elementos de la UI para un mayor nivel de personalización. Esto se hace desde el panel de la 'N' llamado "Sculpt".
 - [ ] Manager para brochas.

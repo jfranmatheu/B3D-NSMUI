@@ -155,8 +155,9 @@ MASKING
 ---
 BRUSH SLIDERS (they all are activatable)
 ---
-![alt text](http://1.bp.blogspot.com/-g5QFeNxN_RA/XOga3bJZxNI/AAAAAAAAAf0/JxUM67mqqqMwavQHcQvRWKIQ-rta5yCtACK4BGAYYCw/s320/NewSMUI_sliders.png "Sliders")
-![alt text](http://2.bp.blogspot.com/-WZH5SsT3BC8/XPzlLbCKbrI/AAAAAAAAAkc/QDWwk8mxKvIOURQ-dbgsbkkUquC321MJgCK4BGAYYCw/s400/slider_spacing.png "Spacing")
+![alt text](http://4.bp.blogspot.com/-MSVzNCoExHE/XTTiia4kzRI/AAAAAAAAA18/cdFDOwKS3loOMiDNRA7IRBYaMnO4ipZVwCK4BGAYYCw/s400/SLIDERSALL.png "Sliders")
+
+![alt text](http://1.bp.blogspot.com/-GzULyP2qXiY/XTTi2BdemFI/AAAAAAAAA2I/R6GSXFRm_60X_E-t5kzU05wqq4VvKMOeQCK4BGAYYCw/s640/slidersinarow.png "Sliders in a row")
 
 ---
 CUSTOMIZE THE UI!!! :D  + PRESETS !! (CUSTOM PRESETS FOR FUTURE)

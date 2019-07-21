@@ -275,11 +275,6 @@ else:
     
 dyntopoStages = [dynStage_Low, dynStage_Mid, dynStage_High]
 
-print(relative_Low)
-print(prefs.relative_Low)
-print(rL)
-
-
 # ----------------------------------------------------------------- #
 # ICONS // PREVIEW COLLECTION
 # ----------------------------------------------------------------- #

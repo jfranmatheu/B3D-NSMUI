@@ -262,5 +262,6 @@ Disponibles de momento en otra 'branch' -> Sculpt-Features
 ---
 "brush quickset" addon by Jean Ayer aka Vrav
 https://blenderartists.org/t/sculpt-paint-edit-workflow-suite-new-grow-sel-to-cursor/553819
+I take the base of this addon and extend its functionality, improve it, as well as fixing some bugs that it had
 
 Icons for dyntopo detailing (Relative, Brush and Constant + high, mid and low) made by g3n.es

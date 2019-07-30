@@ -1,5 +1,11 @@
 ## New Sculpt Mode UI for Blender 2.80
 
+# About
+
+- I'm a 22 y.o multi-disciplinary and self-taught artist and developer for Spain, I always liked 2d digital art and it's where I come from. So, I just discovered Blender and 3D world few months ago with the alpha/pre-beta of 2.80. I didn't want to think about 3D but now "fun is back in 3D" with Blender 2.80, I knew at that moment, with the alpha/beta (with all crashes) that it will turn into something great that will make a big hit in the industry.
+- I studied computer engineering for 2 years, but I left university because I didn't feel accomplished with it and it was really boring. I wanted to make useful things but also creative ones so I was amazed with electronic DIYs and Arduino, I even learned to weld good and started to make some projects like a touch ring with some piece of wood and cooper that worked much better that the one of wacom tablets. The same year I started "3D animation, videogames, etc..." grade, and again just for a paper. Not 3D animation, not videogames. I had to start studying by myself, it was when I started then with Blender 2.80 and Unity. Months back I had beautiful ideas about developing incredible tools and so on to make Blender more cool so I started with python and python API of Blender, in just 3 days I had my very first version, and I liked it! so I continue to develop til the addon you can see now here.
+- Nowadays I'm developing a videogame with some friends as well as developing this addon for Blender and trying to keep at date my 2d and 3d portfolios and so on...
+
 # Downloads
 - Download **NewSculptUI.zip** For original Blender 2.80 version: https://github.com/jfranmatheu/Blender_NewSMUI/raw/master/NewSculptUI.zip
 

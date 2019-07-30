@@ -33,7 +33,7 @@
 - [WIP] New reference system integrated in Blender within the 3dviewport, you can expect features like pureref has and even more blendcool! The basic reference manager is done. Remains the hard part of handle the images around the 3dviewport, but one of the most difficult challenges will be to make it alpha compatible and turning absolute black into transparent (so any help with it is welcome).
 - [x] Texture preview in the 3dviewport for the brush you are using also if you change the texture you can preview it in bigger size.
 - Brush manager!!! I won't tell so much about it (no spoilers) but if I make all I have in mind for real I can say it will be amazing :)
-- Automate basemesh generation for sculpt + rigging
+- Automate custom basemesh generation for sculpt + rigging
 - Self-intersection solver for dyntopo workflow replacing slow and non-convenient remeshers (or changing to edit mode to fix it)
 - [x] Custom values for the already new dyntopo system that I introduced (by stages right now)
 - [x] Custom presets for UI

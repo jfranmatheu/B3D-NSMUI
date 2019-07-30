@@ -129,6 +129,16 @@ TEXTURE PREVIEW
 - You may use it ONLY with png or jpg files, right now tiff and psd files can have so much perform impact in your computer
 
 ---
+REMESHERS
+---
+- Support with external remeshers like quadriflow and instant meshes... More for future (voxel remesher, etc)
+- Also other remeshers from internal (WIP)
+
+![alt text](http://1.bp.blogspot.com/-hQq9EQbhIpo/XUCscwKnFkI/AAAAAAAAA3A/iXBSH02NSzUrLCnv0gFSNBUn62ARCeQ7ACK4BGAYYCw/s400/quadriflow.png "Quadriflow")
+
+![alt text](http://4.bp.blogspot.com/-Jw2DNePUV5o/XUCsc24ytRI/AAAAAAAAA3E/crvCWREslKEM-IdHQ6K-paj6HBmsh31HwCK4BGAYYCw/s400/instantmeshes.png"Instant Meshes")
+
+---
 QUICK SYMMETRY
 ---
 ![alt text](http://4.bp.blogspot.com/-AQyygMd2kbo/XOgZi7420RI/AAAAAAAAAfA/f3e5ViEtS7oEIN1Z5TlMZkyYv8j-2oHSACK4BGAYYCw/s400/NewSMUI_symmetry.png "Symmetry")

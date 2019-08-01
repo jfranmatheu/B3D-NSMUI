@@ -143,7 +143,7 @@ TEXTURE PREVIEW
 REMESHERS
 ---
 - Support with external remeshers like quadriflow and instant meshes... More for future (voxel remesher, etc)
-- Also other remeshers from internal (WIP)
+- Also other remeshers from internal
 
 ![alt text](http://1.bp.blogspot.com/-hQq9EQbhIpo/XUCscwKnFkI/AAAAAAAAA3A/iXBSH02NSzUrLCnv0gFSNBUn62ARCeQ7ACK4BGAYYCw/s400/quadriflow.png "Quadriflow")
 

@@ -1,5 +1,16 @@
 ## New Sculpt Mode UI for Blender 2.80
 
+# About
+
+- I'm a 22 y.o multi-disciplinary and self-taught artist and developer for Spain, I always liked art, then I knew about digital art and it's where I come from. So, I just discovered Blender and 3D world few months ago with the alpha/pre-beta of 2.80. I didn't want to think about 3D but now "fun is back in 3D" with Blender 2.80, I knew at that moment, with the alpha/beta (with all crashes) that it will turn into something great that will make a big hit in the industry.
+- I studied computer engineering for 2 years, but I left university because I didn't feel accomplished with it and it was really boring. I wanted to make useful things but also creative ones so I was amazed with electronic DIYs and Arduino, I even learned to weld good and started to make some projects like a touch ring with some piece of wood and cooper that worked much better that the one of wacom tablets. I also liked to play with html and css and make some cool website/blog. The same year I started "3D animation, videogames, etc..." grade, and again just for a paper. Not 3D animation, not videogames. I had to hard start studying by myself, it was when I started then with Blender 2.80 and Unity. Months back I hear about what means open source and the ability to create your own tools so I was getting more and more interest on it and I had beautiful ideas about developing incredible tools and so on to make Blender more cool so I started learning python and python API of Blender, in just 3 days I had my very first version, and I liked it! so I continue to develop til the addon you can see now here.
+- Nowadays I'm developing a videogame with some friends as well as developing this addon for Blender and trying to keep at date my 2d and 3d portfolios and so on...
+
+**Social Media**
+- Instagram [3D and GameDev] -> https://www.instagram.com/jfranmatheu/
+- Instagram [2D Digital Art] -> https://www.instagram.com/jfrandraws/
+
+
 # Downloads
 - Download **NewSculptUI.zip** For original Blender 2.80 version: https://github.com/jfranmatheu/Blender_NewSMUI/raw/master/NewSculptUI.zip
 
@@ -10,7 +21,7 @@
 ### Help me to make it possible !
 ---
 
-[![Paypal](https://raw.githubusercontent.com/stefan-niedermann/paypal-donate-button/master/paypal-donate-button.png)](https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=johnnymathgar%40gmail.com&item_name=Soporte+para+el+desarrollo+continuado+de+addons+gratuitos.&currency_code=EUR&source=url)
+[![Paypal](https://raw.githubusercontent.com/stefan-niedermann/paypal-donate-button/master/paypal-donate-button.png)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=BA3UXNSDLE55E&source=url)
 
 - Consider giving me support to continue working on this addon for its continuous development and for the future development of new tools! This addon is FREE and will be FREE forever as Blender is but supporting it makes possible to continue its development so any kind of aportation is really welcome :D
 - Feedback is also needed to improve this addon! :-) I have many ideas for future and to close things well, feedback from other Blender users and community is so needed! ♥
@@ -19,13 +30,14 @@
 ### Future and On going projects !
 ---
 
-- New reference system integrated in Blender within the 3dviewport, you can expect features like pureref has and even more blendcool! The basic reference manager is done. Remains the hard part of handle the images around the 3dviewport, but one of the most difficult challenges will be to make it alpha compatible and turning absolute black into transparent (so any help with it is welcome).
-- Texture preview in the 3dviewport for the brush you are using also if you change the texture you can preview it in bigger size.
+- [WIP] New reference system integrated in Blender within the 3dviewport, you can expect features like pureref has and even more blendcool! The basic reference manager is done. Remains the hard part of handle the images around the 3dviewport, but one of the most difficult challenges will be to make it alpha compatible and turning absolute black into transparent (so any help with it is welcome).
+- [x] Texture preview in the 3dviewport for the brush you are using also if you change the texture you can preview it in bigger size.
 - Brush manager!!! I won't tell so much about it (no spoilers) but if I make all I have in mind for real I can say it will be amazing :)
-- Automate basemesh generation for sculpt + rigging
+- Automate custom basemesh generation for sculpt + rigging
 - Self-intersection solver for dyntopo workflow replacing slow and non-convenient remeshers (or changing to edit mode to fix it)
-- Custom Presets and custom values for the already new dyntopo system that I introduced (by levels and by stages)
-- Remeshers!
+- [x] Custom values for the already new dyntopo system that I introduced (by stages right now)
+- [x] Custom presets for UI
+- [x] Remeshers!
 - Integration with new sculpt features of Pablo Dobarro when they'll be ready
 - What to say... Anything you can imagine!
 
@@ -76,8 +88,11 @@ RENDER YOUR CUSTOM BRUSH ICONS! WITH JUST ONE CLICK!!!!!
 1. Toggle "Render Custom Brush Icon" (now it's in the "eye icon" drop down menu of the tool header) or toggle "collapse" option to access it from the dropdown menu near the brush selector over the tool header or toggle ''brush options'' in gear icon of the tool header (to access from the side "brushes" panel)
 2. Pick your custom brush, make some strokes and zoom in and center the mesh to be ready for the shoot
 3. Click at the camera icon of the tool header/panel (depends of [1.]), BOOM, now you have a custom icon for your brush
-- NOTE: this is a very new feature so feedback and bug reports are needed to improve this powefull feature!
-- If you want a custom icon with alpha (no background) you should go to layout workspace or any other because in Sculpting workspace this is not working well as expected
+
+![alt text](http://2.bp.blogspot.com/-O9D64ARWv0Q/XTTfsIaPiAI/AAAAAAAAA1s/nxMnWlhr2Qkh08741R5tHoWuMfSvxGhjACK4BGAYYCw/s320/Anotaci%25C3%25B3n%2B2019-07-21%2B234246.png "Render Custom Brush Icon. Brush Options Menu.")
+- You can switch between using alpha or not
+- Also you can select a color to change background color of the icon, this will help you so much to organize your brushes and locate them more easily
+- If you want a custom icon with alpha (no background) you should go to layout workspace or any other because in Sculpting workspace this is not working well as expected.
 
 - GIF EXAMPLE - Activate Render Icon and Render icon (3 alternatives)
 
@@ -100,6 +115,10 @@ DYNTOPO NEW "STAGE" CONCEPT + NEW MENU [STAGE MODE]
 ---
 ![alt text](http://1.bp.blogspot.com/-tCsMLruKp7M/XPzYDNUOxRI/AAAAAAAAAjg/pxjg7LVn1AI0U0Z0-dWQhN0pQaPcIYTTACK4BGAYYCw/s400/dyntopo_stages.png "Dyntopo Stages")
 
+- Now you can change the values!! CUSTOM VALUES! They are stored in preferences so is shared across all your files! :-) Also make sure you save your preferences or have autosave turned on to save values. Clicking at Edit Values will make you use custom values instead of defaults and when creating or loading new file will load custom values.
+
+![alt text](http://4.bp.blogspot.com/-8o-GdntFRN8/XTTfrjvTDDI/AAAAAAAAA1k/4EfLXfdXx1sAlB_MfgeZprPEghD5X1AKACK4BGAYYCw/s400/dyntopostageseditvalues.png "Dyntopo Stages")
+
 ---
 NEW BRUSH SET PANELS !!!
 ---
@@ -112,6 +131,23 @@ https://blender.chat/file-upload/CjSzJWhscJngPC7m7/2019-06-15%2000-50-23.mp4
 - All parts (preview, favs, per type, recent brushes... can be hidden! And replaced by Active Brush subpanel options)
 
 ![alt text](http://2.bp.blogspot.com/-w9z7EAwRkwA/XRKRRbKgSqI/AAAAAAAAAzE/Y8fX_rnAj0UY5DrzCRhMVd-QxnmCsSydACK4BGAYYCw/s320/brushespanelresponsive.png "Brushes Panel Responsive")
+
+---
+TEXTURE PREVIEW
+---
+![alt text](http://1.bp.blogspot.com/-o4qyqVFNDKo/XTTkRVclOyI/AAAAAAAAA2U/dDwvxDDvJ58OIebG9j5WdgW5zWDGFOZ9wCK4BGAYYCw/s640/TEXTUREPREVIEW.png "Texture Preview")
+
+- You may use it ONLY with png or jpg files, right now tiff and psd files can have so much perform impact in your computer
+
+---
+REMESHERS
+---
+- Support with external remeshers like quadriflow and instant meshes... More for future (voxel remesher, etc)
+- Also other remeshers from internal
+
+![alt text](http://1.bp.blogspot.com/-hQq9EQbhIpo/XUCscwKnFkI/AAAAAAAAA3A/iXBSH02NSzUrLCnv0gFSNBUn62ARCeQ7ACK4BGAYYCw/s400/quadriflow.png "Quadriflow")
+
+![alt text](http://4.bp.blogspot.com/-Jw2DNePUV5o/XUCsc24ytRI/AAAAAAAAA3E/crvCWREslKEM-IdHQ6K-paj6HBmsh31HwCK4BGAYYCw/s400/instantmeshes.png "Instant Meshes")
 
 ---
 QUICK SYMMETRY
@@ -148,8 +184,9 @@ MASKING
 ---
 BRUSH SLIDERS (they all are activatable)
 ---
-![alt text](http://1.bp.blogspot.com/-g5QFeNxN_RA/XOga3bJZxNI/AAAAAAAAAf0/JxUM67mqqqMwavQHcQvRWKIQ-rta5yCtACK4BGAYYCw/s320/NewSMUI_sliders.png "Sliders")
-![alt text](http://2.bp.blogspot.com/-WZH5SsT3BC8/XPzlLbCKbrI/AAAAAAAAAkc/QDWwk8mxKvIOURQ-dbgsbkkUquC321MJgCK4BGAYYCw/s400/slider_spacing.png "Spacing")
+![alt text](http://4.bp.blogspot.com/-MSVzNCoExHE/XTTiia4kzRI/AAAAAAAAA18/cdFDOwKS3loOMiDNRA7IRBYaMnO4ipZVwCK4BGAYYCw/s400/SLIDERSALL.png "Sliders")
+
+![alt text](http://1.bp.blogspot.com/-GzULyP2qXiY/XTTi2BdemFI/AAAAAAAAA2I/R6GSXFRm_60X_E-t5kzU05wqq4VvKMOeQCK4BGAYYCw/s640/slidersinarow.png "Sliders in a row")
 
 ---
 CUSTOMIZE THE UI!!! :D  + PRESETS !! (CUSTOM PRESETS FOR FUTURE)
@@ -225,5 +262,6 @@ Disponibles de momento en otra 'branch' -> Sculpt-Features
 ---
 "brush quickset" addon by Jean Ayer aka Vrav
 https://blenderartists.org/t/sculpt-paint-edit-workflow-suite-new-grow-sel-to-cursor/553819
+I take the base of this addon and extend its functionality, improve it, as well as fixing some bugs that it had
 
 Icons for dyntopo detailing (Relative, Brush and Constant + high, mid and low) made by g3n.es

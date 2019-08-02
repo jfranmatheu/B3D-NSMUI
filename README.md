@@ -21,7 +21,7 @@
 ### Help me to make it possible !
 ---
 
-[![Paypal](https://raw.githubusercontent.com/stefan-niedermann/paypal-donate-button/master/paypal-donate-button.png)](https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=johnnymathgar%40gmail.com&item_name=Soporte+para+el+desarrollo+continuado+de+addons+gratuitos.&currency_code=EUR&source=url)
+[![Paypal](https://raw.githubusercontent.com/stefan-niedermann/paypal-donate-button/master/paypal-donate-button.png)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=BA3UXNSDLE55E&source=url)
 
 - Consider giving me support to continue working on this addon for its continuous development and for the future development of new tools! This addon is FREE and will be FREE forever as Blender is but supporting it makes possible to continue its development so any kind of aportation is really welcome :D
 - Feedback is also needed to improve this addon! :-) I have many ideas for future and to close things well, feedback from other Blender users and community is so needed! ♥

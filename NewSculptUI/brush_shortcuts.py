@@ -15,36 +15,9 @@
 #
 #  ***** END GPL LICENSE BLOCK *****
 
-# "author": "Jean Ayer (vrav)", # legal / tracker name: Cody Burrow
-
-# brush_quickset.py
-# brush.modal_quickset for hotkeys
-# Brush QuickSet from search menu
-
-# Modify sculpt/paint brush radius and strength in a streamlined manner.
-# To use, assign a hotkey to brush.modal_quickset in a paint or sculpt mode.
-# Recommended RMB, but any key can be used in a hold-and-release manner.
-
-# What does it do? When you activate the modal operator, you can drag the
-#   mouse along either axis to affect brush radius or strength. Which axis
-#   affects which is configurable, amongst other things detailed below.
-
-# Operator Options:
-#   - Axis Order: Whether X or Y affects brush size, etc.
-#   - Key Action: Hotkey activity (press or release) can apply or cancel.
-#   - Numeric: Show strength value when adjusted; can pick size
-#   - Slider: Represent strength with a visual slider; can pick size
-#   - Pixel Deadzone: Distance before an axis starts affecting the brush.
-#   - Size Sensitivity: Multiplier for quicker or slower radius adjustment.
-#   - Graphic: Represent strength via transparent brush overlay
-#   - Lock Axis: Allow only one value to be altered at a time
-
-# Known limitations:
-#   - Not available for painting in the image editor.
-#   - Holding ctrl does not snap to values, probably should.
-
 # INFORMATION ############################################
-# THIS CODE IS FROM THE ADDON BRUSH QUICKSET BY Jean Ayer
+# THIS CODE IS BASED ON THE ADDON BRUSH QUICKSET BY Jean Ayer
+# EXTENDED, IMPROVED AND SOME BUG_ FIXES BY jfranmatheu
 ##########################################################
 
 from mathutils import Color
@@ -253,41 +226,6 @@ def draw_callback_px(self, context):
         ))
 
         do_textSize = True
-    '''
-    # STRENGTH
-    if self.slider != 'NONE' and self.doingstr:
-        xpos = self.start[0] + self.offset[0] - self.sliderwidth - (48 if self.text == 'MEDIUM' else 64 if self.text == 'LARGE' else 32)
-        ypos = self.start[1] + self.offset[1] - self.sliderheight # + (1 if self.slider != 'SMALL' else 0)
-
-        if strength < 1.0:
-            sliderscale = strength
-        elif strength > 5.0:
-            sliderscale = strength / 10
-        elif strength > 2.0:
-            sliderscale = strength / 5
-        else:
-            sliderscale = strength / 2
-
-        # slider back rect
-        starti = len(vertices)
-        # rectpoints: (0.0, 0.0), (1.0, 0.0), (1.0, 1.0), (0.0, 1.0)
-        for x, y in rectpoints:
-            vertices.append((int(self.sliderwidth * x) - xpos, int(self.sliderheight * y) + ypos - 1))
-            colors.append((self.backcolor.r, self.backcolor.g, self.backcolor.b, 0.5))
-        indices.extend((
-            (starti, starti+1, starti+2), (starti+2, starti, starti+3)
-        ))
-
-        # slider front rect
-        starti = len(vertices)
-        # rectpoints: (0.0, 0.0), (1.0, 0.0), (1.0, 1.0), (0.0, 1.0)
-        for x, y in rectpoints:
-            vertices.append((int(self.sliderwidth * x * sliderscale) - xpos, int(self.sliderheight * y * 0.75) + ypos))
-            colors.append((self.frontcolor.r, self.frontcolor.g, self.frontcolor.b, 0.8))
-        indices.extend((
-            (starti, starti+1, starti+2), (starti+2, starti, starti+3)
-        ))
-    '''
 
     shader = gpu.types.GPUShader(vertex_shader, fragment_shader)
     batch = batch_for_shader(shader, 'TRIS', {"pos":vertices, "color":colors}, indices=indices)

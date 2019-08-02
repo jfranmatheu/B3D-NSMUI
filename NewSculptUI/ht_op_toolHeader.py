@@ -384,33 +384,36 @@ def printAttr(brush):
 
 class NSMUI_OT_toolHeader_UI_preset_default(bpy.types.Operator):
     bl_idname = "nsmui.ht_toolheader_ui_preset_default"
-    bl_label = "Default UI Preset"
-    bl_description = "Change Tool Header UI to default state. Reset."
+    bl_label = "Basic UI Preset"
+    bl_description = "Change Tool Header UI to basic preset."
     def execute(self, context):
         wm = context.window_manager
         wm.toggle_brush_menu = True
         wm.toggle_UI_elements = True
         wm.toggle_prefs = True
-        wm.toggle_brush_customIcon = False
+        wm.toggle_brush_customIcon = True
         wm.toggle_stages = True
         wm.toggle_brush_settings = True
         wm.toggle_brushAdd = True
         wm.toggle_brushRemove = False
-        wm.toggle_brushReset = True
+        wm.toggle_brushReset = False
         wm.toggle_stroke_settings = True
         wm.toggle_stroke_method = False
         wm.toggle_falloff = True
         wm.toggle_falloff_curvePresets = False
         wm.toggle_sliders = True
-        wm.toggle_slider_brushSize = True
-        wm.toggle_slider_brushStrength = True
-        wm.toggle_slider_brushSmooth = True
+        wm.toggle_slider_brushSize = False
+        wm.toggle_slider_brushStrength = False
+        wm.toggle_slider_brushSmooth = False
         wm.toggle_slider_spacing = False
+        wm.toggle_slider_topoRake = False
+        wm.toggle_slider_specificBrushType = True
         wm.toggle_dyntopo = True
-        wm.toggle_mask = False
+        wm.toggle_mask = True
         wm.toggle_symmetry = True
         wm.toggle_texture_new = True
         wm.toggle_texture_open = True
+        wm.toggle_remesher = False
 
         return {'FINISHED'}
 
@@ -427,11 +430,11 @@ class NSMUI_OT_toolHeader_UI_preset_recommendation(bpy.types.Operator):
         wm.toggle_prefs = True
         wm.toggle_brush_customIcon = True
         wm.toggle_stages = True
-        wm.toggle_brush_settings = False
+        wm.toggle_brush_settings = True
         wm.toggle_brushAdd = True
         wm.toggle_brushRemove = False
         wm.toggle_brushReset = False
-        wm.toggle_stroke_settings = False
+        wm.toggle_stroke_settings = True
         wm.toggle_stroke_method = True
         wm.toggle_falloff = False
         wm.toggle_falloff_curvePresets = True
@@ -440,10 +443,160 @@ class NSMUI_OT_toolHeader_UI_preset_recommendation(bpy.types.Operator):
         wm.toggle_slider_brushStrength = False
         wm.toggle_slider_brushSmooth = False
         wm.toggle_slider_spacing = False
+        wm.toggle_slider_topoRake = False
+        wm.toggle_slider_specificBrushType = False
         wm.toggle_dyntopo = True
         wm.toggle_mask = False
         wm.toggle_symmetry = True
         wm.toggle_texture_new = True
         wm.toggle_texture_open = True
+        wm.toggle_remesher = True
+
+        return {'FINISHED'}
+
+class NSMUI_OT_TH_UI_preset_create_custom_slot_1(bpy.types.Operator):
+    bl_idname = "nsmui.ht_ui_preset_create_custom_slot_1"
+    bl_label = "Save Custom UI Preset to Slot 1"
+    bl_description = "Save custom preset to slot number 1 for saving actual UI state"
+    def execute(self, context):
+        wm = context.window_manager
+        prefs = bpy.context.preferences.addons["NewSculptUI"].preferences
+        prefs.create_custom_UI_Slot_1 = True
+        prefs.custom_UI_Slot_1[0] = wm.toggle_brush_menu
+        prefs.custom_UI_Slot_1[1] = wm.toggle_UI_elements
+        prefs.custom_UI_Slot_1[2] = wm.toggle_prefs
+        prefs.custom_UI_Slot_1[3] = wm.toggle_brush_customIcon
+        prefs.custom_UI_Slot_1[4] = wm.toggle_stages
+        prefs.custom_UI_Slot_1[5] = wm.toggle_brush_settings
+        prefs.custom_UI_Slot_1[6] = wm.toggle_brushAdd
+        prefs.custom_UI_Slot_1[7] = wm.toggle_brushRemove
+        prefs.custom_UI_Slot_1[8] = wm.toggle_brushReset
+        prefs.custom_UI_Slot_1[9] = wm.toggle_stroke_settings
+        prefs.custom_UI_Slot_1[10] = wm.toggle_stroke_method
+        prefs.custom_UI_Slot_1[11] = wm.toggle_falloff
+        prefs.custom_UI_Slot_1[12] = wm.toggle_falloff_curvePresets
+        prefs.custom_UI_Slot_1[13] = wm.toggle_sliders
+        prefs.custom_UI_Slot_1[14] = wm.toggle_slider_brushSize
+        prefs.custom_UI_Slot_1[15] = wm.toggle_slider_brushStrength
+        prefs.custom_UI_Slot_1[16] = wm.toggle_slider_brushSmooth
+        prefs.custom_UI_Slot_1[17] = wm.toggle_slider_spacing
+        prefs.custom_UI_Slot_1[18] = wm.toggle_slider_topoRake
+        prefs.custom_UI_Slot_1[19] = wm.toggle_slider_specificBrushType
+        prefs.custom_UI_Slot_1[20] = wm.toggle_dyntopo
+        prefs.custom_UI_Slot_1[21] = wm.toggle_mask
+        prefs.custom_UI_Slot_1[22] = wm.toggle_symmetry
+        prefs.custom_UI_Slot_1[23] = wm.toggle_texture_new
+        prefs.custom_UI_Slot_1[24] = wm.toggle_texture_open
+        prefs.custom_UI_Slot_1[25] = wm.toggle_remesher
+
+        return {'FINISHED'}
+
+class NSMUI_OT_toolHeader_UI_preset_custom_slot_1(bpy.types.Operator):
+    bl_idname = "nsmui.ht_toolheader_ui_preset_custom_slot_1"
+    bl_label = "Custom UI Preset. Slot 1"
+    bl_description = "Use custom preset to change Tool Header UI"
+    def execute(self, context):
+        wm = context.window_manager
+        prefs = bpy.context.preferences.addons["NewSculptUI"].preferences
+        wm.toggle_brush_menu = prefs.custom_UI_Slot_1[0]
+        wm.toggle_UI_elements = prefs.custom_UI_Slot_1[1]
+        wm.toggle_prefs = prefs.custom_UI_Slot_1[2]
+        wm.toggle_brush_customIcon = prefs.custom_UI_Slot_1[3]
+        wm.toggle_stages = prefs.custom_UI_Slot_1[4]
+        wm.toggle_brush_settings = prefs.custom_UI_Slot_1[5]
+        wm.toggle_brushAdd = prefs.custom_UI_Slot_1[6]
+        wm.toggle_brushRemove = prefs.custom_UI_Slot_1[7]
+        wm.toggle_brushReset = prefs.custom_UI_Slot_1[8]
+        wm.toggle_stroke_settings = prefs.custom_UI_Slot_1[9]
+        wm.toggle_stroke_method = prefs.custom_UI_Slot_1[10]
+        wm.toggle_falloff = prefs.custom_UI_Slot_1[11]
+        wm.toggle_falloff_curvePresets = prefs.custom_UI_Slot_1[12]
+        wm.toggle_sliders = prefs.custom_UI_Slot_1[13]
+        wm.toggle_slider_brushSize = prefs.custom_UI_Slot_1[14]
+        wm.toggle_slider_brushStrength = prefs.custom_UI_Slot_1[15]
+        wm.toggle_slider_brushSmooth = prefs.custom_UI_Slot_1[16]
+        wm.toggle_slider_spacing = prefs.custom_UI_Slot_1[17]
+        wm.toggle_slider_topoRake = prefs.custom_UI_Slot_1[18]
+        wm.toggle_slider_specificBrushType = prefs.custom_UI_Slot_1[19]
+        wm.toggle_dyntopo = prefs.custom_UI_Slot_1[20]
+        wm.toggle_mask = prefs.custom_UI_Slot_1[21]
+        wm.toggle_symmetry = prefs.custom_UI_Slot_1[22]
+        wm.toggle_texture_new = prefs.custom_UI_Slot_1[23]
+        wm.toggle_texture_open = prefs.custom_UI_Slot_1[24]
+        wm.toggle_remesher = prefs.custom_UI_Slot_1[25]
+
+        return {'FINISHED'}
+
+class NSMUI_OT_TH_UI_preset_create_custom_slot_2(bpy.types.Operator):
+    bl_idname = "nsmui.ht_ui_preset_create_custom_slot_2"
+    bl_label = "Save Custom UI Preset to Slot 2"
+    bl_description = "Save custom preset to slot number 2 for saving actual UI state"
+    def execute(self, context):
+        wm = context.window_manager
+        prefs = bpy.context.preferences.addons["NewSculptUI"].preferences
+        prefs.create_custom_UI_Slot_2 = True
+        prefs.custom_UI_Slot_2[0] = wm.toggle_brush_menu
+        prefs.custom_UI_Slot_2[1] = wm.toggle_UI_elements
+        prefs.custom_UI_Slot_2[2] = wm.toggle_prefs
+        prefs.custom_UI_Slot_2[3] = wm.toggle_brush_customIcon
+        prefs.custom_UI_Slot_2[4] = wm.toggle_stages
+        prefs.custom_UI_Slot_2[5] = wm.toggle_brush_settings
+        prefs.custom_UI_Slot_2[6] = wm.toggle_brushAdd
+        prefs.custom_UI_Slot_2[7] = wm.toggle_brushRemove
+        prefs.custom_UI_Slot_2[8] = wm.toggle_brushReset
+        prefs.custom_UI_Slot_2[9] = wm.toggle_stroke_settings
+        prefs.custom_UI_Slot_2[10] = wm.toggle_stroke_method
+        prefs.custom_UI_Slot_2[11] = wm.toggle_falloff
+        prefs.custom_UI_Slot_2[12] = wm.toggle_falloff_curvePresets
+        prefs.custom_UI_Slot_2[13] = wm.toggle_sliders
+        prefs.custom_UI_Slot_2[14] = wm.toggle_slider_brushSize
+        prefs.custom_UI_Slot_2[15] = wm.toggle_slider_brushStrength
+        prefs.custom_UI_Slot_2[16] = wm.toggle_slider_brushSmooth
+        prefs.custom_UI_Slot_2[17] = wm.toggle_slider_spacing
+        prefs.custom_UI_Slot_2[18] = wm.toggle_slider_topoRake
+        prefs.custom_UI_Slot_2[19] = wm.toggle_slider_specificBrushType
+        prefs.custom_UI_Slot_2[20] = wm.toggle_dyntopo
+        prefs.custom_UI_Slot_2[21] = wm.toggle_mask
+        prefs.custom_UI_Slot_2[22] = wm.toggle_symmetry
+        prefs.custom_UI_Slot_2[23] = wm.toggle_texture_new
+        prefs.custom_UI_Slot_2[24] = wm.toggle_texture_open
+        prefs.custom_UI_Slot_2[25] = wm.toggle_remesher
+        
+
+        return {'FINISHED'}
+
+class NSMUI_OT_toolHeader_UI_preset_custom_slot_2(bpy.types.Operator):
+    bl_idname = "nsmui.ht_toolheader_ui_preset_custom_slot_2"
+    bl_label = "Custom UI Preset. Slot 2"
+    bl_description = "Use custom preset to change Tool Header UI"
+    def execute(self, context):
+        wm = context.window_manager
+        prefs = bpy.context.preferences.addons["NewSculptUI"].preferences
+        wm.toggle_brush_menu = prefs.custom_UI_Slot_2[0]
+        wm.toggle_UI_elements = prefs.custom_UI_Slot_2[1]
+        wm.toggle_prefs = prefs.custom_UI_Slot_2[2]
+        wm.toggle_brush_customIcon = prefs.custom_UI_Slot_2[3]
+        wm.toggle_stages = prefs.custom_UI_Slot_2[4]
+        wm.toggle_brush_settings = prefs.custom_UI_Slot_2[5]
+        wm.toggle_brushAdd = prefs.custom_UI_Slot_2[6]
+        wm.toggle_brushRemove = prefs.custom_UI_Slot_2[7]
+        wm.toggle_brushReset = prefs.custom_UI_Slot_2[8]
+        wm.toggle_stroke_settings = prefs.custom_UI_Slot_2[9]
+        wm.toggle_stroke_method = prefs.custom_UI_Slot_2[10]
+        wm.toggle_falloff = prefs.custom_UI_Slot_2[11]
+        wm.toggle_falloff_curvePresets = prefs.custom_UI_Slot_2[12]
+        wm.toggle_sliders = prefs.custom_UI_Slot_2[13]
+        wm.toggle_slider_brushSize = prefs.custom_UI_Slot_2[14]
+        wm.toggle_slider_brushStrength = prefs.custom_UI_Slot_2[15]
+        wm.toggle_slider_brushSmooth = prefs.custom_UI_Slot_2[16]
+        wm.toggle_slider_spacing = prefs.custom_UI_Slot_2[17]
+        wm.toggle_slider_topoRake = prefs.custom_UI_Slot_2[18]
+        wm.toggle_slider_specificBrushType = prefs.custom_UI_Slot_2[19]
+        wm.toggle_dyntopo = prefs.custom_UI_Slot_2[20]
+        wm.toggle_mask = prefs.custom_UI_Slot_2[21]
+        wm.toggle_symmetry = prefs.custom_UI_Slot_2[22]
+        wm.toggle_texture_new = prefs.custom_UI_Slot_2[23]
+        wm.toggle_texture_open = prefs.custom_UI_Slot_2[24]
+        wm.toggle_remesher = prefs.custom_UI_Slot_2[25]
 
         return {'FINISHED'}

@@ -16,7 +16,7 @@ bl_info = {
     "author" : "JFranMatheu",
     "description" : "New UI for Sculpt Mode! :D",
     "blender" : (2, 80, 0),
-    "version" : (0, 5, 0),
+    "version" : (0, 5, 2),
     "location" : "View3D > Tool Header // View3D > 'N' Panel: Brushes)",
     "warning" : "This version is still in development. ;)",
     "category" : "Generic"
@@ -43,10 +43,9 @@ from bl_ui.properties_paint_common import (
         brush_mask_texture_settings,
         brush_basic_sculpt_settings
         )
-from bpy.props import StringProperty, IntProperty, FloatProperty, BoolProperty, FloatVectorProperty
+from bpy.props import StringProperty, IntProperty, FloatProperty, BoolProperty, FloatVectorProperty, BoolVectorProperty
 from bpy.utils import register_class, unregister_class
 from bl_ui.space_view3d import VIEW3D_HT_tool_header
-
 
 # ----------------------------------------------------------------- #
 #   ADDON PREFERENCES                                     #
@@ -62,8 +61,16 @@ class NSMUI_AddonPreferences(AddonPreferences):
         subtype='FILE_PATH',
     )
     '''
-
-        #########################################################
+    quadriflow_filepath : bpy.props.StringProperty(
+        name="Quadriflow Executable",
+        subtype='FILE_PATH'
+    )
+    instantMeshes_filepath: bpy.props.StringProperty(
+        name="Instant Meshes Executable",
+        subtype='FILE_PATH',
+        default=os.path.dirname(__file__) + "/Remesher/Instant Meshes.exe",
+    )
+    #########################################################
     #   UPDATE VALUES FROM PREFERENCES TO DYNTOPO STAGES    #
     #########################################################
     # Relative
@@ -142,8 +149,27 @@ class NSMUI_AddonPreferences(AddonPreferences):
         subtype='NONE', default=[15, 10, 5], soft_min=0.1, soft_max=20,
         size=3, precision=1 ,update=update_brushHigh
     )
+    # copy and paste if you want more slots, also you should add them to the layout over pt_ui_panel.py, 
+    # just search for the existing slots and copy paste the code and change the name/number of the slot
+    custom_UI_Slot_1 : BoolVectorProperty(name="Slot 1", description="Slot number 1 for custom UI presets", subtype='NONE', size=26)
+    create_custom_UI_Slot_1 : BoolProperty(name="Create Slot 1", description="Create Slot number 1 for custom UI presets", default=False)
+    custom_UI_Slot_2 : BoolVectorProperty(name="Slot 2", description="Slot number 2 for custom UI presets", subtype='NONE', size=26)
+    create_custom_UI_Slot_2 : BoolProperty(name="Create Slot 2", description="Create Slot number 2 for custom UI presets", default=False)
 
     def draw(self, context):
+        layout = self.layout
+        box = layout.box()
+        col = box.column(align=True)
+        col.label(text="""Please specify the path to 'Instant Meshes.exe'
+            Get it from https://github.com/wjakob/instant-meshes""")
+        col.prop(self, "instantMeshes_filepath")
+
+        box = layout.box()
+        col = box.column(align=True)
+        col.label(text="""Please specify the path to quadriflow executable.
+            Get sources from https://github.com/hjwdzh/QuadriFlow (and compile)""")
+        col.prop(self, "quadriflow_filepath")
+
         layout = self.layout
         layout.prop(self, "dyntopo_UseCustomValues", text="Use Custom Values for Dyntopo")
         box = layout.box()
@@ -178,26 +204,20 @@ class NSMUI_AddonPreferences(AddonPreferences):
         _row.prop(self, "brush_Mid", text="")
         _row.prop(self, "brush_High", text="")
 
-        #layout.separator()
+        layout.separator()
+        box = layout.box()
+        col = box.column(align=True)
+        layout.label(text="CUSTOM UI PRESETS : ")
+        row = col.row(align=True)
+        row.prop(self, "create_custom_UI_Slot_1", text="Create Custom UI Slot 1")
+        row.prop(self, "custom_UI_Slot_1", text="Slot 1 Values")
+        row = col.row(align=True)
+        row.prop(self, "create_custom_UI_Slot_2", text="Create Custom UI Slot 2")
+        row.prop(self, "custom_UI_Slot_2", text="Slot 2 Values")
+
         #layout.label(text="PER LEVELS (BY DEFAULT MODE) : ")
 
 register_class(NSMUI_AddonPreferences)
-
-'''
-def updateDyntopoStages_WriteFromPrefs():
-    #Relative
-    dyntopoStages[1].relative_Values = prefs.relative_Low
-    dyntopoStages[2].relative_Values = prefs.relative_Mid
-    dyntopoStages[3].relative_Values = prefs.relative_High
-    # Constant
-    dyntopoStages[1].constant_Values = prefs.constant_Low
-    dyntopoStages[2].constant_Values = prefs.constant_Mid
-    dyntopoStages[3].constant_Values = prefs.constant_High
-    # Brush
-    dyntopoStages[1].brush_Values = prefs.brush_Low
-    dyntopoStages[2].brush_Values = prefs.brush_Mid
-    dyntopoStages[3].brush_Values = prefs.brush_High
-'''
 
 # ----------------------------------------------------------------- #
 #   DYNTOPO SETUP                                                   #
@@ -386,8 +406,8 @@ class NSMUI_HT_toolHeader_sculpt(Header, UnifiedPaintPanel):
                 except:
                     print("Cant Draw Image Texture! No Image asigned to the active texture!")
 
-    def fadeOut(self, fadeOut):
-        self.canDraw = fadeOut
+    #def fadeOut(self, fadeOut):
+    #    self.canDraw = fadeOut
 
     def redraw():
         try:
@@ -400,6 +420,7 @@ class NSMUI_HT_toolHeader_sculpt(Header, UnifiedPaintPanel):
 
     def draw(self, context):
         if(context.mode == "SCULPT"):
+            #self.layout.template_header() # to change region
             # LOAD COLLECTION OF ICONS
             pcoll = preview_collections["main"]
             # VARIABLES
@@ -425,10 +446,7 @@ class NSMUI_HT_toolHeader_sculpt(Header, UnifiedPaintPanel):
                     bpy.types.SpaceView3D.draw_handler_remove(self.drawTexture, (context, None), 'WINDOW', 'POST_PIXEL')
                     self.hasStartedToHandle = False
 
-            
-            
             # IF THERE'S NO BRUSH, JUST STOP DRAWING
-            
             if brush is None:
                 return
 
@@ -443,7 +461,12 @@ class NSMUI_HT_toolHeader_sculpt(Header, UnifiedPaintPanel):
 
             # IF BRUSH IS MASK BRUSH
             if brush.sculpt_tool == 'MASK':
-                self.layout.column().prop(brush, "mask_tool")
+                #box = self.layout.box()
+                #rw = box.row(align=True)
+                rw = self.layout.row(align=True)
+                rw.ui_units_x = 5.5
+                rw.label(text="Tool :")
+                rw.prop(brush, "mask_tool", text="")
             
             toolHeader.draw_separator(self, pcoll)
 
@@ -484,9 +507,15 @@ class NSMUI_HT_toolHeader_sculpt(Header, UnifiedPaintPanel):
             if wm.toggle_UI_elements: toolHeader.draw_toggle_UI_elements(self)
             if wm.toggle_prefs: toolHeader.draw_toggle_preferences(self)
 
-            # self.layout.template_palette(toolsettings.image_paint, "palette", color=True)
+            # toolHeader.draw_blender_quick_preferences(self) # Preferencias rápidas de Blender para Sculpt
+
+            # SUPPORT DEVELOPMENT
+            row = self.layout.row()
+            prop = row.operator('wm.url_open', text="", icon='FUND')
+            prop.url = "https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=BA3UXNSDLE55E&source=url"
 
             row = self.layout.split().row(align=True)
+
             # view3d_header_collections(self, context)
 
             self.layout.separator(factor=300.0)
@@ -915,11 +944,17 @@ class NSMUI_HT_toolHeader_sculpt_tools(NSMUI_HT_toolHeader_sculpt):
 #   PREFERENCES PANEL
     def draw_toggle_preferences(self):
         sub = self.layout.split().column(align=True)
-        sub.popover(panel="NSMUI_PT_Prefs",icon='PREFERENCES',text="")
+        sub.popover(panel="NSMUI_PT_Addon_Prefs",icon='PREFERENCES',text="")
+
+#   BLENDER QUICK PREFERENCES FOR SCULPT
+    def draw_blender_quick_preferences(self):
+        sub = self.layout.split().column(align=True)
+        sub.popover(panel="NSMUI_PT_Blender_QuickPrefs",icon='BLENDER',text="")
+        
 # --------------------------------------------- #
 # HEADER UI
 # --------------------------------------------- #
-class NSMUI_HT_header_sculpt(bpy.types.Header):
+class NSMUI_HT_header_sculpt(Header):
     bl_idname = "NSMUI_HT_Header_Sculpt"
     bl_label = "Header Toolbar for Sculpt Mode"
     bl_space_type = "VIEW_3D"
@@ -930,24 +965,146 @@ class NSMUI_HT_header_sculpt(bpy.types.Header):
         if(context.mode == "SCULPT"):
             #if (bpy.context.space_data.show_region_tool_header == True):
             #    bpy.ops.screen.header_toggle_menus()
-            bpy.types.Area.show_menus = False
+            #bpy.types.Area.show_menus = False
+            wm = context.window_manager
+            scn = context.scene
             pcoll = preview_collections["main"]
-            row = self.layout
+
             temp = False
             if(bpy.context.space_data.show_region_tool_header == False):
+                row = self.layout
                 if(temp == False):
+                    temp = True
                     icon = pcoll["arrowDown_icon"]
                 else:
                     icon = pcoll["arrowUp_icon"]
                 row.operator('nsmui.ot_header_tool_toggle', text="New Sculpt-Mode UI", icon_value=icon.icon_id) # id del operador, texto para el botón
                 return None
-            else:
+            else: # activar herramientas del addon
+                '''
+            #   ARROW TO TOGGLE OFF TH.
                 if(temp == False):
                     icon = pcoll["arrowUp_icon"]
                 else:
                     icon = pcoll["arrowDown_icon"]
-                row.operator('nsmui.ot_header_tool_toggle', text="", icon_value=icon.icon_id)            
+                self.layout.row().operator('nsmui.ot_header_tool_toggle', text="", icon_value=icon.icon_id)
+                '''
+                layout = self.layout
+            #   REMESHERS
+                if wm.toggle_remesher:
+                    col = layout.column()
+                    row = col.row(align=True)
+                    row.ui_units_x = 7.5
+                    #row.label(text="Remesher :")
+                    row.popover(
+                        panel="NSMUI_PT_remeshOptions",
+                        icon='MODIFIER_ON', # EXPERIMENTAL
+                        text=""
+                    )
+                    row.prop(wm, 'switch_remesher', text="", toggle=True, expand=False)
 
+                #   INSTANT MESHES
+                    if wm.switch_remesher == 'INSTANT_MESHES':
+                        remesh = row.operator('object.instant_meshes_remesh', icon='PLAY', text="")
+                        remesh.deterministic = scn.instantMeshes_deterministic
+                        remesh.dominant = scn.instantMeshes_dominant
+                        remesh.intrinsic = scn.instantMeshes_intrinsic
+                        remesh.boundaries = scn.instantMeshes_boundaries
+                        remesh.crease = scn.instantMeshes_crease
+                        remesh.verts = scn.instantMeshes_verts
+                        remesh.smooth = scn.instantMeshes_smooth
+                        remesh.openUI = scn.instantMeshes_openInInstantMeshes
+                        #remesh.remeshIt = True
+                #   QUADRIFLOW
+                    elif wm.switch_remesher == 'QUADRIFLOW':
+                        remesh = row.operator('object.quadriflow_remesh', icon='PLAY', text="")
+                        remesh.resolution = scn.quadriflow_resolution
+                        remesh.sharp = scn.quadriflow_sharp
+                        remesh.adaptive = scn.quadriflow_adaptive
+                        remesh.mcf = scn.quadriflow_mcf
+                        remesh.sat = scn.quadriflow_sat
+                        remesh.remeshIt = True
+                #   DECIMATION
+                    elif wm.switch_remesher == 'DECIMATION':
+                        remesh = row.operator('object.decimation_remesh', icon='PLAY', text="")
+                        remesh.decimation_ratio = scn.decimation_ratio
+                        remesh.decimation_triangulate = scn.decimation_triangulate
+                        remesh.decimation_symmetry = scn.decimation_symmetry
+                        remesh.decimation_symmetry_axis = scn.decimation_symmetry_axis
+                #   DYNTOPO'S FLOOD FILL
+                    elif wm.switch_remesher == 'DYNTOPO':
+                        remesh = row.operator('object.dyntopo_remesh', icon='PLAY', text="")
+                        remesh.resolution = scn.dynremesh_resolution
+                        remesh.force_symmetry = scn.dynremesh_forceSymmetry
+                        remesh.symmetry_axis = scn.dynremesh_symmetry_axis
+                        
+                    # LINE ABOVE, JUST TRICKY THING
+                    sub = col.column(align=True)
+                    sub = sub.box()
+                    sub.label(text="")
+
+# --------------------------------------------- #
+# REMESH OPTIONS
+# --------------------------------------------- #
+class NSMUI_PT_remeshOptions(Panel):
+    bl_label = "Remesh Options"
+    bl_space_type = "VIEW_3D"
+    bl_region_type = "UI"
+    bl_context = "NONE"
+    bl_category = 'Sculpt'
+    bl_description = "Remesh options for each remesh method"
+    bl_options = {'DEFAULT_CLOSED'}
+    
+    def draw(self, context):
+        wm = context.window_manager
+        prefs = context.preferences.addons["NewSculptUI"].preferences
+        scn = context.scene
+        layout = self.layout
+        row = layout.row()
+        col = row.column()
+    #   INSTANT MESHES
+        if wm.switch_remesher == 'INSTANT_MESHES':
+            col.prop(scn, 'instantMeshes_deterministic')
+            col.prop(scn, 'instantMeshes_dominant')
+            col.prop(scn, 'instantMeshes_intrinsic')
+            col.prop(scn, 'instantMeshes_boundaries')
+            col.prop(scn, 'instantMeshes_crease')
+            col.prop(scn, 'instantMeshes_verts')
+            col.prop(scn, 'instantMeshes_smooth')
+            col.prop(scn, 'instantMeshes_openInInstantMeshes')
+            if(prefs.instantMeshes_filepath == "" or prefs.instantMeshes_filepath == None):
+                col.label(text="Please select the path of")
+                col.label(text="the Instant Meshes executable")
+                col.prop(prefs, 'instantMeshes_filepath', text="Path")
+    #   QUADRIFLOW
+        elif wm.switch_remesher == 'QUADRIFLOW':
+            col.prop(scn, 'quadriflow_resolution')
+            col.prop(scn, 'quadriflow_sharp')
+            col.prop(scn, 'quadriflow_adaptive')
+            col.prop(scn, 'quadriflow_mcf')
+            col.prop(scn, 'quadriflow_sat')
+            if(prefs.quadriflow_filepath == "" or prefs.quadriflow_filepath == None):
+                col.label(text="Please select the path of")
+                col.label(text="the Quadriflow executable")
+                col.prop(prefs, 'quadriflow_filepath', text="Path")
+        #   QUADRIFLOW
+        elif wm.switch_remesher == 'DECIMATION':
+            col.prop(scn, 'decimation_ratio')
+            col.prop(scn, 'decimation_triangulate')
+            row = col.row(align=True)
+            row.prop(scn, 'decimation_symmetry')
+            row.prop(scn, 'decimation_symmetry_axis')
+        #   DYNTOPO REMESH
+        elif wm.switch_remesher == 'DYNTOPO':
+            col.prop(scn, 'dynremesh_resolution')
+            row = col.row()
+            row.prop(scn, 'dynremesh_forceSymmetry')
+            _row = row.split()
+            _row.ui_units_x = 7
+            _row.prop(scn, 'dynremesh_symmetry_axis', text="Axis")
+            
+            
+ 
 # --------------------------------------------- #
 # DYNTOPO STAGES UI PANEL
 # --------------------------------------------- #
@@ -1017,7 +1174,14 @@ class NSMUI_PT_dyntopo_stages(Panel):
                 elif(dynStage_Active == '3'):
                     n = 2
             # VALUES FOR STAGES
-                self.layout.label(text="Values :") # Valores para el 'Stage' Activo
+                prefs = context.preferences.addons["NewSculptUI"].preferences # load preferences (for properties)
+                rowH = self.layout.row(align=True)
+                rowH.ui_units_x = 5
+                rowH.scale_x = 5
+                rowH.label(text="Values :") # Valores para el 'Stage' Activo
+                rowH.ui_units_x = 9
+                rowH.scale_x = 9
+                rowH.prop(prefs, "dyntopo_UseCustomValues", toggle=False, text="Use Custom Values") # OUTLINER_DATA_GP_LAYER
                 row = self.layout.row(align=True)
                 if method == 'CONSTANT':
                     row.label(icon_value=icon_L.icon_id, text=str(dyntopoStages[n].constant_Values[0]))
@@ -1036,44 +1200,38 @@ class NSMUI_PT_dyntopo_stages(Panel):
 
                 self.layout.separator()
                 
-                prefs = context.preferences.addons["NewSculptUI"].preferences
-                _col = self.layout.column(align=True)
-                _col.prop(prefs, "dyntopo_UseCustomValues", toggle=True, icon="GREASEPENCIL", text="Edit Values") # OUTLINER_DATA_GP_LAYER
                 if prefs.dyntopo_UseCustomValues:
-                    layout = self.layout
-                    box = _col.box()
-                    _row = box.row(align=True)
+                    _col = self.layout.column(align=True)
+                    _col.prop(wm, "dyntopoStages_editValues", toggle=True, icon="GREASEPENCIL", text="Edit Values") # OUTLINER_DATA_GP_LAYER
+                    if wm.dyntopoStages_editValues:
+                        box = _col.box()
+                        _row = box.row(align=True)
 
-                    stage = wm.toggle_dyntopo_stage
-                    if method == 'CONSTANT':
-                        if stage == '3': # "Polish":
-                            _row.prop(prefs, "constant_High", text="")
-                        elif stage == '2': # "Details":
-                            _row.prop(prefs, "constant_Mid", text="")
-                        elif stage == '1': #  "Sketch":
-                            _row.prop(prefs, "constant_Low", text="")
+                        stage = wm.toggle_dyntopo_stage
+                        if method == 'CONSTANT':
+                            if stage == '3': # "Polish":
+                                _row.prop(prefs, "constant_High", text="")
+                            elif stage == '2': # "Details":
+                                _row.prop(prefs, "constant_Mid", text="")
+                            elif stage == '1': #  "Sketch":
+                                _row.prop(prefs, "constant_Low", text="")
 
-                    elif method == 'RELATIVE': # RELATIVE OR MANUAL
-                        if stage == '3': # "Polish":
-                            _row.prop(prefs, "relative_High", text="")
-                        elif stage == '2': #  "Details":
-                            _row.prop(prefs, "relative_Mid", text="")
-                        elif stage == '1': #  "Sketch":
-                            _row.prop(prefs, "relative_Low", text="")
+                        elif method == 'RELATIVE': # RELATIVE OR MANUAL
+                            if stage == '3': # "Polish":
+                                _row.prop(prefs, "relative_High", text="")
+                            elif stage == '2': #  "Details":
+                                _row.prop(prefs, "relative_Mid", text="")
+                            elif stage == '1': #  "Sketch":
+                                _row.prop(prefs, "relative_Low", text="")
 
-                    elif method == 'BRUSH':
-                        if stage == '3': #  "Polish":
-                            _row.prop(prefs, "brush_High", text="")
-                        elif stage == '2': #  "Details":
-                            _row.prop(prefs, "brush_Mid", text="")
-                        elif stage == '1': #  "Sketch":
-                            _row.prop(prefs, "brush_Low", text="")
-                    
-
-                    
-                    
-                    
-            
+                        elif method == 'BRUSH':
+                            if stage == '3': #  "Polish":
+                                _row.prop(prefs, "brush_High", text="")
+                            elif stage == '2': #  "Details":
+                                _row.prop(prefs, "brush_Mid", text="")
+                            elif stage == '1': #  "Sketch":
+                                _row.prop(prefs, "brush_Low", text="")
+                      
 
 class NSMUI_PT_brush_optionsMenu(Panel):
     bl_label = "Brush Options"
@@ -1285,14 +1443,18 @@ auto_load.init()
 def register():
     print('Hello addon!!')
     
-    
-    # UNREGISTER ORIGINAL TOOL HEADER # changed - antes al inicio del script
+    # ADDON PREFS
     try:
         register_class(NSMUI_AddonPreferences)
-        bpy.utils.unregister_class(VIEW3D_HT_tool_header)
     except:
         pass
 
+    # UNREGISTER ORIGINAL TOOL HEADER # changed - antes al inicio del script
+    try:
+        bpy.utils.unregister_class(VIEW3D_HT_tool_header)
+    except:
+        pass
+    
     # AutoLoad Exterior Classes
     auto_load.register()
 
@@ -1302,6 +1464,7 @@ def register():
     register_class(NSMUI_HT_header_sculpt)     # HEADER      - SCULPT MODE
     register_class(NSMUI_PT_dyntopo_stages)
     register_class(NSMUI_PT_brush_optionsMenu)
+    register_class(NSMUI_PT_remeshOptions)
 
     # Register Collections (ICONS)
     pcoll = bpy.utils.previews.new()
@@ -1336,6 +1499,7 @@ def register():
     wm.toggle_slider_topoRake = bpy.props.BoolProperty(default=False, update=update_property, description="Toggle Brush Topology Rake Slider in the Tool Header if it's availbale")
     wm.toggle_slider_specificBrushType = bpy.props.BoolProperty(default=True, update=update_property, description="Toggle Brush Type Specific Sliders in the Tool Header if they're available for the active brush")
 
+    wm.toggle_remesher = bpy.props.BoolProperty(default=True, update=update_property, description="Toggle Remesher Section in the header")
     wm.toggle_dyntopo = bpy.props.BoolProperty(default=True, update=update_property, description="Toggle Dyntopo Section in the tool header")
     wm.toggle_mask = bpy.props.BoolProperty(default=False, update=update_property, description="Toggle Mask Menu in the tool header")
     wm.toggle_symmetry = bpy.props.BoolProperty(default=True, update=update_property, description="Toggle Quick Symmetry in the tool header")
@@ -1349,7 +1513,8 @@ def register():
         ),
         default='RELATIVE',
         update=update_dyntopo_detailing,
-        description="Switch between detailing method used for dynamic topology.")
+        description="Switch between detailing method used for dynamic topology."
+    )
     wm.toggle_dyntopo_stage = bpy.props.EnumProperty(
         items=(
             #('0', "", ""),
@@ -1359,7 +1524,19 @@ def register():
         ),
         #default='0',
         update = update_dyntopo_stage,
-        description="Switch between Stage. Stages improve and divide the workflow in 3 stages: Sketch, Details and Polish.")
+        description="Switch between Stage. Stages improve and divide the workflow in 3 stages: Sketch, Details and Polish."
+    )
+    wm.switch_remesher = bpy.props.EnumProperty(
+        items=(
+            ('INSTANT_MESHES', "Instant Meshes", ""),
+            ('QUADRIFLOW', "Quadriflow", ""),
+            ('DECIMATION', "Decimation", ""),
+            ('DYNTOPO', "Dynremesh", "")
+        ),
+        default='INSTANT_MESHES',
+        #update =
+        description="Switch between Remesher"
+    )
 
     scn = bpy.types.Scene
     scn.depress_Smooth = bpy.props.BoolProperty(default=False, description="Smooth Curve Preset for the Active Brush.")
@@ -1393,13 +1570,49 @@ def register():
     wm.toggle_pt_brushType = bpy.props.BoolProperty(default=True, update=update_property, description="Show Brushes per Type (based on active brush).")
     wm.toggle_pt_brushRecents = bpy.props.BoolProperty(default=True, update=update_property, description="Show Recent Brushes")
     wm.toggle_pt_brushShowOnlyIcons = bpy.props.BoolProperty(default=False, update=update_property, description="Show Only The Icons of the Brushes")
-    wm.toggle_pt_brushes_collapse = bpy.props.BoolProperty(
-        default=False, 
-        update=update_property,
-        name="Collapse Brushes",
-        description="Hide brush sub-panels and shows dropdown menus for adjust the actual brush."
+    wm.toggle_pt_brushes_collapse = bpy.props.BoolProperty(default=False, update=update_property, name="Collapse Brushes", description="Hide brush sub-panels and shows dropdown menus for adjust the actual brush.")
+
+    wm.dyntopoStages_editValues =  bpy.props.BoolProperty(default=False, update=update_property, name="Edit Custom Values", description="Show custom values to be able of editing them")
+
+    # INSTANT MESHES REMESHER PROPS
+    scn.instantMeshes_deterministic = bpy.props.BoolProperty(name="Deterministic (slower)", description="Prefer (slower) deterministic algorithms", default=False)
+    scn.instantMeshes_dominant = bpy.props.BoolProperty(name="Dominant", description="Generate a tri/quad dominant mesh instead of a pure tri/quad mesh", default=False)
+    scn.instantMeshes_intrinsic = bpy.props.BoolProperty(name="Intrinsic", description="Intrinsic mode (extrinsic is the default)", default=False)
+    scn.instantMeshes_boundaries = bpy.props.BoolProperty(name="Boundaries", description="Align to boundaries (only applies when the mesh is not closed)", default=False)
+    scn.instantMeshes_crease = bpy.props.IntProperty(name="Crease Degree", description="Dihedral angle threshold for creases", default=0, min=0, max=100)
+    scn.instantMeshes_verts = bpy.props.IntProperty(name="Vertex Count", description="Desired vertex count of the output mesh", default=2000, min=10, max=50000)
+    scn.instantMeshes_smooth = bpy.props.IntProperty(name="Smooth iterations", description="Number of smoothing & ray tracing reprojection steps (default: 2)", default=2, min=0, max=10)
+    scn.instantMeshes_openInInstantMeshes = bpy.props.BoolProperty(name="Open in InstantMeshes", description="Opens the selected object in Instant Meshes and imports the result when you are done.", default=False)
+
+    # QUADRIFLOW REMESHER PROPS
+    scn.quadriflow_resolution = bpy.props.IntProperty(name="Resolution", description="Desired quad face count of the output mesh", default=2000, min=10, max=50000)
+    scn.quadriflow_sharp = bpy.props.BoolProperty(name="Sharp Edges", description="Detect and preserve sharp edges", default=False)
+    scn.quadriflow_adaptive = bpy.props.BoolProperty(name="Adaptive Scale", description="", default=False)
+    scn.quadriflow_mcf = bpy.props.BoolProperty(name="Minimum Cost Flow", description="Enable Adaptive network simplex minimum-cost flow solver(slower)", default=False)
+    scn.quadriflow_sat = bpy.props.BoolProperty(name="Aggresive SAT (Unix Only)", description="Tries to guarantee a watertight result mesh(requires the minisat and timeout programs in path)", default=False)
+
+    # DECIMATION REMESH PROPS
+    scn.decimation_type = bpy.props.EnumProperty(
+        items=(('COLLAPSE', "Collapse", ""), ('UNSUBDIVIDE', "Un-Subdivide", ""), ('PLANAR', "Planar", "")),
+        default='COLLAPSE', description="Decimation Type to apply"
+    )
+    scn.decimation_ratio = FloatProperty(name="% of Tris", subtype='PERCENTAGE', default=100, min=0, max=100, precision=2, description="Percentage of triangles. Less value = less triangles")
+    scn.decimation_triangulate = bpy.props.BoolProperty(name="Triangulate", description="", default=False)
+    scn.decimation_symmetry = bpy.props.BoolProperty(name="Symmetry", description="", default=False)
+    scn.decimation_symmetry_axis = bpy.props.EnumProperty(
+        items=(('X', "X", ""), ('Y', "Y", ""), ('Z', "Z", "")),
+        default='X', name="Axis", description="Axis where apply symmetry"
     )
 
+    # DYNREMESH / FLOOD FILL REMESH PROPS
+    scn.dynremesh_resolution = FloatProperty(name="Resolution", subtype='FACTOR', default=100, min=1, max=300, precision=2, description="Mesh resolution. Higher value for a high mesh resolution")
+    scn.dynremesh_forceSymmetry = bpy.props.BoolProperty(name="Force Symmetry", description="", default=False)
+    scn.dynremesh_symmetry_axis = bpy.props.EnumProperty(
+        items=(('POSITIVE_X', "X", ""), ('POSITIVE_Y', "Y", ""), ('POSITIVE_Z', "Z", "")),
+        default='POSITIVE_X', name="Axis", description="Axis where apply symmetry"
+    )
+
+    
     # REFERENCES PANEL PROPS
     # (Import Scene and Image just so the line is shorter)
     from bpy.types import Image
@@ -1414,7 +1627,6 @@ def register():
     print("Registered New Sculpt Mode UI")
 
 
-
 def unregister():
     # UnRegister Classes
     unregister_class(NSMUI_HT_toolHeader_sculpt) # TOOL HEADER - SCULPT MODE
@@ -1422,6 +1634,7 @@ def unregister():
     unregister_class(NSMUI_PT_dyntopo_stages)
     unregister_class(NSMUI_PT_brush_optionsMenu)
     unregister_class(NSMUI_AddonPreferences)
+    unregister_class(NSMUI_PT_remeshOptions)
 
     # AutoLoad Exterior Classes
     auto_load.unregister()
@@ -1455,6 +1668,7 @@ def unregister():
     del wm.toggle_stroke_method
     del wm.toggle_falloff
     del wm.toggle_falloff_curvePresets
+    del wm.toggle_remesher
     del wm.toggle_dyntopo
     del wm.toggle_mask
     del wm.toggle_symmetry
@@ -1464,6 +1678,8 @@ def unregister():
     del wm.toggle_dyntopo_stage
     del wm.toggle_stages
     del wm.toggle_prefs
+
+    del wm.switch_remesher
 
     scn = bpy.types.Scene
     del bpy.types.Scene.depress_Smooth
@@ -1485,6 +1701,42 @@ def unregister():
     del scn.renderCustomIcon_Alpha
     del scn.renderCustomIcon_Color
 
+    # INSTANT MESHES REMESHER PROPS
+    del scn.instantMeshes_deterministic
+    del scn.instantMeshes_dominant
+    del scn.instantMeshes_intrinsic
+    del scn.instantMeshes_boundaries
+    del scn.instantMeshes_crease
+    del scn.instantMeshes_verts
+    del scn.instantMeshes_smooth
+    del scn.instantMeshes_openInInstantMeshes
+
+    # QUADRIFLOW REMESHER PROPS
+    del scn.quadriflow_resolution
+    del scn.quadriflow_sharp
+    del scn.quadriflow_adaptive
+    del scn.quadriflow_mcf
+    del scn.quadriflow_sat
+
+    # DECIMATION REMESH PROPS
+    del scn.decimation_type
+    del scn.decimation_ratio
+    del scn.decimation_triangulate
+    del scn.decimation_symmetry
+    del scn.decimation_symmetry_axis
+
+    # DYNREMESH PROPS
+    del scn.dynremesh_resolution
+    del scn.dynremesh_forceSymmetry
+    del scn.dynremesh_symmetry_axis
+
+    # CLEAN REMESH TEMP FILES
+    try:
+        os.remove(os.path.join(tempfile.gettempdir(), 'original.obj'))
+        os.remove(os.path.join(tempfile.gettempdir(), 'out.obj'))
+    except:
+        pass
+
     #   BRUSHES PANEL PROPS
     del scn.show_brushes_fav
     del scn.show_brushes_type
@@ -1498,6 +1750,6 @@ def unregister():
     del wm.toggle_pt_brushRecents
     del wm.toggle_pt_brushShowOnlyIcons
 
+    del wm.dyntopoStages_editValues
+
     print("Unregistered New Sculpt Mode UI")
-
-

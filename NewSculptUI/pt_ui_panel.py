@@ -23,6 +23,7 @@ class NSMUI_PT_th_settings(Panel):
     bl_context = "NONE" # Set it o ".paint_common" to see it on 'N' panel
     # bl_options = {'DEFAULT_CLOSED'}
     bl_description = "Customize your interface toggling UI elements as your want!"
+    is_popover = True
 
     def draw(self, context):
         if(context.mode != "SCULPT"):
@@ -30,7 +31,8 @@ class NSMUI_PT_th_settings(Panel):
             row.operator('nsmui.ot_panel_setup', text="Sculpt-Mode Setup") # id del operador, texto para el botón
         else:
             wm = context.window_manager
-
+            prefs = bpy.context.preferences.addons["NewSculptUI"].preferences
+    
             row = self.layout.row()
             row.label(text="Customize here the Tool Header !")
             row.separator()
@@ -85,6 +87,7 @@ class NSMUI_PT_th_settings(Panel):
             row.prop(wm, 'toggle_symmetry', text="Symmetry", toggle=False)
             row = self.layout.row()
             row.prop(wm, 'toggle_dyntopo', text="Dyntopo", toggle=False)
+            row.prop(wm, 'toggle_remesher', text="Remesher", toggle=False)
 
         #   TEXTURE SETTINGS
             row = self.layout.row()
@@ -101,20 +104,42 @@ class NSMUI_PT_th_settings(Panel):
             #row.prop(wm, 'toggle_prefs', text="Preferences", toggle=True)
             
             #   PRESETS
+            
             row.separator()
             row = self.layout.row()
             box = self.layout.box()
             row = box.row()
             row.label(text="UI PRESETS :")
             row = box.row()
-            row.operator('nsmui.ht_toolheader_ui_preset_default', text="Default")
+            row.operator('nsmui.ht_toolheader_ui_preset_default', text="Basic")
             row = box.row()
             row.operator('nsmui.ht_toolheader_ui_preset_recommendation', text="Recommendation")
             row = box.row()
-            row.label(text="Custom Preset Coming Soon!")
-            
-            
-class NSMUI_PT_Prefs(bpy.types.Panel):
+            row.label(text="CUSTOM UI PRESETS :")
+            row = box.row()
+            # Create Slot 1
+            _row = row.row()
+            if prefs.create_custom_UI_Slot_1:
+                _row.operator('nsmui.ht_toolheader_ui_preset_custom_slot_1', text="Slot 1")
+                _row.operator('nsmui.ht_ui_preset_create_custom_slot_1', icon="FILE_REFRESH", text="")
+            else:
+                _row.operator('nsmui.ht_ui_preset_create_custom_slot_1', text="Create Slot 1")
+
+            row = box.row()
+            # Create Slot 2
+            _row = row.row()
+            if prefs.create_custom_UI_Slot_2:
+                _row.operator('nsmui.ht_toolheader_ui_preset_custom_slot_2', text="Slot 2")
+                _row.operator('nsmui.ht_ui_preset_create_custom_slot_2', icon="FILE_REFRESH", text="")
+            else:
+                _row.operator('nsmui.ht_ui_preset_create_custom_slot_2', text="Create Slot 2")
+                
+            #row.label(text="Custom Preset Coming Soon!")
+
+
+
+
+class NSMUI_PT_Addon_Prefs(Panel):
         # bl_idname = "NSMUI_PT_Panel_Prefs"
         bl_label = "Quick Preferences"
         bl_space_type = 'VIEW_3D'
@@ -123,14 +148,18 @@ class NSMUI_PT_Prefs(bpy.types.Panel):
         bl_context = "NONE" # Set it o ".paint_common" to see it on 'N' panel
         bl_options = {'DEFAULT_CLOSED'}
         bl_description = "Quick addon + Blender preferences!"
+        bl_ui_units_x = 18
+        is_popover = True
 
         def draw(self, context):
             scn = context.scene
             wm = context.window_manager
-
             layout = self.layout
             #layout.use_property_split = True
             layout.use_property_decorate = False  # No animation.
+
+            split = layout.split()
+            layout = split.column()
 
             layout.row().label(text="ADDON PREFS")
             box = layout.box()
@@ -144,7 +173,7 @@ class NSMUI_PT_Prefs(bpy.types.Panel):
             _row.prop(scn, "sens_prop", text="Sensibility")
             _row.prop(scn, "invertAxis", text="Invert Axis", icon='ORIENTATION_VIEW')
 
-            self.layout.separator()
+            layout.separator()
 
             box = layout.box()
             col = box.column()
@@ -161,7 +190,7 @@ class NSMUI_PT_Prefs(bpy.types.Panel):
             _row.prop(scn, "recentBrushes_stayInPlace", text="Keep Brushes in Place", toggle = True)
             
 
-            self.layout.separator()
+            layout.separator()
 
             box = layout.box()
             col = box.column()
@@ -170,7 +199,10 @@ class NSMUI_PT_Prefs(bpy.types.Panel):
             _row.label(icon='TEXTURE_DATA', text="") # BRUSH_DATA
             _row.prop(scn, "drawBrushTexture", text="Draw Brush Texture", toggle = False) 
 
-            self.layout.separator()
+    
+            layout.separator()
+
+            layout = split.column()
 
             view = context.space_data
 
@@ -190,7 +222,7 @@ class NSMUI_PT_Prefs(bpy.types.Panel):
             flow.prop(inputs, "use_mouse_depth_navigate")
             flow.prop(inputs, "use_auto_perspective")
 
-            self.layout.separator()
+            layout.separator()
         # Inputs
             #self.layout.label(text="INPUTS :")
             flow = layout.grid_flow().box()
@@ -198,7 +230,7 @@ class NSMUI_PT_Prefs(bpy.types.Panel):
             flow.prop(inputs, "drag_threshold_tablet")
             flow.prop(inputs, "pressure_softness", text="Pressure Softness")
 
-            self.layout.separator()
+            layout.separator()
         # View
             #self.layout.label(text="INTERFACE :")
             #self.layout.prop(view, "use_mouse_over_open", text="Open Menus on Mouse Over")
@@ -209,7 +241,7 @@ class NSMUI_PT_Prefs(bpy.types.Panel):
             flow.prop(view, "open_toplevel_delay", text="Delay")
             flow.prop(view, "open_sublevel_delay", text="Sub Delay")
 
-            self.layout.separator()
+            layout.separator()
 
             flow = layout.grid_flow().box()
             flow.label(text="VIEW :")
@@ -221,7 +253,70 @@ class NSMUI_PT_Prefs(bpy.types.Panel):
             subcol.prop(view, "lens", text="Focal Length")
 
             
+class NSMUI_PT_Blender_QuickPrefs(Panel):
+    bl_label = "Quick Blender Preferences"
+    bl_space_type = 'VIEW_3D'
+    bl_region_type = 'UI'
+    bl_category = 'Sculpt'
+    bl_context = "NONE" # Set it o ".paint_common" to see it on 'N' panel
+    bl_options = {'DEFAULT_CLOSED'}
+    bl_description = "Quick Blender preferences related to sculpt!"
 
+    def draw(self, context):
+
+        scn = context.scene
+        wm = context.window_manager
+
+        layout = self.layout
+        #layout.use_property_split = True
+        layout.use_property_decorate = False  # No animation.
+        view = context.space_data
+
+    # User prefs
+        layout.row().label(text="BLENDER QUICK PREFS")
+        prefs  = context.preferences
+        inputs = prefs.inputs
+        view = prefs.view
+        
+        flow = layout.grid_flow().box()
+
+    # Navigation
+        flow.label(text="NAVIGATION :")
+        flow.row().prop(inputs, "view_rotate_method", expand=True)
+        flow.prop(inputs, "use_rotate_around_active")
+        flow.prop(inputs, "use_zoom_to_mouse")
+        flow.prop(inputs, "use_mouse_depth_navigate")
+        flow.prop(inputs, "use_auto_perspective")
+
+        self.layout.separator()
+    # Inputs
+        #self.layout.label(text="INPUTS :")
+        flow = layout.grid_flow().box()
+        flow.label(text="INPUTS :")
+        flow.prop(inputs, "drag_threshold_tablet")
+        flow.prop(inputs, "pressure_softness", text="Pressure Softness")
+
+        self.layout.separator()
+    # View
+        #self.layout.label(text="INTERFACE :")
+        #self.layout.prop(view, "use_mouse_over_open", text="Open Menus on Mouse Over")
+        flow = layout.grid_flow().row(align=True).box()
+        flow.label(text="INTERFACE :")
+        flow.prop(view, "use_mouse_over_open", text="Open Menus on Mouse Over")
+        flow = flow.row(align=True)
+        flow.prop(view, "open_toplevel_delay", text="Delay")
+        flow.prop(view, "open_sublevel_delay", text="Sub Delay")
+
+        self.layout.separator()
+
+        flow = layout.grid_flow().box()
+        flow.label(text="VIEW :")
+        #flow.prop(view, "lens", text="Focal Length")
+        view = context.space_data
+        col = flow.column()
+        subcol = col.column()
+        subcol.active = bool(view.region_3d.view_perspective != 'CAMERA' or view.region_quadviews)
+        subcol.prop(view, "lens", text="Focal Length")
 
 # RECENT BRUSHES
 recentBrushes = []
@@ -263,7 +358,7 @@ class NSMUI_PT_Brushes_Recent(Panel):
                 col.operator('nsmui.ot_change_brush', text=b.name, icon_value=bpy.data.brushes[b.name].preview.icon_id).nBrush = b.name
 
 
-from bpy.utils import register_class, unregister_class
+
 # BRUSHES MAIN PANEL
 class NSMUI_PT_Brushes(Panel, UnifiedPaintPanel):
     bl_label = "Brushes"
@@ -272,6 +367,7 @@ class NSMUI_PT_Brushes(Panel, UnifiedPaintPanel):
     bl_region_type = "UI"
     bl_context = ".paint_common"
     # bl_options = {'DEFAULT_CLOSED'}
+    bl_order = 1
 
     def invoke(self, context):
         bpy.types.SpaceView3D.draw_handler_add(self.draw, (self, context), 'WINDOW', 'POST_PIXEL')
@@ -594,11 +690,12 @@ height = 100
 oldTexture = None
 class NSMUI_PT_References(Panel):
     bl_label = "References"
-    bl_category = 'Brushes'
+    bl_category = 'Sculpt'
     bl_space_type = "VIEW_3D"
     bl_region_type = "UI"
     bl_context = ".paint_common"
     bl_options = {'DEFAULT_CLOSED'}
+    bl_order = 0
 
     def drawImage():
         count = 0
@@ -666,14 +763,14 @@ def draw_texture_2d(image, count):
         },
     )
     # not working, just for textures not images
-    try:
-        image.use_alpha = True
-    except:
-        pass
-    try:
-        image.use_calculate_alpha = True
-    except:
-        pass
+    #try:
+    #    image.use_alpha = True
+    #except:
+    #    pass
+    #try:
+     #   image.use_calculate_alpha = True
+    #except:
+    #    pass
 
     if image.gl_load():
         raise Exception()

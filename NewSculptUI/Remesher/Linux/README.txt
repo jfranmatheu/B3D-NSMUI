@@ -1,0 +1,1 @@
+You need to install zenity to be able to use instant meshes on Linux according to https://github.com/wjakob/instant-meshes

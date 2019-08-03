@@ -703,7 +703,7 @@ class NSMUI_PT_References(Panel):
         for canDraw in refImagesToDraw:
             if (count <= numImagesToDraw and canDraw):
                 draw_texture_2d(refImages[count], count+1)
-                print(count)
+                #print(count)
                 count += 1
     
     bpy.types.SpaceView3D.draw_handler_add(drawImage, (), 'WINDOW', 'POST_PIXEL')

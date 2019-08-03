@@ -29,6 +29,7 @@ from gpu_extras.presets import draw_circle_2d, draw_texture_2d
 # IMPORTS # NECESITA LIMPIEZA!!!
 import sys
 import os
+import platform
 import bpy 
 import traceback
 from bpy.types import Operator, AddonPreferences, Header, Panel, Brush, UIList, Menu, Texture, Scene, WindowManager, UILayout
@@ -47,6 +48,8 @@ from bpy.props import StringProperty, IntProperty, FloatProperty, BoolProperty, 
 from bpy.utils import register_class, unregister_class
 from bl_ui.space_view3d import VIEW3D_HT_tool_header
 
+platform = platform.system()
+
 # ----------------------------------------------------------------- #
 #   ADDON PREFERENCES                                     #
 # ----------------------------------------------------------------- #
@@ -61,14 +64,26 @@ class NSMUI_AddonPreferences(AddonPreferences):
         subtype='FILE_PATH',
     )
     '''
+
+    if platform == "Windows":
+        IM_filepath = "/Remesher/Windows/Instant Meshes.exe"
+        Q_filepath = "/Remesher/Windows/quadriflow.exe"
+    elif platform == "Linux":
+        IM_filepath = "/Remesher/Linux/Instant Meshes"
+        Q_filepath = ""
+    elif platform == "Darwin":
+        IM_filepath = "/Remesher/MacOS/Instant Meshes.app"
+        Q_filepath = ""
+
     quadriflow_filepath : bpy.props.StringProperty(
         name="Quadriflow Executable",
-        subtype='FILE_PATH'
+        subtype='FILE_PATH',
+        default=os.path.dirname(__file__) + Q_filepath
     )
     instantMeshes_filepath: bpy.props.StringProperty(
         name="Instant Meshes Executable",
         subtype='FILE_PATH',
-        default=os.path.dirname(__file__) + "/Remesher/Instant Meshes.exe",
+        default=os.path.dirname(__file__) + IM_filepath,
     )
     #########################################################
     #   UPDATE VALUES FROM PREFERENCES TO DYNTOPO STAGES    #
@@ -160,23 +175,30 @@ class NSMUI_AddonPreferences(AddonPreferences):
         layout = self.layout
         box = layout.box()
         col = box.column(align=True)
-        col.label(text="""Please specify the path to 'Instant Meshes.exe'
-            Get it from https://github.com/wjakob/instant-meshes""")
-        col.prop(self, "instantMeshes_filepath")
+        _row = col.row(align=True)
+        _row.label(text="Specify the path to 'Instant Meshes' executable")
+        prop = _row.operator("wm.url_open", text="Download program", icon='SORT_ASC')
+        prop.url = "https://github.com/wjakob/instant-meshes"
+        col.prop(self, "instantMeshes_filepath", text="")
 
         box = layout.box()
         col = box.column(align=True)
-        col.label(text="""Please specify the path to quadriflow executable.
-            Get sources from https://github.com/hjwdzh/QuadriFlow (and compile)""")
-        col.prop(self, "quadriflow_filepath")
+        _row = col.row(align=True)
+        _row.label(text="Specify the path to 'Quadriflow' executable")
+        prop = _row.operator("wm.url_open", text="Download Sources and Compile", icon='SORT_ASC')
+        prop.url = "https://github.com/hjwdzh/QuadriFlow"
+        if platform == "Linux":
+            prop = _row.operator("wm.url_open", text="LINUX GUIDE TO COMPILE", icon='INFO')
+            prop.url = "https://blender.community/c/hoy/gjcbbc/"
+        col.prop(self, "quadriflow_filepath", text="")
 
         layout = self.layout
         layout.prop(self, "dyntopo_UseCustomValues", text="Use Custom Values for Dyntopo")
         box = layout.box()
+        box.label(text="DYNTOPO: PER STAGES")
         box.active = self.dyntopo_UseCustomValues
 
         col = box.column(align=True)
-        layout.label(text="DYNTOPO: PER STAGES")
         row = col.row(align=True)
         row.separator(factor=6)
         row.label(text="SKETCH")
@@ -207,13 +229,13 @@ class NSMUI_AddonPreferences(AddonPreferences):
         layout.separator()
         box = layout.box()
         col = box.column(align=True)
-        layout.label(text="CUSTOM UI PRESETS : ")
+        col.label(text="CUSTOM UI PRESETS : ")
         row = col.row(align=True)
-        row.prop(self, "create_custom_UI_Slot_1", text="Create Custom UI Slot 1")
-        row.prop(self, "custom_UI_Slot_1", text="Slot 1 Values")
+        row.prop(self, "create_custom_UI_Slot_1", text="Slot 1")
+        #row = col.row(align=True)
+        #row.prop(self, "custom_UI_Slot_1", text="UI Toggles")
         row = col.row(align=True)
-        row.prop(self, "create_custom_UI_Slot_2", text="Create Custom UI Slot 2")
-        row.prop(self, "custom_UI_Slot_2", text="Slot 2 Values")
+        row.prop(self, "create_custom_UI_Slot_2", text="Slot 2")
 
         #layout.label(text="PER LEVELS (BY DEFAULT MODE) : ")
 
@@ -1014,7 +1036,7 @@ class NSMUI_HT_header_sculpt(Header):
                         remesh.verts = scn.instantMeshes_verts
                         remesh.smooth = scn.instantMeshes_smooth
                         remesh.openUI = scn.instantMeshes_openInInstantMeshes
-                        #remesh.remeshIt = True
+                        remesh.remeshIt = True
                 #   QUADRIFLOW
                     elif wm.switch_remesher == 'QUADRIFLOW':
                         remesh = row.operator('object.quadriflow_remesh', icon='PLAY', text="")
@@ -1442,7 +1464,7 @@ auto_load.init()
 
 def register():
     print('Hello addon!!')
-    
+
     # ADDON PREFS
     try:
         register_class(NSMUI_AddonPreferences)

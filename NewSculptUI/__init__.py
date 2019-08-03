@@ -1514,7 +1514,7 @@ def register():
     wm.toggle_falloff_curvePresets = bpy.props.BoolProperty(default=True, update=update_property, description="Show quick curve presets row in the tool header")
 
     wm.toggle_sliders = bpy.props.BoolProperty(default=True, update=update_property, description="Hide All Sliders that are active from the tool header. (Also from this menu)")
-    wm.toggle_slider_brushSize = bpy.props.BoolProperty(default=False, update=update_property, description="Toggle Brush Size/Radious Slider in the Tool Header")
+    wm.toggle_slider_brushSize = bpy.props.BoolProperty(default=False, update=update_property, description="Toggle Brush Size/Radius Slider in the Tool Header")
     wm.toggle_slider_brushStrength = bpy.props.BoolProperty(default=False, update=update_property, description="Toggle Brush Strength Slider in the Tool Header")
     wm.toggle_slider_brushSmooth = bpy.props.BoolProperty(default=False, update=update_property, description="Toggle Brush Autosmooth Slider in the Tool Header")
     wm.toggle_slider_spacing = bpy.props.BoolProperty(default=False, update=update_property, description="Toggle Brush Spacing Slider in the Tool Header if it's available")

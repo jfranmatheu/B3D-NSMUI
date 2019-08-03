@@ -56,7 +56,7 @@ class NSMUI_PT_th_settings(Panel):
             row.prop(wm, 'toggle_sliders', text="Hide All !", toggle=False) # si es false, el toggle es un checkbox
             if not wm.toggle_sliders: # SI NO ESTÁN OCULTOS
                 row = self.layout.row(align=True)
-                row.prop(wm, 'toggle_slider_brushSize', text="Radious", toggle=True)
+                row.prop(wm, 'toggle_slider_brushSize', text="Radius", toggle=True)
                 row.prop(wm, 'toggle_slider_brushStrength', text="Strength", toggle=True)
                 row.prop(wm, 'toggle_slider_brushSmooth', text="Smooth", toggle=True)
                 row = self.layout.row(align=True)

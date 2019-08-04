@@ -133,6 +133,11 @@ https://blender.chat/file-upload/CjSzJWhscJngPC7m7/2019-06-15%2000-50-23.mp4
 ![alt text](http://2.bp.blogspot.com/-w9z7EAwRkwA/XRKRRbKgSqI/AAAAAAAAAzE/Y8fX_rnAj0UY5DrzCRhMVd-QxnmCsSydACK4BGAYYCw/s320/brushespanelresponsive.png "Brushes Panel Responsive")
 
 ---
+TEXTURE/ALPHA MANAGER
+---
+![alt text](http://3.bp.blogspot.com/-HzUd_QZcigQ/XUbIqHYakVI/AAAAAAAAA3c/r3haCg_8bg8DdIZ6bB7rqgLo8skY6SaGwCK4BGAYYCw/s400/alphass.png "Texture Manager")
+
+---
 TEXTURE PREVIEW
 ---
 ![alt text](http://1.bp.blogspot.com/-o4qyqVFNDKo/XTTkRVclOyI/AAAAAAAAA2U/dDwvxDDvJ58OIebG9j5WdgW5zWDGFOZ9wCK4BGAYYCw/s640/TEXTUREPREVIEW.png "Texture Preview")

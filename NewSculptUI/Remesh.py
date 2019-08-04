@@ -4,8 +4,7 @@ import subprocess
 import os
 import bpy
 from bpy.types import Operator
-from bpy.props import FloatProperty, BoolProperty, EnumProperty
-
+from bpy.props import FloatProperty, BoolProperty, EnumProperty, IntProperty
 
 def ShowMessageBox(message = "", title = "Message Box", icon = 'INFO'):
 

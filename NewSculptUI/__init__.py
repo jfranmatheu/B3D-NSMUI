@@ -16,7 +16,7 @@ bl_info = {
     "author" : "JFranMatheu",
     "description" : "New UI for Sculpt Mode! :D",
     "blender" : (2, 80, 0),
-    "version" : (0, 5, 2),
+    "version" : (0, 5, 3),
     "location" : "View3D > Tool Header // View3D > 'N' Panel: Brushes)",
     "warning" : "This version is still in development. ;)",
     "category" : "Generic"
@@ -67,7 +67,7 @@ class NSMUI_AddonPreferences(AddonPreferences):
 
     if platform == "Windows":
         IM_filepath = "/Remesher/Windows/Instant Meshes.exe"
-        Q_filepath = "/Remesher/Windows/quadriflow.exe"
+        Q_filepath = "/Remesher/Windows/quadriflow_clang.exe" # thanks to javitang
     elif platform == "Linux":
         IM_filepath = "/Remesher/Linux/Instant Meshes"
         Q_filepath = ""
@@ -85,6 +85,13 @@ class NSMUI_AddonPreferences(AddonPreferences):
         subtype='FILE_PATH',
         default=os.path.dirname(__file__) + IM_filepath,
     )
+    '''
+    meshlab_filepath: bpy.props.StringProperty(
+        name="Meshlab Server Executable",
+        subtype='FILE_PATH',
+        default="C:\Program Files\VCG\MeshLab\meshlabserver.exe",
+    )
+    '''
     #########################################################
     #   UPDATE VALUES FROM PREFERENCES TO DYNTOPO STAGES    #
     #########################################################
@@ -236,6 +243,13 @@ class NSMUI_AddonPreferences(AddonPreferences):
         #row.prop(self, "custom_UI_Slot_1", text="UI Toggles")
         row = col.row(align=True)
         row.prop(self, "create_custom_UI_Slot_2", text="Slot 2")
+
+        layout.separator()
+        box = layout.box()
+        col = box.column()
+        row = col.row(align=True)
+        row.operator("nsmui.check_updates", text="Check for Updates")
+        row.operator("nsmui.update", text="Update")
 
         #layout.label(text="PER LEVELS (BY DEFAULT MODE) : ")
 
@@ -1059,6 +1073,12 @@ class NSMUI_HT_header_sculpt(Header):
                         remesh.resolution = scn.dynremesh_resolution
                         remesh.force_symmetry = scn.dynremesh_forceSymmetry
                         remesh.symmetry_axis = scn.dynremesh_symmetry_axis
+                #   MESHLAB
+                    '''
+                    elif wm.switch_remesher == 'MESHLAB':
+                        remesh = row.operator('object.meshlab_remesh', icon='PLAY', text="")
+                        #remesh.facescount = scn.meshlab_facescount
+                    '''
                         
                     # LINE ABOVE, JUST TRICKY THING
                     sub = col.column(align=True)
@@ -1124,6 +1144,11 @@ class NSMUI_PT_remeshOptions(Panel):
             _row = row.split()
             _row.ui_units_x = 7
             _row.prop(scn, 'dynremesh_symmetry_axis', text="Axis")
+        #   MESHLAB
+        '''
+        elif wm.switch_remesher == 'MESHLAB':
+            col.prop(scn, 'meshlab_facescount')
+        '''
             
             
  
@@ -1253,6 +1278,7 @@ class NSMUI_PT_dyntopo_stages(Panel):
                                 _row.prop(prefs, "brush_Mid", text="")
                             elif stage == '1': #  "Sketch":
                                 _row.prop(prefs, "brush_Low", text="")
+                        
                       
 
 class NSMUI_PT_brush_optionsMenu(Panel):
@@ -1554,6 +1580,7 @@ def register():
             ('QUADRIFLOW', "Quadriflow", ""),
             ('DECIMATION', "Decimation", ""),
             ('DYNTOPO', "Dynremesh", "")
+            #('MESHLAB', "Meshlab", "")
         ),
         default='INSTANT_MESHES',
         #update =
@@ -1633,6 +1660,9 @@ def register():
         items=(('POSITIVE_X', "X", ""), ('POSITIVE_Y', "Y", ""), ('POSITIVE_Z', "Z", "")),
         default='POSITIVE_X', name="Axis", description="Axis where apply symmetry"
     )
+
+    # MESHLAB REMESH
+    #scn.meshlab_facescount = IntProperty(name="facescount", description="Number of faces", default=5000, min=10, max=1000000)
 
     
     # REFERENCES PANEL PROPS
@@ -1751,6 +1781,9 @@ def unregister():
     del scn.dynremesh_resolution
     del scn.dynremesh_forceSymmetry
     del scn.dynremesh_symmetry_axis
+
+    # MESHLAB REMESH
+    #del scn.meshlab_facescount
 
     # CLEAN REMESH TEMP FILES
     try:

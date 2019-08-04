@@ -14,17 +14,18 @@
 bl_info = {
     "name" : "NewSculptUI",
     "author" : "JFranMatheu",
-    "description" : "New UI for Sculpt Mode! :D",
+    "description" : "New UI and Tools for Sculpt Mode! :D",
     "blender" : (2, 80, 0),
-    "version" : (0, 5, 3),
-    "location" : "View3D > Tool Header // View3D > 'N' Panel: Brushes)",
+    "version" : (0, 5, 4),
+    "location" : "View3D > Tool Header /// View3D > 'N' Panel: Brushes / Sculpt)",
     "warning" : "This version is still in development. ;)",
     "category" : "Generic"
 }
+support = True
 #import gpu
 #import bgl
 #from gpu_extras.batch import batch_for_shader
-from gpu_extras.presets import draw_circle_2d, draw_texture_2d
+from gpu_extras.presets import draw_texture_2d#, draw_circle_2d
 #import functools
 # IMPORTS # NECESITA LIMPIEZA!!!
 import sys
@@ -546,9 +547,10 @@ class NSMUI_HT_toolHeader_sculpt(Header, UnifiedPaintPanel):
             # toolHeader.draw_blender_quick_preferences(self) # Preferencias rápidas de Blender para Sculpt
 
             # SUPPORT DEVELOPMENT
-            row = self.layout.row()
-            prop = row.operator('wm.url_open', text="", icon='FUND')
-            prop.url = "https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=BA3UXNSDLE55E&source=url"
+            if support:
+                row = self.layout.row()
+                prop = row.operator('wm.url_open', text="", icon='FUND')
+                prop.url = "https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=BA3UXNSDLE55E&source=url"
 
             row = self.layout.split().row(align=True)
 

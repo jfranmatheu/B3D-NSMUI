@@ -562,9 +562,12 @@ class NSMUI_PT_Brushes_Favs(NSMUI_PT_Brushes):
                 col.scale_y = colY
 
                 for b in favBrushes:
-                    if b.name == brushName:
-                        act = True
-                    else:
+                    try:
+                        if b.name == brushName:
+                            act = True
+                        else:
+                            act = False
+                    except:
                         act = False
                     #row.template_icon(icon_value=bpy.data.brushes[b].preview.icon_id, scale=5)
                     # col.label(text=b, icon_value=bpy.data.brushes[b].preview.icon_id) # SOLO PREVIEW
@@ -591,9 +594,12 @@ class NSMUI_PT_Brushes_Favs(NSMUI_PT_Brushes):
                     col.scale_x = 1.1
 
                 for b in favBrushes:
-                    if b.name == brushName:
-                        act = True
-                    else:
+                    try:
+                        if b.name == brushName:
+                            act = True
+                        else:
+                            act = False
+                    except:
                         act = False
                     #row.template_icon(icon_value=bpy.data.brushes[b].preview.icon_id, scale=5)
                     # col.label(text=b, icon_value=bpy.data.brushes[b].preview.icon_id) # SOLO PREVIEW
@@ -610,6 +616,35 @@ class NSMUI_PT_Brushes_Favs(NSMUI_PT_Brushes):
                             col.scale_x = 1.1
                             k = 0
                     
+class NSMUI_OT_toolHeader_brushRemove(bpy.types.Operator):
+    bl_idname = "nsmui.ht_toolheader_brush_remove"
+    bl_label = "New Sculpt-Mode UI"
+    bl_description = "Remove Active Brush plus Unlink"
+    def execute(self, context):
+        brush = bpy.context.tool_settings.sculpt.brush
+        st = brush.sculpt_tool
+        try:
+            if brush in favBrushes:
+                favBrushes.remove(bpy.data.brushes[brush.name])
+        except:
+            pass
+        try:
+            
+            bpy.data.brushes.remove(brush, do_unlink=True)
+            # Seleccionar automaticamente una brocha del mismo tipo
+            for b in bpy.data.brushes:
+                if b.sculpt_tool == st and b.use_paint_sculpt:
+                    bpy.context.tool_settings.sculpt.brush = b
+                    return {'FINISHED'}
+            # Sino hay ninguna del mismo tipo entonces se cogerá la primera en buscar
+            for b in bpy.data.brushes:
+                if b.use_paint_sculpt:
+                    bpy.context.tool_settings.sculpt.brush = b
+                    return {'FINISHED'}
+        except:
+            pass
+        
+        return {'FINISHED'}
 
 class NSMUI_OT_brush_fav_remove(bpy.types.Operator):
     bl_idname = "nsmui.ot_brush_fav_remove"
@@ -657,7 +692,7 @@ class NSMUI_PT_Brushes_ByType(NSMUI_PT_Brushes):
             # BRUSH LIST
             k = 0
             for b in bpy.data.brushes:
-                if (b.sculpt_tool == brush.sculpt_tool) and (not b.use_paint_vertex) and (b.use_paint_sculpt):
+                if (b.sculpt_tool == brush.sculpt_tool) and b.use_paint_sculpt:
                     icon = bpy.data.brushes[b.name].preview
                     if b.name == brush.name:
                         act = True

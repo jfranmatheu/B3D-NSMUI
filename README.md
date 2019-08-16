@@ -8,11 +8,12 @@
 
 
 # Downloads
-- Download **NewSculptUI.zip** For original Blender 2.80 version: https://github.com/jfranmatheu/Blender_NewSMUI/raw/master/NewSculptUI.zip
 
+- [Blender 2.80] **Version: 0. 5. 5**
+https://github.com/jfranmatheu/Blender_NewSMUI/raw/master/NewSculptUI.zip
 
-- [Not updated / Just ignore] Download **NewSculptUI_SculptFeatures.zip** For support with Experimental Sculpt Branch of Pablo Dobarro: https://github.com/jfranmatheu/Blender_NewSMUI/raw/master/NewSculptUI_SculptFeatures.zip
-
+- [Blender 2.81] **Version: 1. 0. 1**
+http://cbr.sh/qako92
 
 ### Help me to make it possible !
 ---

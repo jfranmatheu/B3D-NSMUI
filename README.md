@@ -9,7 +9,7 @@
 
 # Downloads
 
-- [Blender 2.80] **Version: 0. 5. 5**
+- [Blender 2.80] **Version: 0. 5. 6**
 https://github.com/jfranmatheu/Blender_NewSMUI/raw/master/NewSculptUI.zip
 
 - [Blender 2.81] **Version: 1. 0. 1**

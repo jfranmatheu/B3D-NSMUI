@@ -18,7 +18,7 @@ bl_info = {
     "author" : "JFranMatheu",
     "description" : "New UI and Tools for Sculpt Mode! :D",
     "blender" : (2, 80, 0),
-    "version" : (0, 5, 5),
+    "version" : (0, 5, 6),
     "location" : "View3D > Tool Header /// View3D > 'N' Panel: Brushes / Sculpt)",
     "warning" : "This version is still in development. ;)",
     "category" : "Generic"

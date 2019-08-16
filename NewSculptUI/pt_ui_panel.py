@@ -627,7 +627,7 @@ class NSMUI_PT_Brushes_Favs(NSMUI_PT_Brushes):
                     
 class NSMUI_OT_toolHeader_brushRemove(bpy.types.Operator):
     bl_idname = "nsmui.ht_toolheader_brush_remove"
-    bl_label = "New Sculpt-Mode UI"
+    bl_label = ""
     bl_description = "Remove Active Brush plus Unlink"
     def execute(self, context):
         brush = bpy.context.tool_settings.sculpt.brush

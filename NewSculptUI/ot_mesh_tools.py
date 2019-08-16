@@ -99,7 +99,6 @@ class NSMUI_OT_Cutter(Operator):
 
         return {'FINISHED'}
 
-
 class NSMUI_PT_Mask_Extractor_Options(Panel):
     bl_label = "Options"
     bl_space_type = "VIEW_3D"

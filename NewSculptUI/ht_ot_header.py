@@ -9,7 +9,7 @@ from bpy.types import (
 
 class NSMUI_OT_header_tool_toggle(bpy.types.Operator):
     bl_idname = "nsmui.ot_header_tool_toggle"
-    bl_label = "new_header_tools_for_sculpt_mode"
+    bl_label = ""
     bl_description = "Toggle New Tool Header"
 
     def execute(self, context):
@@ -33,7 +33,7 @@ class NSMUI_OT_header_tool_toggle(bpy.types.Operator):
 
 class NSMUI_OT_header_tool_2(bpy.types.Operator):
     bl_idname = "nsmui.ot_header_tool_2"
-    bl_label = "new_header_tools_for_sculpt_mode"
+    bl_label = ""
     bl_description = ""
 
     def execute(self, context):

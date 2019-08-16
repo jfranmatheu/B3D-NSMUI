@@ -66,7 +66,7 @@ class NSMUI_OT_toolHeader_brushSave(bpy.types.Operator):
 
 class NSMUI_OT_toolHeader_symmetry_all(bpy.types.Operator):
     bl_idname = "nsmui.ht_toolheader_symmetry_all"
-    bl_label = "new_tool_header_tools_for_sculpt_mode"
+    bl_label = ""
     bl_description = "Activate/Deactivate Symmetry"
 
     def execute(self, context):
@@ -97,7 +97,7 @@ class NSMUI_OT_toolHeader_newTexture(bpy.types.Operator):
 
 class NSMUI_OT_toolHeader_multires_subdivide(bpy.types.Operator):
     bl_idname = "nsmui.ht_toolheader_multires_subdivide"
-    bl_label = "new_tool_header_tools_for_sculpt_mode"
+    bl_label = ""
     bl_description = "New Level of Subdivision for Multires"
     def execute(self, context):
         #bpy.context.object.modifiers["Multires"].name = "Multires"
@@ -107,7 +107,7 @@ class NSMUI_OT_toolHeader_multires_subdivide(bpy.types.Operator):
 
 class NSMUI_OT_toolHeader_dyntopo_lvl_1(bpy.types.Operator):
     bl_idname = "nsmui.ht_toolheader_dyntopo_lvl_1"
-    bl_label = "New Sculpt-Mode UI"
+    bl_label = ""
     bl_description = "Level 6 of detail, the greater one. The more level the more detail !"
     def execute(self, context):
         toggle_off_dyntopo_levels()
@@ -122,7 +122,7 @@ class NSMUI_OT_toolHeader_dyntopo_lvl_1(bpy.types.Operator):
 
 class NSMUI_OT_toolHeader_dyntopo_lvl_2(bpy.types.Operator):
     bl_idname = "nsmui.ht_toolheader_dyntopo_lvl_2"
-    bl_label = "New Sculpt-Mode UI"
+    bl_label = ""
     bl_description = "Level 5 of detail. The more level the more detail !"
     def execute(self, context):
         toggle_off_dyntopo_levels()
@@ -137,7 +137,7 @@ class NSMUI_OT_toolHeader_dyntopo_lvl_2(bpy.types.Operator):
 
 class NSMUI_OT_toolHeader_dyntopo_lvl_3(bpy.types.Operator):
     bl_idname = "nsmui.ht_toolheader_dyntopo_lvl_3"
-    bl_label = "New Sculpt-Mode UI"
+    bl_label = ""
     bl_description = "Level 4 of detail. The more level the more detail !"
     def execute(self, context):
         toggle_off_dyntopo_levels()
@@ -152,7 +152,7 @@ class NSMUI_OT_toolHeader_dyntopo_lvl_3(bpy.types.Operator):
 
 class NSMUI_OT_toolHeader_dyntopo_lvl_4(bpy.types.Operator):
     bl_idname = "nsmui.ht_toolheader_dyntopo_lvl_4"
-    bl_label = "New Sculpt-Mode UI"
+    bl_label = ""
     bl_description = "Level 3 of detail. The more level the more detail !"
     def execute(self, context):
         toggle_off_dyntopo_levels()
@@ -167,7 +167,7 @@ class NSMUI_OT_toolHeader_dyntopo_lvl_4(bpy.types.Operator):
 
 class NSMUI_OT_toolHeader_dyntopo_lvl_5(bpy.types.Operator):
     bl_idname = "nsmui.ht_toolheader_dyntopo_lvl_5"
-    bl_label = "New Sculpt-Mode UI"
+    bl_label = ""
     bl_description = "Level 2 of detail. The more level the more detail !"
     def execute(self, context):
         toggle_off_dyntopo_levels()
@@ -182,7 +182,7 @@ class NSMUI_OT_toolHeader_dyntopo_lvl_5(bpy.types.Operator):
 
 class NSMUI_OT_toolHeader_dyntopo_lvl_6(bpy.types.Operator):
     bl_idname = "nsmui.ht_toolheader_dyntopo_lvl_6"
-    bl_label = "New Sculpt-Mode UI"
+    bl_label = ""
     bl_description = "Level 1 of detail, the lower one. The more level the more detail !"
     def execute(self, context):
         toggle_off_dyntopo_levels()
@@ -197,7 +197,7 @@ class NSMUI_OT_toolHeader_dyntopo_lvl_6(bpy.types.Operator):
 
 class NSMUI_OT_toolHeader_dyntopo_any(bpy.types.Operator):
     bl_idname = "nsmui.ht_toolheader_dyntopo_any"
-    bl_label = "New Sculpt-Mode UI"
+    bl_label = ""
     bl_description = "Selected Detail Size for Dynamic Topology"
     value: bpy.props.IntProperty(name="value", default=5)
     def execute(self, value):
@@ -213,7 +213,7 @@ class NSMUI_OT_toolHeader_dyntopo_any(bpy.types.Operator):
 
 class NSMUI_OT_toolHeader_dyntopo_any_l(bpy.types.Operator):
     bl_idname = "nsmui.ht_toolheader_dyntopo_any_l"
-    bl_label = "New Sculpt-Mode UI"
+    bl_label = ""
     bl_description = "Low Value for Dyntopo Detail Size"
     value: bpy.props.IntProperty(name="value", default=5)
     def execute(self, value):
@@ -226,7 +226,7 @@ class NSMUI_OT_toolHeader_dyntopo_any_l(bpy.types.Operator):
 
 class NSMUI_OT_toolHeader_dyntopo_any_m(bpy.types.Operator):
     bl_idname = "nsmui.ht_toolheader_dyntopo_any_m"
-    bl_label = "New Sculpt-Mode UI"
+    bl_label = ""
     bl_description = "Medium Value for Dyntopo Detail Size"
     value: bpy.props.IntProperty(name="value", default=5)
     def execute(self, value):
@@ -239,7 +239,7 @@ class NSMUI_OT_toolHeader_dyntopo_any_m(bpy.types.Operator):
 
 class NSMUI_OT_toolHeader_dyntopo_any_h(bpy.types.Operator):
     bl_idname = "nsmui.ht_toolheader_dyntopo_any_h"
-    bl_label = "New Sculpt-Mode UI"
+    bl_label = ""
     bl_description = "High Value for Dyntopo Detail Size"
     value: bpy.props.IntProperty(name="value", default=5)
     def execute(self, value):

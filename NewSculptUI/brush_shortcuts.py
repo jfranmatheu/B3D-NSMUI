@@ -954,6 +954,8 @@ def register():
         default     = False
     )
 
+    
+
     cfg = bpy.context.window_manager.keyconfigs.addon
     if not cfg.keymaps.__contains__('Sculpt'):
         cfg.keymaps.new('Sculpt', space_type='EMPTY', region_type='WINDOW')

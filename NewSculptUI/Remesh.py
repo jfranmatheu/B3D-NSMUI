@@ -28,7 +28,7 @@ class DyntopoRemesh(Operator):
         return context.active_object is not None
 
     def execute(self, context):
-        try:
+        if bpy.context.sculpt_object.use_dynamic_topology_sculpting:
             tool_settings = context.tool_settings
             sculpt = tool_settings.sculpt
             detail_method = sculpt.detail_type_method
@@ -38,13 +38,13 @@ class DyntopoRemesh(Operator):
             #bpy.ops.sculpt.set_detail_size()
             bpy.ops.sculpt.detail_flood_fill()
             if self.force_symmetry:
-                symmetry_dir = sculpt.symmetrize_direction
+                #symmetry_dir = sculpt.symmetrize_direction
                 sculpt.symmetrize_direction = self.symmetry_axis
                 bpy.ops.sculpt.symmetrize()
             sculpt.constant_detail_resolution = resolution
-            sculpt.symmetrize_direction = symmetry_dir
+            #sculpt.symmetrize_direction = symmetry_dir
             sculpt.detail_type_method = detail_method
-        except:
+        else:
             # Shows a message box with an error message when dyntopo is disabled
             ShowMessageBox("This remesher only works if Dyntopo is enabled", "Can't apply remesher", 'ERROR')
         

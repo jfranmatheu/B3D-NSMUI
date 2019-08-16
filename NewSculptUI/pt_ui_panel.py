@@ -23,7 +23,8 @@ class NSMUI_PT_th_settings(Panel):
     bl_context = "NONE" # Set it o ".paint_common" to see it on 'N' panel
     # bl_options = {'DEFAULT_CLOSED'}
     bl_description = "Customize your interface toggling UI elements as your want!"
-    is_popover = True
+    bl_ui_units_x = 18
+    #is_popover = True
 
     def draw(self, context):
         if(context.mode != "SCULPT"):
@@ -32,67 +33,74 @@ class NSMUI_PT_th_settings(Panel):
         else:
             wm = context.window_manager
             prefs = bpy.context.preferences.addons["NewSculptUI"].preferences
-    
-            row = self.layout.row()
-            row.label(text="Customize here the Tool Header !")
+            
+            layout = self.layout
+            #layout.use_property_split = True
+            layout.use_property_decorate = False  # No animation.
+
+            split = layout.split()
+            layout = split.column()
+
+            row = layout.row()
+            row.label(text="Customize here the Headers !")
             row.separator()
 
         #   BRUSH MANAGER
-            row = self.layout.row(align=True)
+            row = layout.row(align=True)
             row.label(text="Brush :")
             row.prop(wm, 'toggle_brush_menu', text="Collapse !", toggle=False)
 
             if not wm.toggle_brush_menu:
-                row = self.layout.row(align=True)
+                row = layout.row(align=True)
                 row.prop(wm, 'toggle_brushAdd', text="Add", toggle=True)
                 row.prop(wm, 'toggle_brushRemove', text="Remove", toggle=True)
                 row.prop(wm, 'toggle_brushReset', text="Reset", toggle=True)
-                row = self.layout.row()
+                row = layout.row()
                 row.prop(wm, 'toggle_brush_customIcon', text="Render Custom Brush Icon", toggle=True)
 
         #   SLIDERS
-            row = self.layout.row(align=True)
+            row = layout.row(align=True)
             row.label(text="Sliders :")
             row.prop(wm, 'toggle_sliders', text="Hide All !", toggle=False) # si es false, el toggle es un checkbox
             if not wm.toggle_sliders: # SI NO ESTÁN OCULTOS
-                row = self.layout.row(align=True)
+                row = layout.row(align=True)
                 row.prop(wm, 'toggle_slider_brushSize', text="Radius", toggle=True)
                 row.prop(wm, 'toggle_slider_brushStrength', text="Strength", toggle=True)
                 row.prop(wm, 'toggle_slider_brushSmooth', text="Smooth", toggle=True)
-                row = self.layout.row(align=True)
+                row = layout.row(align=True)
                 row.prop(wm, 'toggle_slider_spacing', text="Spacing", toggle=True)
                 row.prop(wm, 'toggle_slider_topoRake', text="Topo Rake", toggle=True)
-                row = self.layout.row()
+                row = layout.row()
                 row.prop(wm, 'toggle_slider_specificBrushType', text="Specifics per Brush Type", toggle=True)
                 
         
         #   SETTINGS // BRUSH // STROKE // FALLOFF (CURVES)
-            row = self.layout.row()
+            row = layout.row()
             row.label(text="Dropdowns :")
-            row = self.layout.row(align=True)
+            row = layout.row(align=True)
             row.prop(wm, 'toggle_brush_settings', text="Brush", toggle=True)
             row.prop(wm, 'toggle_stroke_settings', text="Stroke", toggle=True)
             row.prop(wm, 'toggle_falloff', text="Falloff", toggle=True)
-            row = self.layout.row(align=True)
+            row = layout.row(align=True)
             row.label(text="Others :")
 
         #   BRUSH / STROKE / FALLOFF SETTINGS
-            row = self.layout.row(align=True)
+            row = layout.row(align=True)
             row.prop(wm, 'toggle_stroke_method', text="Stroke Method", toggle=True)
             row.prop(wm, 'toggle_falloff_curvePresets', text="Curve Presets", toggle=True)
 
         #   OTHERS
-            row = self.layout.row()
+            row = layout.row()
             row.prop(wm, 'toggle_mask', text="Mask", toggle=False)
             row.prop(wm, 'toggle_symmetry', text="Symmetry", toggle=False)
-            row = self.layout.row()
+            row = layout.row()
             row.prop(wm, 'toggle_dyntopo', text="Dyntopo", toggle=False)
             row.prop(wm, 'toggle_remesher', text="Remesher", toggle=False)
 
         #   TEXTURE SETTINGS
-            row = self.layout.row()
+            row = layout.row()
             row.label(text="Texture Settings :")
-            row = self.layout.row(align=True)
+            row = layout.row(align=True)
             row.prop(wm, 'toggle_texture_new', text="New Texture", toggle=True)
             row.prop(wm, 'toggle_texture_open', text="Open Image", toggle=True)
 
@@ -104,10 +112,11 @@ class NSMUI_PT_th_settings(Panel):
             #row.prop(wm, 'toggle_prefs', text="Preferences", toggle=True)
             
             #   PRESETS
+            layout = split.column()
             
             row.separator()
-            row = self.layout.row()
-            box = self.layout.box()
+            #row = layout.row()
+            box = layout.box()
             row = box.row()
             row.label(text="UI PRESETS :")
             row = box.row()
@@ -149,7 +158,7 @@ class NSMUI_PT_Addon_Prefs(Panel):
         bl_options = {'DEFAULT_CLOSED'}
         bl_description = "Quick addon + Blender preferences!"
         bl_ui_units_x = 18
-        is_popover = True
+        #is_popover = True
 
         def draw(self, context):
             scn = context.scene
@@ -912,6 +921,7 @@ class NSMUI_OT_reference_toggle(bpy.types.Operator):
 ###########################
 ###########################
 ###########################
+
 
 
 

@@ -1,3 +1,5 @@
+# Copyright (C) 2019 Juan Fran Matheu G.
+# 
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation; either version 3 of the License, or
@@ -9,19 +11,18 @@
 # General Public License for more details.
 #
 # You should have received a copy of the GNU General Public License
-# along with this program. If not, see <http://www.gnu.org/licenses/>.
+# along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 bl_info = {
     "name" : "NewSculptUI",
     "author" : "JFranMatheu",
     "description" : "New UI and Tools for Sculpt Mode! :D",
     "blender" : (2, 80, 0),
-    "version" : (0, 5, 4),
+    "version" : (0, 5, 5),
     "location" : "View3D > Tool Header /// View3D > 'N' Panel: Brushes / Sculpt)",
     "warning" : "This version is still in development. ;)",
     "category" : "Generic"
 }
-support = True
 #import gpu
 #import bgl
 #from gpu_extras.batch import batch_for_shader
@@ -40,20 +41,99 @@ from os.path import dirname, join, abspath, basename
 from bpy import context, types, ops
 from bl_ui.properties_paint_common import (
         UnifiedPaintPanel,
-        brush_texture_settings,
-        brush_texpaint_common,
-        brush_mask_texture_settings,
-        brush_basic_sculpt_settings
+        #brush_texture_settings,
+        #brush_texpaint_common,
+        #brush_mask_texture_settings,
+        #brush_basic_sculpt_settings
         )
-from bpy.props import StringProperty, IntProperty, FloatProperty, BoolProperty, FloatVectorProperty, BoolVectorProperty
+from bpy.props import StringProperty, IntProperty, FloatProperty, BoolProperty, FloatVectorProperty, BoolVectorProperty, EnumProperty
 from bpy.utils import register_class, unregister_class
 from bl_ui.space_view3d import VIEW3D_HT_tool_header
+#from bl_ui.space_view3d import VIEW3D_HT_header
+
+import urllib
 
 platform = platform.system()
 
 # ----------------------------------------------------------------- #
+# ICONS // PREVIEW COLLECTION
+# ----------------------------------------------------------------- #
+from os import path
+icon_dir = path.join(path.dirname(__file__), "icons")
+preview_collections = {}
+
+icons = {"mirror_icon" : "mirror_icon.png",
+         "brush_icon"  : "brush_icon.png",
+         "brushAdd_icon"  : "brushAdd_icon.png",
+         "brushSave_icon"  : "brushSave_icon.png",
+         "brushRemove_icon"  : "brushRemove_icon.png",
+         "brushReset_icon"  : "brushReset_icon.png",
+         "strokeSpace_icon" : "strokeSpace_icon.png",
+         "strokeDots_icon" : "strokeDots_icon.png",
+         "strokeDragDot_icon" : "strokeDragDot_icon.png",
+         "strokeAnchored_icon" : "strokeAnchored_icon.png",
+         "strokeAirbrush_icon" : "strokeAirbrush_icon.png",
+         "strokeLine_icon" : "strokeLine_icon.png",
+         "strokeCurve_icon" : "strokeCurve_icon.png",
+         "stroke_icon" : "stroke_icon.png",
+         "texture_icon"  : "texture_icon.png",
+         "textureNew_icon"  : "textureNew_icon.png",
+         "textureOpen_icon"  : "textureOpen_icon.png",
+         "fallOff_icon" : "fallOff_icon.png",
+         "frontFaces_icon"  : "frontFaces_icon.png",
+         "dyntopo_icon"  : "dyntopo_icon.png",
+         "dyntopoLowDetail_icon"  : "dyntopoLowDetail_icon.png",
+         "dyntopoMidDetail_icon"  : "dyntopoMidDetail_icon.png",
+         "dyntopoHighDetail_icon"  : "dyntopoHighDetail_icon.png",
+         "dyntopoConstant_icon"  : "dyntopoConstant_icon.png",
+         "dyntopoRelative_icon"  : "dyntopoRelative_icon.png",
+         "dyntopoBrush_icon"  : "dyntopoBrush_icon.png",
+         "dyntopoManual_icon"  : "dyntopoManual_icon.png",
+         "separator_icon" : "separator_icon.png",
+         "arrowUp_icon"  : "arrowUp_icon.png",
+         "arrowDown_icon" : "arrowDown_icon.png",
+         "mask_icon"  : "mask_icon.png",
+         "maskInvert_icon"  : "maskInvert_icon.png",
+         "maskClear_icon"  : "maskClear_icon.png",
+         "maskExtractor_icon"  : "maskExtractor_icon.png",
+         "paypal_icon" : "paypal_icon.png",
+         "cubebrush_icon" : "cubebrush_icon.png",
+         "bMarket_icon" : "bMarket_icon.png"
+        }
+
+# ----------------------------------------------------------------- #
+# PATHS // CHECKER ADDON PATH
+# ----------------------------------------------------------------- #
+# PATHS
+currentDirectory = dirname(abspath(__file__))
+addonsDirectory = dirname(currentDirectory)
+compilationInfoPath = join(currentDirectory, "compilation_info.json")
+addonName = basename(currentDirectory)
+# CHEKER OF ADDON'S PATH
+if addonName != "NewSculptUI": # CHANGE THIS
+    message = ("\n\n"
+        "The name of the folder containing this addon has to be 'NewSculptUI'.\n" # CHANGE THIS
+        "Please rename it.")
+    raise Exception(message)
+
+def check_update():
+    adress = 'https://newsmui-check-version.blogspot.com'
+    response = urllib.request.urlopen(adress)
+    html = str(response.read())
+    last_version = html[7603:7612]
+    current_version = str(bl_info['version'])
+    print("Curernt Version : " + current_version)
+    print("Last Version : " + last_version)
+    if last_version != current_version:
+        return True, last_version
+    else:
+        return False, False
+
+# ----------------------------------------------------------------- #
 #   ADDON PREFERENCES                                     #
 # ----------------------------------------------------------------- #
+
+# sep = os.sep
 
 class NSMUI_AddonPreferences(AddonPreferences):
     # this must match the add-on name, use '__package__'
@@ -179,8 +259,32 @@ class NSMUI_AddonPreferences(AddonPreferences):
     custom_UI_Slot_2 : BoolVectorProperty(name="Slot 2", description="Slot number 2 for custom UI presets", subtype='NONE', size=26)
     create_custom_UI_Slot_2 : BoolProperty(name="Create Slot 2", description="Create Slot number 2 for custom UI presets", default=False)
 
+    # SHORTCUTS FOR BRUSHES
+    brushcuts_available : BoolVectorProperty(name="Brush Shortcut Available", description="", subtype='NONE', size=10)
+
+    need_updating : bpy.props.BoolProperty(
+		description = "Need Updating",
+		name        = "need_updating",
+		default     = False
+	)
+
+    last_version : bpy.props.StringProperty(
+		description = "Last Version",
+		name        = "last_version",
+		default     = "(0.5.5)"
+	)
+
     def draw(self, context):
         layout = self.layout
+        if self.need_updating:
+            pcoll = preview_collections["main"]
+            layout.label(text="The version " + self.last_version + " is available !", icon='ERROR')
+            # split = layout.split()
+            row = layout.row()
+            prop = row.operator('wm.url_open', text="Cubebrush", icon_value=pcoll["cubebrush_icon"].icon_id)
+            prop.url = "http://cbr.sh/qako92"
+            prop = row.operator('wm.url_open', text="B3D Market", icon_value=pcoll["bMarket_icon"].icon_id)
+            prop.url = "https://blendermarket.com/products/advanced-new-sculpt-mode-ui"
         box = layout.box()
         col = box.column(align=True)
         _row = col.row(align=True)
@@ -245,12 +349,18 @@ class NSMUI_AddonPreferences(AddonPreferences):
         row = col.row(align=True)
         row.prop(self, "create_custom_UI_Slot_2", text="Slot 2")
 
-        layout.separator()
-        box = layout.box()
-        col = box.column()
-        row = col.row(align=True)
-        row.operator("nsmui.check_updates", text="Check for Updates")
-        row.operator("nsmui.update", text="Update")
+        #layout.separator()
+        #box = layout.box()
+        #col = box.column()
+        #row = col.row(align=True)
+        #row.operator("nsmui.check_updates", text="Check for Updates")
+        #row.operator("nsmui.update", text="Update")
+
+    #def invoke(self, context, event):
+    #    adress = 'https://newsmui-check-version.blogspot.com/p/recent-version.html' #https://newsmui-check-version.blogspot.com/
+    #    response = urllib.request.urlopen(adress)
+    #    html = str(response.read())
+    #    version = html[536:545]
 
         #layout.label(text="PER LEVELS (BY DEFAULT MODE) : ")
 
@@ -331,63 +441,6 @@ else:
     dynStage_High = DyntopoStage("POLISH", relative_High, constant_High, brush_High)
     
 dyntopoStages = [dynStage_Low, dynStage_Mid, dynStage_High]
-
-# ----------------------------------------------------------------- #
-# ICONS // PREVIEW COLLECTION
-# ----------------------------------------------------------------- #
-from os import path
-icon_dir = path.join(path.dirname(__file__), "icons")
-preview_collections = {}
-
-icons = {"mirror_icon" : "mirror_icon.png",
-         "brush_icon"  : "brush_icon.png",
-         "brushAdd_icon"  : "brushAdd_icon.png",
-         "brushSave_icon"  : "brushSave_icon.png",
-         "brushRemove_icon"  : "brushRemove_icon.png",
-         "brushReset_icon"  : "brushReset_icon.png",
-         "strokeSpace_icon" : "strokeSpace_icon.png",
-         "strokeDots_icon" : "strokeDots_icon.png",
-         "strokeDragDot_icon" : "strokeDragDot_icon.png",
-         "strokeAnchored_icon" : "strokeAnchored_icon.png",
-         "strokeAirbrush_icon" : "strokeAirbrush_icon.png",
-         "strokeLine_icon" : "strokeLine_icon.png",
-         "strokeCurve_icon" : "strokeCurve_icon.png",
-         "stroke_icon" : "stroke_icon.png",
-         "texture_icon"  : "texture_icon.png",
-         "textureNew_icon"  : "textureNew_icon.png",
-         "textureOpen_icon"  : "textureOpen_icon.png",
-         "fallOff_icon" : "fallOff_icon.png",
-         "frontFaces_icon"  : "frontFaces_icon.png",
-         "dyntopo_icon"  : "dyntopo_icon.png",
-         "dyntopoLowDetail_icon"  : "dyntopoLowDetail_icon.png",
-         "dyntopoMidDetail_icon"  : "dyntopoMidDetail_icon.png",
-         "dyntopoHighDetail_icon"  : "dyntopoHighDetail_icon.png",
-         "dyntopoConstant_icon"  : "dyntopoConstant_icon.png",
-         "dyntopoRelative_icon"  : "dyntopoRelative_icon.png",
-         "dyntopoBrush_icon"  : "dyntopoBrush_icon.png",
-         "dyntopoManual_icon"  : "dyntopoManual_icon.png",
-         "separator_icon" : "separator_icon.png",
-         "arrowUp_icon"  : "arrowUp_icon.png",
-         "arrowDown_icon" : "arrowDown_icon.png",
-         "mask_icon"  : "mask_icon.png",
-         "maskInvert_icon"  : "maskInvert_icon.png",
-         "maskClear_icon"  : "maskClear_icon.png",
-        }
-
-# ----------------------------------------------------------------- #
-# PATHS // CHECKER ADDON PATH
-# ----------------------------------------------------------------- #
-# PATHS
-currentDirectory = dirname(abspath(__file__))
-addonsDirectory = dirname(currentDirectory)
-compilationInfoPath = join(currentDirectory, "compilation_info.json")
-addonName = basename(currentDirectory)
-# CHEKER OF ADDON'S PATH
-if addonName != "NewSculptUI": # CHANGE THIS
-    message = ("\n\n"
-        "The name of the folder containing this addon has to be 'NewSculptUI'.\n" # CHANGE THIS
-        "Please rename it.")
-    raise Exception(message)
 
 
 # --------------------------------------------- #
@@ -471,6 +524,7 @@ class NSMUI_HT_toolHeader_sculpt(Header, UnifiedPaintPanel):
             ups = toolsettings.unified_paint_settings
             wm = context.window_manager
             brush = settings.brush
+            scn = context.scene
 
             # CALLBACK HANDLER DRAW TEXTURE OF BRUSH IF THERE IS
             # BRUSH TEXTURE PREVIEW
@@ -547,10 +601,7 @@ class NSMUI_HT_toolHeader_sculpt(Header, UnifiedPaintPanel):
             # toolHeader.draw_blender_quick_preferences(self) # Preferencias rápidas de Blender para Sculpt
 
             # SUPPORT DEVELOPMENT
-            if support:
-                row = self.layout.row()
-                prop = row.operator('wm.url_open', text="", icon='FUND')
-                prop.url = "https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=BA3UXNSDLE55E&source=url"
+            toolHeader.draw_support_dev(self)
 
             row = self.layout.split().row(align=True)
 
@@ -583,12 +634,12 @@ class NSMUI_HT_toolHeader_sculpt_tools(NSMUI_HT_toolHeader_sculpt):
     def draw_brushManager(self, sculpt, wm, isCollapse, icon_brushAdd, canAdd, icon_brushReset, canReset, icon_brushRemove, canRemove):
         layout = self.layout
         row = layout.row(align=True)
-        row.ui_units_x = 9
+        row.ui_units_x = 8.5
         # BRUSH LIST
         row.template_ID_preview(sculpt, "brush", new="brush.add", rows=3, cols=8, hide_buttons=True)
         # NEW BRUSH BUTTON (DUPLICATE)
         if isCollapse:
-            row.ui_units_x = 8
+            row.ui_units_x = 6.5
             NSMUI_HT_toolHeader_sculpt_tools.draw_brushOptions(self)
         else:
             if canAdd:
@@ -809,9 +860,10 @@ class NSMUI_HT_toolHeader_sculpt_tools(NSMUI_HT_toolHeader_sculpt):
         col.prop(brush, "use_frontface", text="", icon_value=icon.icon_id)
 
 #   MASK SETTINGS / INVERT / CLEAR
-    def draw_maskSettings(self, showMaskMenu, icon_mask, icon_maskInvert, icon_maskClear):
+    def draw_maskSettings(self, showMaskMenu, icon_mask, icon_maskInvert, icon_maskClear): # scn, icon_maskExtractor
         # MASK MENU
         row = self.layout.row(align=True)
+        #row.ui_units_x = 6.9
         if showMaskMenu:
             row.menu("VIEW3D_MT_hide_mask", text=" Mask ", icon_value=icon_mask.icon_id)
         # MASK -> INVERT
@@ -821,6 +873,16 @@ class NSMUI_HT_toolHeader_sculpt_tools(NSMUI_HT_toolHeader_sculpt):
         props = row.operator("paint.mask_flood_fill", text="", icon_value=icon_maskClear.icon_id)
         props.mode = 'VALUE'
         props.value = 0
+        '''
+        _props = row.operator("nsmui.mask_extractor", text="Extract Mask")
+        _props.thickness = scn.maskExtractor_Thickness
+        _props.offset = scn.maskExtractor_Offset
+        _props.smoothPasses = scn.maskExtractor_SmoothPasses
+        _props.mode = scn.maskExtractor_Mode
+        _props.superSmooth = scn.maskExtractor_SuperSmooth
+        row.popover(panel="NSMUI_PT_Mask_Extractor_Options", text="")
+        '''
+        
 
 #   SYMMETRY TOGGLES
     def draw_symmetry(self, sculpt, icon):
@@ -863,10 +925,12 @@ class NSMUI_HT_toolHeader_sculpt_tools(NSMUI_HT_toolHeader_sculpt):
             sub = self.layout.row(align=True)
             sub.popover(panel="VIEW3D_PT_sculpt_dyntopo", text="")
             if(context.sculpt_object.use_dynamic_topology_sculpting==True):
+                '''
                 try:
                     bpy.utils.register_class(NSMUI_PT_dyntopo_stages)
                 except:
                     pass
+                '''
             # Si hay stage
                 if not useStage:
                     n = 0 # CHIVATO PARA EL STAGE
@@ -943,10 +1007,13 @@ class NSMUI_HT_toolHeader_sculpt_tools(NSMUI_HT_toolHeader_sculpt):
                     row.operator("nsmui.ht_toolheader_dyntopo_lvl_1", text="6", depress=dp_lvl_6) # Botón 6, último nivel, nivel más bajo de detalle
                     
             else:
+                pass
+                '''
                 try:
                     bpy.utils.unregister_class(NSMUI_PT_dyntopo_stages)
                 except:
                     pass
+                '''
 
 #   TEXTURE SETTINGS (DROPDOWN) / NEW TEXTURE / OPEN IMAGE
     def draw_textureSettings(self, icon_texture, icon_textureNew, icon_textureOpen, toggle_newTexture, toggle_openImage):
@@ -988,6 +1055,16 @@ class NSMUI_HT_toolHeader_sculpt_tools(NSMUI_HT_toolHeader_sculpt):
     def draw_blender_quick_preferences(self):
         sub = self.layout.split().column(align=True)
         sub.popover(panel="NSMUI_PT_Blender_QuickPrefs",icon='BLENDER',text="")
+
+    def draw_support_dev(self):
+        prefs = context.preferences.addons["NewSculptUI"].preferences
+        sub = self.layout.split().column(align=True)
+        if prefs.need_updating:
+            text="Update Available!"
+        else:
+            text=""
+        sub.popover(panel="NSMUI_PT_Support_Dev",icon='FUND',text=text)
+        
         
 # --------------------------------------------- #
 # HEADER UI
@@ -1001,16 +1078,17 @@ class NSMUI_HT_header_sculpt(Header):
 
     def draw(self, context):
         if(context.mode == "SCULPT"):
-            #if (bpy.context.space_data.show_region_tool_header == True):
-            #    bpy.ops.screen.header_toggle_menus()
-            #bpy.types.Area.show_menus = False
+
+            layout = self.layout
+            
             wm = context.window_manager
             scn = context.scene
             pcoll = preview_collections["main"]
+            header = NSMUI_PT_header_sculpt_tools
 
             temp = False
             if(bpy.context.space_data.show_region_tool_header == False):
-                row = self.layout
+                row = layout.row()
                 if(temp == False):
                     temp = True
                     icon = pcoll["arrowDown_icon"]
@@ -1026,13 +1104,28 @@ class NSMUI_HT_header_sculpt(Header):
                 else:
                     icon = pcoll["arrowDown_icon"]
                 self.layout.row().operator('nsmui.ot_header_tool_toggle', text="", icon_value=icon.icon_id)
+                
+                #split = layout.split()
+                #layout = split.row()
+
+                obj = context.active_object
+                object_mode = 'OBJECT' if obj is None else obj.mode
+                act_mode_item = bpy.types.Object.bl_rna.properties["mode"].enum_items[object_mode]
+
+                sub = layout.row(align=True)
+                
+                sub.operator_menu_enum(
+                    "object.mode_set", "mode",
+                    text="",
+                    icon=act_mode_item.icon,
+                )
                 '''
-                layout = self.layout
+                
             #   REMESHERS
                 if wm.toggle_remesher:
                     col = layout.column()
                     row = col.row(align=True)
-                    row.ui_units_x = 7.5
+                    row.ui_units_x = 7.6
                     #row.label(text="Remesher :")
                     row.popover(
                         panel="NSMUI_PT_remeshOptions",
@@ -1086,6 +1179,82 @@ class NSMUI_HT_header_sculpt(Header):
                     sub = col.column(align=True)
                     sub = sub.box()
                     sub.label(text="")
+            
+            #   MESH TOOLS
+                row = layout.row()
+                # SEPARATOR
+                row.label(text="", icon_value=pcoll["separator_icon"].icon_id)
+                #row.separator()
+                #COLLAPSE MENU
+                row.prop(wm, 'toggle_mesh_tools', icon='COLLAPSEMENU', text="")
+                if wm.toggle_mesh_tools:
+                #   MASK EXTRACTOR
+                    row = layout.row(align=True)
+                    row.ui_units_x = 5.8
+                    _props = row.operator("nsmui.mask_extractor", text="Extract Mask", icon='CLIPUV_HLT')
+                    _props.thickness = scn.maskExtractor_Thickness
+                    _props.offset = scn.maskExtractor_Offset
+                    _props.smoothPasses = scn.maskExtractor_SmoothPasses
+                    _props.mode = scn.maskExtractor_Mode
+                    _props.superSmooth = scn.maskExtractor_SuperSmooth
+                    row.popover(panel="NSMUI_PT_Mask_Extractor_Options", text="")
+                #   CLOSE GAPS
+                    header.draw_close_gaps(self, scn)
+
+
+                '''
+            # Viewport Settings
+                layout.popover(
+                    panel="VIEW3D_PT_object_type_visibility",
+                    icon_value=view.icon_from_show_object_viewport,
+                    text="",
+                )
+                
+    
+            # Gizmo toggle & popover.
+                row = layout.row(align=True)
+                # FIXME: place-holder icon.
+                row.prop(view, "show_gizmo", text="", toggle=True, icon='GIZMO')
+                sub = row.row(align=True)
+                sub.active = view.show_gizmo
+                sub.popover(
+                    panel="VIEW3D_PT_gizmo_display",
+                    text="",
+                )
+    
+            # Overlay toggle & popover.
+                row = layout.row(align=True)
+                row.prop(overlay, "show_overlays", icon='OVERLAY', text="")
+                sub = row.row(align=True)
+                sub.active = overlay.show_overlays
+                sub.popover(panel="VIEW3D_PT_overlay", text="")
+    
+                row = layout.row()
+                row.active = (object_mode == 'EDIT') or (shading.type in {'WIREFRAME', 'SOLID'})
+    
+                if shading.type == 'WIREFRAME':
+                    row.prop(shading, "show_xray_wireframe", text="", icon='XRAY')
+                else:
+                    row.prop(shading, "show_xray", text="", icon='XRAY')
+    
+                row = layout.row(align=True)
+                row.prop(shading, "type", text="", expand=True)
+                sub = row.row(align=True)
+                # TODO, currently render shading type ignores mesh two-side, until it's supported
+                # show the shading popover which shows double-sided option.
+    
+                # sub.enabled = shading.type != 'RENDERED'
+                sub.popover(panel="VIEW3D_PT_shading", text="")
+                '''
+                
+                
+                #layout.split()
+                #row = layout.row()
+                #row.label(text="")
+                #row = layout.row()
+                #row.label(text="")
+
+                    
 
 # --------------------------------------------- #
 # REMESH OPTIONS
@@ -1140,8 +1309,17 @@ class NSMUI_PT_remeshOptions(Panel):
             row.prop(scn, 'decimation_symmetry_axis')
         #   DYNTOPO REMESH
         elif wm.switch_remesher == 'DYNTOPO':
-            col.prop(scn, 'dynremesh_resolution')
+            _col = col.row()
+            if scn.dynremesh_resolution > 150:
+                _col.alert=True
+                icon = 'ERROR'
+            else:
+                _col.alert=False
+                icon = 'MONKEY'
+            _col.label(icon=icon, text="")
+            _col.prop(scn, 'dynremesh_resolution')
             row = col.row()
+            row.alert=False
             row.prop(scn, 'dynremesh_forceSymmetry')
             _row = row.split()
             _row.ui_units_x = 7
@@ -1151,9 +1329,24 @@ class NSMUI_PT_remeshOptions(Panel):
         elif wm.switch_remesher == 'MESHLAB':
             col.prop(scn, 'meshlab_facescount')
         '''
-            
-            
- 
+
+# --------------------------------------------- #
+# MESH TOOLS / MASK TOOLS [HEADER]
+# --------------------------------------------- #
+class NSMUI_PT_header_sculpt_tools(NSMUI_HT_header_sculpt):
+    
+    def draw_close_gaps(self, scn):
+        row = self.layout.row(align=True)
+        row.ui_units_x = 5.4
+        prop = row.operator("nsmui.close_gaps", text="Close Gaps", icon='RESTRICT_INSTANCED_ON')
+        prop.use = scn.closeGaps_use
+        prop.smooth_passes = scn.closeGaps_smooth_passes
+        prop.keep_dyntopo = scn.closeGaps_keep_dyntopo
+        row.popover (
+            panel="NSMUI_PT_Close_Gaps_Options",
+            text=""
+        )
+
 # --------------------------------------------- #
 # DYNTOPO STAGES UI PANEL
 # --------------------------------------------- #
@@ -1486,12 +1679,63 @@ def clampImageSize(width, height):
 #   REGISTRATION !!!!                      #
 #################################################
 
+class NSMUI_PT_Support_Dev(Panel):
+    bl_label = "References"
+    bl_category = 'Sculpt'
+    bl_space_type = "VIEW_3D"
+    bl_region_type = "UI"
+    bl_context = "NONE"
+    bl_options = {'DEFAULT_CLOSED'}
+
+    def draw(self, context):
+        # LOAD COLLECTION OF ICONS
+        prefs = context.preferences.addons["NewSculptUI"].preferences
+        row = self.layout.row()
+        row.label(text="SUPPORT THE DEVELOPMENT :")
+        pcoll = preview_collections["main"]
+        paypal = pcoll["paypal_icon"]
+        cubebrush = pcoll["cubebrush_icon"]
+        box = self.layout.box()
+        row = box.row()
+        row.label(text="DONATION")
+        row = box.row()
+        prop = row.operator('wm.url_open', text="Paypal", icon_value=paypal.icon_id)
+        prop.url = "https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=BA3UXNSDLE55E&source=url"
+        
+        row = box.row()
+        row.label(text="BUY / DOWNLOAD / UPDATES")
+        row = box.row()
+        
+        if prefs.need_updating:
+            row.alert = True
+            row.label(text="New Version !")
+
+        prop.url = "http://cbr.sh/qako92"
+
+        if prefs.need_updating:
+            row = box.row()
+            row.alert = True
+        else:
+            _row = box.row()
+            _row.label(text="Version is up to date !")
+
+        prop = row.operator('wm.url_open', text="Cubebrush", icon_value=cubebrush.icon_id)
+        _prop = row.operator('wm.url_open', text="B3d Market", icon_value=pcoll["bMarket_icon"].icon_id)
+        _prop.url = "https://blendermarket.com/products/advanced-new-sculpt-mode-ui"
+
+
 from . import auto_load
 auto_load.init()
 
 
 def register():
-    print('Hello addon!!')
+    print('Say Hello to New Sculpt!!')
+
+    # Register Collections (ICONS)
+    pcoll = bpy.utils.previews.new()
+    for key, f in icons.items():
+        pcoll.load(key, path.join(icon_dir, f), 'IMAGE')
+    preview_collections["main"] = pcoll
 
     # ADDON PREFS
     try:
@@ -1499,9 +1743,20 @@ def register():
     except:
         pass
 
+    prefs = context.preferences.addons["NewSculptUI"].preferences
+    try:
+        check, version = check_update()
+        if check:
+            print('A new version is available.')
+            prefs.need_updating = True
+            prefs.last_version = version
+    except:
+        prefs.need_updating = False
+
     # UNREGISTER ORIGINAL TOOL HEADER # changed - antes al inicio del script
     try:
-        bpy.utils.unregister_class(VIEW3D_HT_tool_header)
+        unregister_class(VIEW3D_HT_tool_header)
+        # unregister_class(VIEW3D_HT_header)
     except:
         pass
     
@@ -1515,17 +1770,16 @@ def register():
     register_class(NSMUI_PT_dyntopo_stages)
     register_class(NSMUI_PT_brush_optionsMenu)
     register_class(NSMUI_PT_remeshOptions)
+    register_class(NSMUI_PT_Support_Dev)
 
-    # Register Collections (ICONS)
-    pcoll = bpy.utils.previews.new()
-    for key, f in icons.items():
-        pcoll.load(key, path.join(icon_dir, f), 'IMAGE')
-    preview_collections["main"] = pcoll
+    
 
     # WM PROPERTIES
     wm = bpy.types.WindowManager
-    
 
+    wm.update_available = bpy.props.BoolProperty(default=False, name="Update Available !")
+    
+    wm.toggle_mesh_tools = bpy.props.BoolProperty(default=True, update=update_property, description="Show Mesh Tools related")
     wm.toggle_brush_menu = bpy.props.BoolProperty(default=True, update=update_property, description="Collapse all brush options above to a menu.")
     wm.toggle_UI_elements = bpy.props.BoolProperty(default=True, update=update_property, description="Deprecated")
     wm.toggle_prefs = bpy.props.BoolProperty(default=True, update=update_property, description="Deprecated")
@@ -1657,14 +1911,58 @@ def register():
 
     # DYNREMESH / FLOOD FILL REMESH PROPS
     scn.dynremesh_resolution = FloatProperty(name="Resolution", subtype='FACTOR', default=100, min=1, max=300, precision=2, description="Mesh resolution. Higher value for a high mesh resolution")
-    scn.dynremesh_forceSymmetry = bpy.props.BoolProperty(name="Force Symmetry", description="", default=False)
-    scn.dynremesh_symmetry_axis = bpy.props.EnumProperty(
+    scn.dynremesh_forceSymmetry = BoolProperty(name="Force Symmetry", description="", default=False)
+    scn.dynremesh_symmetry_axis = EnumProperty(
         items=(('POSITIVE_X', "X", ""), ('POSITIVE_Y', "Y", ""), ('POSITIVE_Z', "Z", "")),
         default='POSITIVE_X', name="Axis", description="Axis where apply symmetry"
     )
 
     # MESHLAB REMESH
     #scn.meshlab_facescount = IntProperty(name="facescount", description="Number of faces", default=5000, min=10, max=1000000)
+
+    # CLOSE GAPS PROPS
+    scn.closeGaps_use = EnumProperty (
+        items=(
+            ('TRIS', "Tris", ""),
+            ('QUADS', "Quads", "")
+        ),
+        default='TRIS', name="Use tris or quads", description="Close gap with tris or quads"
+    )
+    scn.closeGaps_smooth_passes = IntProperty (default = 3, max = 10, min = 0, name = "Smooth Passes", 
+        description = "Number of smooth passes that will be applied after closing the gap"
+    )
+    scn.closeGaps_keep_dyntopo = BoolProperty ( default = True, name="Keep Dyntopo", description="Only works if you are using dyntopo")
+
+    # MASK EXTRACTOR PROPS
+    scn.maskExtractor_SuperSmooth = BoolProperty(default = False, name="Super Smooth")
+    scn.maskExtractor_Offset = FloatProperty(min = -10.0, max = 10.0, default = 0.1, name="Offset")
+    scn.maskExtractor_Thickness = FloatProperty(min = 0.0, max = 10.0, default = 0.05, name="Thickness")
+    scn.maskExtractor_SmoothPasses = IntProperty(min = 0, max = 30, default = 15, name="Smooth Passes")  
+    scn.maskExtractor_Mode = EnumProperty(name="Extract Mode",
+                     items = (("SOLID","Solid","Solid, two sided"),
+                              ("SINGLE","One Sided","Like Solid mode but only one sided (front)"),
+                              ("FLAT","Flat","Just a flat copy of the mask selection")),
+                     default = "SOLID", description="Mode in how to apply the mask extraction"
+    )
+    # DESPUES -> AÑADIR KEEP DYNTOPO Y KEEP EDITING ORIGINAL MESH
+
+    # BRUSH IO BLEND
+    scn.brush_io_packs = EnumProperty (
+        items=(
+            ('ALL', "All", "Import ALL category brush packs"),
+            ('SKIN', "Skin", "Import all 'skin' brushes"),
+            ('HARD', "Hard Surface", "Import all 'hard' surface brushes"),
+            ('METAL', "Metal", "Import all 'metal' brushes"),
+            ('WOOD', "Wood", "Import all 'wood' brushes"),
+            ('FABRIC', "Fabric", "Import all 'fabric' brushes"),
+            ('ROCK', "Rocks", "Import all 'rock'/'stone' brushes"),
+            ('ORNAMENT', "Ornaments", "Import all 'ornament' brushes"),
+            ('ORGANIC', "Organic", "Import all 'organic' brushes"),
+            ('TERRAIN', "Terrains", "Import all 'terrain' brushes"),
+            ('OTHER', "Others", "Import all 'other' brushes")
+        ),
+        default='ALL', name="Brushes per category", description="Kind of pack you are going to import"
+    )
 
     
     # REFERENCES PANEL PROPS
@@ -1674,7 +1972,8 @@ def register():
 
     # REGISTER ORIGINAL TOOL HEADER # changed - antes al final del código de la clase del tool header
     try:
-        bpy.utils.register_class(VIEW3D_HT_tool_header)
+        register_class(VIEW3D_HT_tool_header)
+        # register_class(VIEW3D_HT_header
     except:
         pass
 
@@ -1689,6 +1988,7 @@ def unregister():
     unregister_class(NSMUI_PT_brush_optionsMenu)
     unregister_class(NSMUI_AddonPreferences)
     unregister_class(NSMUI_PT_remeshOptions)
+    unregister_class(NSMUI_PT_Support_Dev)
 
     # AutoLoad Exterior Classes
     auto_load.unregister()
@@ -1698,8 +1998,13 @@ def unregister():
         bpy.utils.previews.remove(pcoll)
     preview_collections.clear()
 
+
     # PROPERTIES
     wm = bpy.types.WindowManager
+
+    del wm.update_available
+
+    del wm.toggle_mesh_tools
 
     del wm.toggle_brush_menu
     del wm.toggle_UI_elements
@@ -1786,6 +2091,18 @@ def unregister():
 
     # MESHLAB REMESH
     #del scn.meshlab_facescount
+
+    # CLOSE GAPS PROPS
+    del scn.closeGaps_use
+    del scn.closeGaps_smooth_passes
+    del scn.closeGaps_keep_dyntopo
+
+    # MESH EXTRACTOR PROPS
+    del scn.maskExtractor_Offset
+    del scn.maskExtractor_Thickness
+    del scn.maskExtractor_SmoothPasses
+    del scn.maskExtractor_Mode
+    del scn.maskExtractor_SuperSmooth
 
     # CLEAN REMESH TEMP FILES
     try:

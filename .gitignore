@@ -67,3 +67,17 @@ NewSculptUI/vdb.bak
 NewSculptUI/Sculpt_Brushes/test_brush_set_001.json
 NewSculptUI/Sculpt_Brushes/test_brush_set_001.json
 NewSculptUI/brush_io_manager.py
+NewSculptUI/.vscode/.ropeproject/config.py
+NewSculptUI/__pycache__/brush_io_blend.cpython-37.pyc
+NewSculptUI/__pycache__/brushCuts.cpython-37.pyc
+NewSculptUI/__pycache__/greaseTrim.cpython-37.pyc
+NewSculptUI/__pycache__/ot_mesh_tools.cpython-37.pyc
+NewSculptUI/__pycache__/meshExtract.cpython-37.pyc
+NewSculptUI/__pycache__/overrides.cpython-37.pyc
+NewSculptUI/brush_io_blend.py
+NewSculptUI/brushCuts.py
+NewSculptUI/greaseTrim
+NewSculptUI/Sculpt_Brushes/test_brush_set_001.json
+NewSculptUI_Code_Workspace.code-workspace
+NewSculptUI/Sculpt_Brushes/test_brush_set_001.json
+NewSculptUI/brush_io_manager.py

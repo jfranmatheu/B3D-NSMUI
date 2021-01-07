@@ -1,3 +1,5 @@
+## DISCONTINUED! New git here: https://github.com/jfranmatheu/Atelier-Sculpt
+---
 ## New Sculpt Mode UI for Blender 2.80
 
 # About
